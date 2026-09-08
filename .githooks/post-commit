@@ -1,9 +1,22 @@
 #!/bin/sh
-# SanjivanAI auto-push hook (runs after every git commit - only for THIS repository).
-# Pushes the new commit to the SanjivanAI GitHub repo. Never touches any other repo.
-# If offline or not authenticated, the commit is safe locally and `git push` can be run later.
+# SanjivanAI auto-push hook - runs after every git commit made in this folder.
+# SAFETY (important): this hook pushes ONLY when this repository's remote origin is
+# the SanjivanAI GitHub repo (https://github.com/EternalFlames131/SanjivanAI.git).
+# If the folder is copied into another project, or its origin is anything else,
+# the hook does NOTHING and your other repositories are never touched.
+# If offline / not logged in, the commit stays safe locally; push later with `git push`.
+
+ORIGIN=$(git config --get remote.origin.url 2>/dev/null || true)
+ALLOW="https://github.com/EternalFlames131/SanjivanAI.git"
+ALLOW_ALT="git@github.com:EternalFlames131/SanjivanAI.git"
+
+if [ "$ORIGIN" != "$ALLOW" ] && [ "$ORIGIN" != "$ALLOW_ALT" ]; then
+  printf '\033[33m[SanjivanAI] SAFETY: origin is not the SanjivanAI repo - auto-push SKIPPED (commit is safe, no other repo touched).\033[0m\n'
+  exit 0
+fi
+
 if git push --quiet 2>/dev/null; then
-  printf '\033[32m[SanjivanAI] bumped to GitHub automatically.\033[0m\n'
+  printf '\033[32m[SanjivanAI] pushed to GitHub automatically (SanjivanAI repo only).\033[0m\n'
 else
-  printf '\033[33m[SanjivanAI] push skipped (offline or not logged in). Commit is saved; run "git push" later.\033[0m\n'
+  printf '\033[33m[SanjivanAI] push skipped: offline, not logged in, or another copy pushed first. Commit is fine -> run "git pull" if needed, then "git push".\033[0m\n'
 fi

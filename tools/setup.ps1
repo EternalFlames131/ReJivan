@@ -93,3 +93,6 @@ catch { Write-Host ("PDF test skipped/failed: " + $_.Exception.Message) -Foregro
 Write-Host "`n===== Setup finished =====" -ForegroundColor Green
 Write-Host "Important: commit normally with 'git add -A', 'git commit -m ""message""' - push is automatic."
 Write-Host "If a push says offline/failed, run 'git push' later - your commit is safely saved."
+Write-Host "SAFETY: this setup + the auto-push hook only ever touch the SanjivanAI repo"
+Write-Host "        (origin is checked on every push). Your GLOBAL git settings are untouched,
+Write-Host "        and no other GitHub repository can be affected."

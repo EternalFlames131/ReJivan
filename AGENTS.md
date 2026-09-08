@@ -21,8 +21,8 @@ Run: `pwsh -File tools\setup.ps1`
 It checks/installs Python + pypdf + Edge + Git (via winget, asks first), sets LOCAL git identity for this repo only, locks the remote to **this** repo's GitHub, enables auto-push, checks GitHub login, and tests the PDF pipeline.
 
 ## Auto-push (enabled for this project only)
-- After every `git commit`, a hook **automatically pushes** to `github.com/EternalFlames131/SanjivanAI` (branch main). It never touches any other repo.
-- Commits themselves are still deliberate (git add + git commit).
+- After every `git commit`, a hook **automatically pushes** to `github.com/EternalFlames131/SanjivanAI` (branch main).
+- **SAFETY (never cross-repo):** the hook only fires when this folder's git `origin` is exactly the SanjivanAI repo; otherwise it does nothing. The owner has OTHER GitHub repos and global git/opencode settings are never touched. Commits themselves are still deliberate (git add + git commit).
 - If offline/not logged in, the push is skipped but the commit is safe — run `git push` later.
 
 ## Rules

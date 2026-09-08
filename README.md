@@ -38,6 +38,10 @@ Full rules: `references/hsc_guidelines_summary.md`
 4. Work on files, then **commit** (`git add -A`, `git commit -m "message"`) — **push to GitHub happens automatically** (auto-push hook, this project only). If offline, the commit is safe; run `git push` later.
 5. Rebuild the PDF after editing the HTML: `pwsh -File tools\build_pdf.ps1`.
 
+## Safety (multiple-repo guarantee)
+- Everything here is scoped to **this project only**. The auto-push hook checks, on every commit, that this folder's git `origin` is exactly `EternalFlames131/SanjivanAI` — if not, it does nothing. Your **other GitHub repos and global git settings are never touched**.
+- You have multiple repos on GitHub; this folder will never push to any other one, even if copied somewhere else.
+
 ## Key decisions made
 - Theme: Healthcare, Wellbeing & Service Delivery + Elderly Care & Healthy Ageing
 - Two monitoring layers: wearable vitals + camera zones (falls/out-of-bed); camera AI on-device, **no video stored**
