@@ -49,6 +49,14 @@
 
 ---
 
+## 2026-09-08 (Day 1 — CLOSED, night)
+
+- User tuned off for the night; work resumes TOMORROW (Day 2).
+- **DAY 2 FIRST ACTION: build the prototype** — start with core app + dashboard + vital simulator so the user sees something on screen quickly. ~5h block. Get user's go-ahead at session start.
+- Setup verified all-green on this PC; auto-read/auto-save fully wired. Nothing is blocking.
+
+---
+
 ## Standing auto-save rules (do this every session)
 1. After any turn with decisions/thoughts/new info, append a `## YYYY-MM-DD (Day N — note)` entry above with short bullets.
 2. When resuming, first read this file + CONTEXT.md, then continue — never ask the user to re-explain settled points.
