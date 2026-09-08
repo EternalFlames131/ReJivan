@@ -1,0 +1,2 @@
+- 2026-09-08 23:39 | New project folder 'OneDrive\Desktop\HSC AI Nurse' (docs/prototype/video/references) for Hack for Social Cause (VBYLD 2027). Found deadline: submission last date 15 Oct 2026. Built an 8-page concept PDF 'SahaayCare_Concept_Document_v1.0.pdf' - Personal AI Nurse idea (Theme: Healthcare + Elderly Care) with problem statement, prototype scope (real vs simulated), tech stack, 10 extra winning points, evaluation mapping, timeline. Working title SahaayCare.
+
