@@ -16,6 +16,10 @@ SanjivanAI = "A Personal AI Nurse for Every Family" — Hack for Social Cause 20
 - `prototype/` (to build) · `video/` (to build) · `CONTEXT.md` (full snapshot) · `README.md` (overview) · `CHANGELOG.md` (project log).
 - GitHub (PRIVATE, branch main): `github.com/EternalFlames131/SanjivanAI`. ⚠️ Make PUBLIC before 15 Oct for submission.
 
+## AUTO-SAVE CONVERSATION MEMORY (so the user never re-explains)
+- **RULE (always):** After EVERY turn where decisions, thoughts, or new info were exchanged, append a short dated entry to `CONVERSATION.md` (the project memory). When resuming later, read `CONVERSATION.md` + `CONTEXT.md` first and continue from there — never make the user repeat previously settled details.
+- The user has repeatedly asked for this; treat it as non-optional.
+
 ## AUTO-SETUP (automatic - the assistant does it, the user never types a command)
 - **RULE (always):** At the start of EVERY session in this folder, check whether a marker file `tools\.setup-done-<this-computer-name>.txt` exists. If it does NOT exist, RUN automatically, without asking and without the user requesting it:
   `pwsh -ExecutionPolicy Bypass -File tools\setup.ps1`

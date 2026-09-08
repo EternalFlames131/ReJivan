@@ -42,6 +42,9 @@ Full rules: `references/hsc_guidelines_summary.md`
 - Everything here is scoped to **this project only**. The auto-push hook checks, on every commit, that this folder's git `origin` is exactly `EternalFlames131/SanjivanAI` — if not, it does nothing. Your **other GitHub repos and global git settings are never touched**.
 - You have multiple repos on GitHub; this folder will never push to any other one, even if copied somewhere else.
 
+## Memory (you never re-explain anything)
+- `CONVERSATION.md` auto-records every decision/thought/update. `CONTEXT.md` is the living snapshot; `CHANGELOG.md` the change log. Opening this folder with opencode loads it all automatically.
+
 ## Key decisions made
 - Theme: Healthcare, Wellbeing & Service Delivery + Elderly Care & Healthy Ageing
 - Two monitoring layers: wearable vitals + camera zones (falls/out-of-bed); camera AI on-device, **no video stored**
