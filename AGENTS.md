@@ -2,6 +2,12 @@
 
 **Owner:** Samrat — teacher trainee, NON-TECHNICAL. Explain in plain steps, avoid jargon.
 
+## SESSION-OPEN PROTOCOL (auto-READ — do this FIRST, always, without being asked)
+- The instant a session starts in this folder, BEFORE any other work or reply work: **Read `CONVERSATION.md` and `CONTEXT.md`** (and, if the user mentions it, `README.md`). This is non-optional — it is how the project memory loads automatically.
+- Then acknowledge in ONE short line, e.g. "Loaded project memory (current: DAY N, last topic: ...)." — do NOT dump the whole history back at the user.
+- If markers/setup are pending from the AUTO-SETUP rule below, handle that too before project work.
+- Rule applies on every device, every session, so the user never has to explain anything twice.
+
 ## The project
 SanjivanAI = "A Personal AI Nurse for Every Family" — Hack for Social Cause 2027 (VBYLD 2027, MoYAS + IIT Bombay).
 - Idea: remote health monitoring + on-time medicines + automatic emergency help.
@@ -39,5 +45,5 @@ It checks/installs Python + pypdf + Edge + Git (via winget, asks first), sets LO
 ## Rules
 - Owner is non-technical: plain language, no unexplained jargon.
 - After finishing/substantial work, append a timestamped line to `CHANGELOG.md` (and the master log `C:\Users\samra\OneDrive\Desktop\Opencode task\LOG.md`). Then commit (auto-push takes care of GitHub).
-- Read `CONTEXT.md` first when resuming work.
+- Full auto-read behaviour lives in the SESSION-OPEN PROTOCOL above.
 - Prototype honesty: always label what is REAL vs SIMULATED in the demo.
