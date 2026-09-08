@@ -1,0 +1,9 @@
+#!/bin/sh
+# SanjivanAI auto-push hook (runs after every git commit - only for THIS repository).
+# Pushes the new commit to the SanjivanAI GitHub repo. Never touches any other repo.
+# If offline or not authenticated, the commit is safe locally and `git push` can be run later.
+if git push --quiet 2>/dev/null; then
+  printf '\033[32m[SanjivanAI] bumped to GitHub automatically.\033[0m\n'
+else
+  printf '\033[33m[SanjivanAI] push skipped (offline or not logged in). Commit is saved; run "git push" later.\033[0m\n'
+fi

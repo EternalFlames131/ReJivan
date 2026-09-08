@@ -34,8 +34,9 @@ Full rules: `references/hsc_guidelines_summary.md`
 ## How to continue from any device (drive-only workflow)
 1. Carry this folder (USB stick or a synced cloud folder like OneDrive/Dropbox).
 2. On the other PC (opencode already installed): boot opencode and open THIS folder — `AGENTS.md` loads the project context automatically.
-3. Work on files, then back up to GitHub whenever online: `git add -A`, `git commit -m "message"`, `git push`; on the new device `git pull` first.
-4. Rebuild the PDF after editing the HTML: `pwsh -File tools\build_pdf.ps1`.
+3. **First time on that PC only:** run `pwsh -File tools\setup.ps1` — installs Python/pypdf/Edge/Git if missing, locks this repo's git to the SanjivanAI GitHub repo, and enables auto-push.
+4. Work on files, then **commit** (`git add -A`, `git commit -m "message"`) — **push to GitHub happens automatically** (auto-push hook, this project only). If offline, the commit is safe; run `git push` later.
+5. Rebuild the PDF after editing the HTML: `pwsh -File tools\build_pdf.ps1`.
 
 ## Key decisions made
 - Theme: Healthcare, Wellbeing & Service Delivery + Elderly Care & Healthy Ageing
