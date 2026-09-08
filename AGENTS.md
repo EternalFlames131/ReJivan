@@ -1,0 +1,23 @@
+# SanjivanAI — Project AGENTS.md (auto-loaded by opencode when working in this folder)
+
+**Owner:** Samrat — teacher trainee, NON-TECHNICAL. Explain in plain steps, avoid jargon.
+
+## The project
+SanjivanAI = "A Personal AI Nurse for Every Family" — Hack for Social Cause 2027 (VBYLD 2027, MoYAS + IIT Bombay).
+- Idea: remote health monitoring + on-time medicines + automatic emergency help.
+- Works **at home AND in hospitals** ("Virtual Ward") — rooms where doctors/nurses can't always be present.
+- Two monitoring layers: **wearables/At-Home Monitor** (vitals: HR, SpO2, BP, temp) + **privacy-first camera zones** (falls, out-of-bed, low activity — NO video recorded/stored).
+- **Deadline: 15 October 2026** (submission window 1 Sep – 15 Oct 2026). National showcase 10–12 Jan 2027, Delhi.
+
+## Where everything lives (this folder = single source of truth, works from any drive)
+- `docs/SanjivanAI_Concept_Document_v1.1.pdf` — concept doc, built from `docs/source/SanjivanAI_doc_source.html` via `tools/build_pdf.ps1` (needs Edge + Python).
+- `references/hsc_guidelines_summary.md` — competition rules/deadlines.
+- `opencode-config/` — backup of owner's global opencode config + activity log.
+- `prototype/` (to build) · `video/` (to build) · `CONTEXT.md` (full snapshot) · `README.md` (overview) · `CHANGELOG.md` (project log).
+- GitHub (PRIVATE, branch main): `github.com/EternalFlames131/SanjivanAI`. ⚠️ Make PUBLIC before 15 Oct for submission.
+
+## Rules
+- Owner is non-technical: plain language, no unexplained jargon.
+- After finishing/substantial work, append a timestamped line to `CHANGELOG.md` (and the master log `C:\Users\samra\OneDrive\Desktop\Opencode task\LOG.md`).
+- Read `CONTEXT.md` first when resuming work.
+- Prototype honesty: always label what is REAL vs SIMULATED in the demo.

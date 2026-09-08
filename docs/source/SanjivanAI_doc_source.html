@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SanjivanAI — Concept Document v1.1</title>
+<style>
+  @page { size: A4; margin: 14mm 15mm 16mm 15mm; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    font-family: "Segoe UI", Arial, "Noto Sans", sans-serif;
+    font-size: 10.2pt;
+    line-height: 1.42;
+    color: #1f2937;
+  }
+  .cover { padding-top: 8mm; }
+  .kicker { letter-spacing: 2px; text-transform: uppercase; color:#e0701a; font-weight:700; font-size:8.6pt; }
+  h1 { font-size: 34pt; margin: 10px 0 4px 0; color:#15653b; letter-spacing: 1px; }
+  .tagline { font-size: 13pt; color:#334155; margin: 0 0 6px 0; font-weight:600; }
+  .band { background:#15653b; color:#fff; padding: 10px 14px; margin: 14px 0; border-radius: 4px; }
+  .band h2 { margin:0; font-size: 11pt; }
+  .meta { width:100%; border-collapse: collapse; margin-top:12px; }
+  .meta td { border: 1px solid #cbd5e1; padding: 7px 10px; font-size: 9.6pt; }
+  .meta td:first-child { width: 34%; background:#f0fdf4; font-weight:700; color:#166534; }
+  h2.sec {
+    font-size: 13pt; color:#0f3d2e; margin: 22px 0 6px 0;
+    border-bottom: 2px solid #e0701a; padding-bottom: 3px;
+  }
+  h3 { font-size: 11pt; color:#15653b; margin: 12px 0 4px 0; }
+  p { margin: 6px 0; }
+  ul { margin: 4px 0 8px 0; padding-left: 18px; }
+  li { margin: 2.5px 0; }
+  table.data { width:100%; border-collapse: collapse; margin: 8px 0; font-size: 9.2pt; }
+  table.data th { background:#15653b; color:#fff; padding: 5px 8px; text-align:left; font-size:9pt; }
+  table.data td { border:1px solid #cbd5e1; padding: 5px 8px; vertical-align: top; }
+  table.data tr:nth-child(even) td { background:#f8fafc; }
+  .pill { display:inline-block; background:#dcfce7; color:#166534; border:1px solid #86efac; border-radius: 20px; padding: 1px 10px; font-size: 8.4pt; font-weight:600; }
+  .pill.o { background:#fff7ed; color:#c2410c; border-color:#fdba74; }
+  .note { background:#fffbeb; border:1px solid #fde68a; border-left: 4px solid #f59e0b; padding: 8px 12px; border-radius: 4px; font-size:9.4pt; }
+  .green { color:#15653b; font-weight:700; }
+  .red { color:#b91c1c; font-weight:700; }
+  .small { font-size: 8.6pt; color:#475569; }
+  .footer {
+    position: fixed; bottom: -12mm; left:0; right:0;
+    font-size: 7.6pt; color:#94a3b8; text-align:center;
+    border-top: 0.4pt solid #e2e8f0; padding-top: 2mm;
+  }
+  .pagebreak { page-break-before: always; }
+  .nobreak { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER ================= -->
+<div class="cover">
+  <div class="kicker">Hack for Social Cause &middot; Viksit Bharat Young Leaders Dialogue (VBYLD) 2027</div>
+  <h1>SANJIVANAI</h1>
+  <div class="tagline">&ldquo;A Personal AI Nurse for Every Family&rdquo;</div>
+  <div class="small">Remote health monitoring &middot; on-time medicines &middot; automatic emergency help &mdash; in homes <b>and hospitals</b>, using wearables <b>plus privacy-first camera monitoring</b>, so families and staff can care for patients even when no one is in the room.</div>
+
+  <div class="band"><h2>Concept Document &mdash; Working Draft v1.1 (for team planning &amp; submission prep)</h2></div>
+
+  <table class="meta">
+    <tr><td>Competition</td><td>Hack for Social Cause (HSC) 2027 &mdash; Youth Tech Challenge</td></tr>
+    <tr><td>Organizers</td><td>Ministry of Youth Affairs &amp; Sports (MoYAS) &middot; Knowledge Partner: IIT Bombay</td></tr>
+    <tr><td>Thematic areas targeted</td><td>Healthcare, Wellbeing &amp; Service Delivery &nbsp;+&nbsp; Elderly Care &amp; Healthy Ageing</td></tr>
+    <tr><td>Motto</td><td>&ldquo;Think Global, Hack Local &mdash; Technology for Social Transformation&rdquo;</td></tr>
+    <tr><td>Use cases</td><td><b>Home care</b> &amp; <b>Hospital &ldquo;Virtual Ward&rdquo;</b> &mdash; rooms where doctors or nurses cannot always be present</td></tr>
+    <tr><td>Team</td><td>[Team name to be decided] &mdash; Team Lead, Developer, Content/Healthcare &middot; State: West Bengal</td></tr>
+    <tr><td>Last date of submission</td><td class="red">15 October 2026 (Registration open: 1 Sep &ndash; 15 Oct 2026)</td></tr>
+    <tr><td>National Showcase</td><td>VBYLD 2027, New Delhi &mdash; 10&ndash;12 January 2027</td></tr>
+    <tr><td>Status</td><td>Planning</td></tr>
+  </table>
+</div>
+
+<!-- ================= SECTION 1 ================= -->
+<h2 class="sec">1 &nbsp;Competition &amp; Deadlines at a Glance</h2>
+<table class="data">
+  <tr><th>Item</th><th>Detail</th></tr>
+  <tr><td>Eligibility</td><td>Indian citizen; age 18&ndash;29 as on <b>17 August 2026</b>; enrolled in an <b>AISHE-registered</b> college/university/polytechnic; team of up to <b>3</b> (same or different institutions; solo allowed).</td></tr>
+  <tr><td>Registration process</td><td>1) Every member registers individually on mybharat.gov.in &rarr; 2) Team Lead registers the team under "Hack for Social Cause" &rarr; 3) Team lead uploads all submissions.</td></tr>
+  <tr><td>Submission window</td><td><b>1 September &ndash; 15 October 2026</b></td></tr>
+  <tr><td>What to submit</td><td>Problem Statement &middot; 6&ndash;7 slide Presentation Deck (&le;10 MB, incl. AI-tools disclosure) &middot; Working Prototype (public GitHub/GitLab) &middot; Demo Video 3&ndash;5 min, &ge;720p, &le;80 MB (preferred) &middot; Team Self-Declaration + student ID (Annexure 1).</td></tr>
+  <tr><td>Stages</td><td>Stage 1: Registration &amp; submission (by 15 Oct) &rarr; Stage 2: State hackathon (16 Oct&ndash;30 Nov) &rarr; Stage 3: IIT Bombay screening to 36 national finalists (1&ndash;15 Dec) &rarr; Stage 4: National Showcase, New Delhi (10&ndash;12 Jan 2027).</td></tr>
+  <tr><td>Evaluation (6 parameters)</td><td>Relevance &middot; Technical Strength &middot; Functionality &middot; Creativity/Innovation &middot; Social Cause Impact &middot; Presentation &amp; Team.</td></tr>
+  <tr><td>Prizes</td><td>1st &ndash;25,000 &middot; 2nd &ndash;50,000 &middot; 3rd &ndash;25,000 &middot; 4th/5th &ndash;15,000 each &middot; National finalists also get a development grant of &ndash;6,000 + mentorship by IIT Bombay.</td></tr>
+</table>
+
+<h2 class="sec">2 &nbsp;The Problem: Why This Matters Today</h2>
+<p><b>Millions of Indian families quietly struggle with the same fear:</b> an elderly parent or a chronically ill family member (high blood pressure, diabetes, heart disease, post-stroke care) needs round-the-clock attention&hellip; but the family has to work, children study, and life moves to the city. The result is a daily chain of small disasters:</p>
+<ul>
+  <li><b>Medicines are missed or doubled</b> &mdash; average medication adherence in India is below 50% for chronic conditions, leading to hospital re-admissions and complications (WHO reports poor adherence as a leading cause of avoidable deaths).</li>
+  <li><b>Danger signs are noticed too late</b> &mdash; a heart-rate or blood-pressure shift at 2 a.m. goes unnoticed until the morning, when it is a crisis instead of a warning.</li>
+  <li><b>Hospitals are treated as the default answer</b> &mdash; patients are admitted, routinely monitored, and discharged, while the family can rarely continue safe monitoring at home. Out-of-pocket health spending pushes families into debt.</li>
+  <li><b>Professional monitoring is unaffordable</b> &mdash; remote-patient-monitoring (RPM) devices and private care plans cost anywhere from &ndash;20,000 to lakhs per year &mdash; out of reach for most Indian households.</li>
+  <li><b>Emergency response has no bridge</b> &mdash; by the time a family member dials 108 or an ambulance, crucial minutes are already lost; there is no automatic, trustworthy path from a dangerous reading to the nearest emergency service.</li>
+  <li><b>Hospitals are short-staffed too</b> &mdash; general wards and step-down units cannot station a nurse at every bed 24&times;7; patient falls and sudden deterioration happen inside rooms while no one is watching, and the hospital pays a heavy cost (falls are among the top hospital liabilities in India).</li>
+  <li><b>Rural and non-English-speaking India is left out</b> &mdash; most monitoring apps are English-only, need stable internet, and ignore the elderly themselves, who are often the least comfortable with smartphones.</li>
+</ul>
+
+<h3>West Bengal context (our "Hack Local")</h3>
+<p>West Bengal has a rapidly ageing population (several districts among India's highest elderly ratios), a high burden of hypertension and diabetes, and a large rural population where a Primary Health Centre may be kilometres away. Working children often live in Kolkata or other metros while parents remain in district/town homes &mdash; exactly the scenario our solution serves.</p>
+
+<h2 class="sec">3 &nbsp;Problem Statement &amp; Target Beneficiaries</h2>
+<div class="note nobreak">
+<b>Problem Statement (draft):</b> Families of elderly and chronically ill patients lack an affordable way to keep their loved ones safe and medically monitored between hospital visits. This leads to missed medicines, late recognition of danger, and avoidable emergencies. Existing monitoring solutions are costly, English-only, data-siloed, and do not automatically connect families with emergency services &mdash; leaving most Indian families dependent on expensive hospital care.
+</div>
+<table class="data">
+  <tr><th>Beneficiary</th><th>How SanjivanAI helps</th></tr>
+  <tr><td>Elderly (60+) living alone or with working family</td><td>24&times;7 monitoring, medicine reminders, and automatic escalation if readings turn dangerous.</td></tr>
+  <tr><td>Chronically ill patients (BP, diabetes, heart, post-stroke)</td><td>Daily vitals tracking, trends visible to the doctor/family, early-warning &ldquo;danger score&rdquo;.</td></tr>
+  <tr><td>Family caregivers in cities &amp; villages</td><td>See vitals and alerts from anywhere; confirm &amp; act with one tap; no need to be physically present 24&times;7.</td></tr>
+  <tr><td>Community health workers / PHC staff</td><td>A simple dashboard and alert trail for outreach, home visits and follow-up.</td></tr>
+  <tr><td>State health authorities</td><td>Anonymised, privacy-safe trends for preventive-care planning (future phase).</td></tr>
+</table>
+
+<!-- ================= page break ================= -->
+<div class="pagebreak"></div>
+
+<h2 class="sec">4 &nbsp;Our Solution: SanjivanAI</h2>
+<p class="nobreak">SanjivanAI is <b>a personal AI nurse that works in every home and every hospital ward</b> &mdash; an affordable, family-first and hospital-friendly health-monitoring system with these promises:</p>
+<table class="data">
+  <tr><th>Promise</th><th>What it does</th></tr>
+  <tr><td><span class="pill">Monitor 24&times;7</span></td><td>An easy At-Home Monitor / wearable continuously tracks heart rate, blood oxygen (SpO&sup2;), blood pressure and temperature &mdash; no nurse or hospital bed required on-site.</td></tr>
+  <tr><td><span class="pill">Camera watch (privacy-first)</span></td><td>Optional room cameras detect <b>falls, &ldquo;out of bed&rdquo;, prolonged stillness and distress movements</b>. The AI works on the spot &mdash; <b>no video is recorded or stored</b>; only meaningful alerts come out. Consent-based, always.</td></tr>
+  <tr><td><span class="pill">Medicine on time</span></td><td>A smart medication manager reminds at the right time, confirms &ldquo;taken/skipped&rdquo;, and notifies the family if a dose is missed &mdash; stopping a silent killer: missed medicines.</td></tr>
+  <tr><td><span class="pill">AI that warns early</span></td><td>A transparent rule-based &ldquo;AI nurse&rdquo; watches all readings, computes a clear <b>Safe / Caution / Danger</b> score, and explains in simple words why it is worried.</td></tr>
+  <tr><td><span class="pill">Family in the loop</span></td><td>A clean family dashboard on phone &amp; computer shows live numbers, trends, alerts and medication status &mdash; in Bengali, Hindi and English, and readable even by non-technical users.</td></tr>
+  <tr><td><span class="pill">Auto emergency help</span></td><td>If a reading crosses danger limits: &rarr; family alerted first &rarr; if not confirmed/acknowledged &rarr; the system automatically escalates to ambulance/hospital/108 &amp; helplines (e.g. tele-MANAS) &mdash; turning minutes into seconds.</td></tr>
+</table>
+
+<h3>Two monitoring layers that work together</h3>
+<table class="data">
+  <tr><th>Layer</th><th>What it measures</th><th>Where it runs</th></tr>
+  <tr><td>Wearable / At-Home Monitor</td><td>Heart rate, SpO&sup2;, blood pressure, temperature, trends.</td><td>Home and hospital beds (simulated in prototype; low-cost hardware in roadmap).</td></tr>
+  <tr><td>Room cameras (CCTV-style)</td><td><b>Behaviour &amp; safety:</b> falls, getting out of bed unassisted, remaining too still, distress movements, wandering &mdash; and can estimate heart/respiration rate without touching the patient.</td><td>Home rooms and hospital wards via camera "zones".</td></tr>
+</table>
+
+<h3>SanjivanAI in the hospital &mdash; the &ldquo;Virtual Ward&rdquo;</h3>
+<p class="nobreak">Where a nurse cannot stand at every bed 24&times;7, SanjivanAI acts as the eyes in the room: a nurse-station view lists every bed/room with live vitals and camera-zone status; falls and out-of-bed events raise priority alerts instantly; and a sudden danger reading automatically calls the on-duty team (escalating to family for home mode). This directly relieves India&rsquo;s nursing shortage and makes wards safer &mdash; a strong institution-ready use case beyond homes.</p>
+
+<h3>How it works (demo flow)</h3>
+<ul>
+  <li><b>1.</b> Register the patient, add family caregivers, medicines with times, and optional camera zones.</li>
+  <li><b>2.</b> The At-Home Monitor (prototype: simulation engine + manual entry; real device in roadmap) streams vitals.</li>
+  <li><b>3.</b> The AI nurse scores every reading in real time, and camera zones watch the room.</li>
+  <li><b>4.</b> Medicine reminders fire on schedule; results go to the family.</li>
+  <li><b>5.</b> Any &ldquo;Danger&rdquo; reading or camera event (fall, out-of-bed) starts the escalation chain: family/nurse station &rarr; emergency contacts &rarr; services; every event forms a medical trail for the doctor.</li>
+</ul>
+
+<h2 class="sec">5 &nbsp;Prototype Scope: What is Real vs Simulated (Honest Plan)</h2>
+<p class="small">Judges value an honest, working demo over an over-claimed one. Our submission will clearly mark the boundary.</p>
+<table class="data">
+  <tr><th>Feature</th><th>In working prototype</th><th>Notes</th></tr>
+  <tr><td>Dashboard (live vitals, trends, alerts)</td><td class="green">Fully real</td><td>Responsive web app &mdash; works on phone + computer browsers.</td></tr>
+  <tr><td>Medication manager &amp; on-time reminders</td><td class="green">Fully real</td><td>Schedule creation, reminders, taken/skipped tracking, missed-dose alert to family.</td></tr>
+  <tr><td>AI danger-score rules engine</td><td class="green">Fully real</td><td>Transparent thresholds (BP, pulse, SpO&sup2;, temp) &mdash; explainable, no black box.</td></tr>
+  <tr><td>Family dashboard &amp; roles</td><td class="green">Fully real</td><td>Multiple caregivers; per-role views; mobile-first.</td></tr>
+  <tr><td>Emergency escalation chain</td><td class="green">Fully real (flow)</td><td>Alert family &rarr; Acknowledge &rarr; auto-call to configured emergency contacts; SMS/email/WhatsApp demonstration.</td></tr>
+  <tr><td>Camera-zone monitoring (fall / out-of-bed / low activity)</td><td class="green">Fully real (UI + event flow)</td><td>Room "zones" with live simulated events + alerting; the underlying vision-AI models (pose estimation, contactless vitals) are clearly documented and planned &mdash; not faked.</td></tr>
+  <tr><td>Hospital &ldquo;Virtual Ward&rdquo; mode</td><td class="green">Fully real (flow)</td><td>Nurse-station view: bed/room list, live vitals, camera-zone status, priority alert queue &mdash; demonstrates staff relief in wards.</td></tr>
+  <tr><td>Signal &ldquo;108 / ambulance&rdquo; integration</td><td class="pill o">Simulated</td><td>Simulated call ticket + escalation card; real integration is a pilot-phase item.</td></tr>
+  <tr><td>Vital sensing from hardware</td><td class="pill o">Simulated</td><td>Built-in simulator generates realistic readings + manual entry; a low-cost ESP32 + pulse-oximeter hardware path is in the roadmap.</td></tr>
+  <tr><td>Payments / subscriptions</td><td class="pill o">Simulated</td><td>Real plan-pages and pricing; actual payment gateway in pilot.</td></tr>
+  <tr><td>Languages</td><td class="green">Fully real (English + Bengali/Hindi labels)</td><td>Vernacular-first UI for elderly/family.</td></tr>
+</table>
+<div class="note nobreak"><b>Safety &amp; ethics disclaimer (kept in app and submission):</b> SanjivanAI is <b>not</b> a medical device, does not diagnose, and never replaces a doctor. It supports families and caregivers; all alerts offer a &ldquo;human-in-the-loop&rdquo; confirmation, and clinical validation is required before real deployment.</div>
+
+<h2 class="sec">6 &nbsp;Technology Stack (v1 Prototype)</h2>
+<table class="data">
+  <tr><th>Layer</th><th>Choice</th><th>Why</th></tr>
+  <tr><td>Front-end</td><td>Responsive web app (HTML/CSS/JS) as a Progressive Web App</td><td>One build works on all phones/PCs, no app-store friction; judges click it live; later wrappable into an Android APK.</td></tr>
+  <tr><td>Back-end</td><td>Node.js + Express</td><td>Lightweight, easy to host and read for a student team.</td></tr>
+  <tr><td>Data</td><td>SQLite / JSON store</td><td>No server cost; portable; easy demo data.</td></tr>
+  <tr><td>Alerting</td><td>Email + SMS + WhatsApp APIs (demonstration endpoints)</td><td>Proves real escalation; free/low-cost tiers for demo.</td></tr>
+  <tr><td>Simulator</td><td>Built-in vitals simulator + manual entry</td><td>Realistic demo without hardware during evaluation.</td></tr>
+  <tr><td>Camera-AI (vision)</td><td>Prototype: realistic event simulator; real path: on-device pose-estimation, fall detection &amp; contactless-vitals models</td><td>Privacy-first: inference runs locally, no raw video stored or transmitted.</td></tr>
+  <tr><td>Repo &amp; license</td><td>Public GitHub/GitLab &middot; MIT</td><td>Meets HSC open-source + README/architecture/documentation requirement.</td></tr>
+</table>
+
+<!-- ================= page break ================= -->
+<div class="pagebreak"></div>
+
+<h2 class="sec">7 &nbsp;Sustainability &amp; Business Model</h2>
+<ul>
+  <li><b>Affordable subscription &mdash; &ldquo;an AI nurse for every family.&rdquo;</b> Proposed tiers: Family plan ~&ndash;99/month, Caregiver+ plan ~&ndash;199/month (multi-member, report sharing), Institutional (PHC/old-age homes) pricing on request &mdash; a fraction of today&rsquo;s &ndash;20,000+ RPM packages.</li>
+  <li><b>Public-health convergence:</b> designed to plug into Ayushman Bharat/ABHA digital health IDs, PHC follow-up workflows and state health missions (future phase), enabling possible empanelment rather than pure B2C.</li>
+  <li><b>Roadmap to hardware:</b> a &ldquo;Made in India&rdquo; low-cost monitor (ESP32 + pulse-oximeter + BP cuff) targeted under &ndash;5,000 for rural homes; the app is device-agnostic first.</li>
+  <li><b>Hospital &amp; institutional channel (new):</b> a per-bed &ldquo;Virtual Ward&rdquo; service and camera-zone safety package for hospitals, old-age homes and nursing homes &mdash; a B2B revenue line beyond home subscriptions that also strengthens pilots and reference customers.</li>
+</ul>
+
+<h2 class="sec">8 &nbsp;Extra Winning Points (our edge before we even build)</h2>
+<div class="nobreak">
+<h3>1. Multiple touchpoints &mdash; home and hospital together</h3>
+<p>Our entry squarely addresses <b>Healthcare, Wellbeing &amp; Service Delivery</b> and <b>Elderly Care &amp; Healthy Ageing</b>, and it does not stop at the home &mdash; it extends into <b>hospital virtual wards</b>, relieving India&rsquo;s nursing shortage. Intentional multi-theme positioning.</p>
+<h3>2. Digital-Public-Infrastructure alignment</h3>
+<p>Designed for ABHA integration, tele-MANAS (14416) mental-health linkage, and convergence with Ayushman Bharat PHC follow-up &mdash; the vision of "Viksit Bharat."</p>
+<h3>3. Digital Inclusion &mdash; not just a health app</h3>
+<p>Bengali/Hindi/English UI, a deliberately simple elderly-friendly design, offline-first behaviour, and <b>SMS/feature-phone fallback</b> for family alerts where internet is weak &mdash; this addresses the &ldquo;last mile&rdquo; the guidelines reward.</p>
+<h3>4. Privacy & trust as a feature (DPDP-aligned)</h3>
+<p>Explicit consent, patient-control of data, no ads, data minimisation, India-first storage plan &mdash; designed from day one to meet the Digital Personal Data Protection expectations judges increasingly probe.</p>
+<h3>5. Climate &amp; community resilience angle</h3>
+<p>Heatwave/humidity-aware alerts (e.g. elderly during Bengal summers) tie the health solution to disaster-resilience too &mdash; a differentiator few teams will show.</p>
+<h3>6. Women-led & inclusive caregiving design</h3>
+<p>Designed around the reality that most unpaid caregiving is done by women &mdash; and the guidelines prefer a female team member &amp; a non-tech member. Our content/video lead can be from a healthcare/social-science background.</p>
+<h3>7. Honesty that scores with judges</h3>
+<p>Clear &ldquo;real vs simulated&rdquo; boundaries, medical disclaimers, human-in-the-loop confirmation before any emergency action, and a full AI-usage disclosure (as rules require) &mdash; credibility is a differentiator.</p>
+<h3>8. Measurable impact story</h3>
+<p>Demo metrics: e.g. &ldquo;adherence up from &lt;50% to 90%&rdquo;, &ldquo;response time to danger reading from ~hours to seconds&rdquo;, &ldquo;cost of monitoring cut by &gt;80% vs hospital.&rdquo;</p>
+<h3>9. SDG alignment</h3>
+<p>Explicitly mapped to UN SDG 3 (Good Health &amp; Well-Being), SDG 9/10 (innovation &amp; reduced inequalities) &mdash; shown on one slide.</p>
+<h3>10. Built to be open source</h3>
+<p>MIT-licensed, clean architecture, README + sample data &mdash; matching the repository requirements and encouraging state-level reuse.</p>
+<h3>11. Camera monitoring with privacy by design</h3>
+<p>Room cameras raise valid privacy fears, so we answer them head-on: on-device AI, <b>zero video recording or storage</b>, alert-only output, explicit consent and DPDP alignment &mdash; turning the riskiest part of this idea into a trust selling point and a hospital-compliance advantage.</p>
+</div>
+
+<h2 class="sec">9 &nbsp;Mapping to the Evaluation Matrix</h2>
+<table class="data">
+  <tr><th>Evaluation parameter</th><th>How SanjivanAI answers it</th></tr>
+  <tr><td>Relevance</td><td>Direct match to two listed thematic areas; state-specific (West Bengal ageing + rural) problem statement.</td></tr>
+  <tr><td>Technical Strength</td><td>Clean responsive PWA + Node backend + documented rules engine + simulator; open-source MIT repo with README &amp; architecture.</td></tr>
+  <tr><td>Functionality</td><td>Live clickable dashboard: vitals, medicines, alerts, escalation &mdash; demonstrated end-to-end in the video.</td></tr>
+  <tr><td>Creativity / Innovation</td><td>&ldquo;AI nurse at home&rdquo; model: affordability + vernacular + SMS fallback + dual-theme positioning.</td></tr>
+  <tr><td>Social Cause Impact</td><td>Concrete metrics story (adherence, response time, cost); elderly + rural beneficiaries; SDG 3.</td></tr>
+  <tr><td>Presentation &amp; Team</td><td>Role-based team (lead / dev / healthcare-content), 3&ndash;5 min narrative video, 6&ndash;7 slide deck with AI disclosure.</td></tr>
+</table>
+
+<h2 class="sec">10 &nbsp;Submission Checklist &amp; Naming Convention</h2>
+<p class="small">Files must be named <b>&lt;State&gt;_&lt;TeamName&gt;_&lt;Document&gt;.pdf</b> (e.g. WestBengal_TeamX_ProblemStatement.pdf).</p>
+<table class="data">
+  <tr><th>Deliverable</th><th>Specification</th><th>Status</th></tr>
+  <tr><td>Problem Statement</td><td>State-specific problem, beneficiaries, current gaps.</td><td><span class="pill o">In progress</span></td></tr>
+  <tr><td>Presentation Deck (6&ndash;7 slides)</td><td>PPT/PDF, &le;10 MB; problem &rarr; solution &rarr; impact &rarr; team + AI disclosure.</td><td><span class="pill o">To build</span></td></tr>
+  <tr><td>Working Prototype</td><td>Public GitHub link: code, README, architecture, sample data, license.</td><td><span class="pill o">To build</span></td></tr>
+  <tr><td>Demo Video (3&ndash;5 min)</td><td>MP4/MOV, &ge;720p, &le;80 MB; team + problem + prototype + impact.</td><td><span class="pill o">To build</span></td></tr>
+  <tr><td>Annexure 1 + IDs</td><td>Team details, signed self-cert, self-attested student IDs.</td><td><span class="pill o">Pending</span></td></tr>
+</table>
+
+<div class="pagebreak"></div>
+
+<h2 class="sec">11 &nbsp;Working Timeline (from today, 08 Sep 2026)</h2>
+<table class="data">
+  <tr><th>Dates</th><th>Milestone</th></tr>
+  <tr><td>08&ndash;20 Sep</td><td>Finalise problem statement &amp; MVP scope; build prototype v0 (dashboard + simulator + medicines).</td></tr>
+  <tr><td>20 Sep &ndash; 05 Oct</td><td>Add AI danger engine + family roles + escalation flow; local-language labels; polish UI for demo.</td></tr>
+  <tr><td>05&ndash;10 Oct</td><td>Write README/architecture, sample data, push open-source repo; prepare 6&ndash;7 slide deck.</td></tr>
+  <tr><td>10&ndash;14 Oct</td><td>Record 3&ndash;5 min demo video (&ge;720p); collect Annexure-1 + ID proofs; final review.</td></tr>
+  <tr><td><b>On/before 15 Oct</b></td><td class="red"><b>Team Lead submits everything on MY Bharat Portal.</b></td></tr>
+  <tr><td>23&ndash;05 Nov</td><td>State-level hackathon &amp; demonstration (mentoring + jury).</td></tr>
+  <tr><td>01&ndash;15 Dec</td><td>IIT Bombay screening to national finalists (36 teams).</td></tr>
+  <tr><td>10&ndash;12 Jan 2027</td><td>National Showcase, New Delhi &mdash; stall, pitch, awards.</td></tr>
+</table>
+
+<h2 class="sec">12 &nbsp;Team &amp; Roles (to finalise)</h2>
+<table class="data">
+  <tr><th>Role</th><th>Responsibility</th><th>Suggested member</th></tr>
+  <tr><td>Team Lead</td><td>Registration, submissions, deck, coordination.</td><td>[Name]</td></tr>
+  <tr><td>Developer</td><td>Prototype build, repo, code quality, demo pipeline.</td><td>[Name]</td></tr>
+  <tr><td>Healthcare / Content &amp; Video</td><td>Problem statement, medical accuracy, video narration, local outreach.</td><td>[Name &mdash; ideal: female / social-science]</td></tr>
+</table>
+
+<h3>Open action items (next session)</h3>
+<ul>
+  <li>Decide final team name (appropriate, non-derogatory; e.g. &ldquo;Sahaay Tech&rdquo;).</li>
+  <li>Confirm every member is individually registered on MY Bharat portal.</li>
+  <li>Confirm AISHE college/institution details before 15 Oct.</li>
+  <li>Approve final team name (working project title: <b>SanjivanAI</b>; team name TBD).</li>
+</ul>
+
+<div class="note"><b>AI-Tools Disclosure (required by rules):</b> This concept document and the prototype are being developed with AI-assisted coding (opencode/CLI assistant) under team supervision. The final submission &amp; presentation deck will clearly disclose the extent of AI usage, as mandated for HSC 2027.</div>
+
+<div class="footer">SanjivanAI &middot; Hack for Social Cause &middot; VBYLD 2027 &middot; Working draft v1.1 &middot; 08 September 2026 &mdash; Page</div>
+
+</body>
+</html>

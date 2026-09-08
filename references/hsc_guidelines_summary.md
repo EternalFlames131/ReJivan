@@ -1,0 +1,48 @@
+# Hack for Social Cause 2027 — Official Guidelines Summary
+*(Compiled from mybharat.gov.in/pages/hack_social, retrieved 08 Sep 2026. Always re-check the portal before submitting.)*
+
+## What it is
+National tech challenge under Viksit Bharat Young Leaders Dialogue (VBYLD) 2027, organized by Ministry of Youth Affairs & Sports (MoYAS), Knowledge Partner: **IIT Bombay**. Motto: *"Think Global, Hack Local — Technology for Social Transformation."*
+
+## Key dates
+- **Registration & Submission window: 1 Sep – 15 Oct 2026** (LAST DATE = 15 October 2026)
+- State-level hackathons: 16 Oct – 30 Nov 2026
+- IIT Bombay screening → 36 national finalists: 1–15 Dec 2026
+- National Showcase: VBYLD 2027, New Delhi, 10–12 Jan 2027
+
+## Eligibility
+- Indian citizen; age **18–29 as of 17 Aug 2026**
+- Enrolled in an **AISHE-registered** college/university/polytechnic
+- Team up to **3** (same or different institutions; solo allowed), each member individually registered on mybharat.gov.in
+- One member = Team Lead (does all submissions)
+- No fees. HSC 2026 national finalists/winners cannot re-enter.
+
+## Our relevant themes (11 total)
+- Healthcare, Wellbeing & Service Delivery
+- Elderly Care & Healthy Ageing
+(also: Digital Inclusion, AI/GIS/Emerging Tech, Assistive Tech)
+
+## What we must submit
+1. **Problem Statement** — state-specific, beneficiaries, current gaps.
+2. **Presentation Deck** — 6–7 slides, PPT/PDF, ≤10 MB, incl. disclosure of AI tool usage.
+3. **Working Prototype** — public GitHub/GitLab repo, MIT/Apache/GPL, with README, architecture, sample data/test-cases, license.
+4. **Demo Video** — 3–5 min, MP4/MOV, ≥720p, ≤80 MB (preferred, not mandatory). Cover: team, problem, prototype interaction, impact.
+5. **Team Self-Declaration (Annexure 1)** — member details, signed self-cert, self-attested student ID.
+
+## File naming convention
+`<State>_<TeamName>_<Document>.pdf` (e.g. `WestBengal_SanjivanAI_ProblemStatement.pdf`)
+
+## Evaluation (6 parameters)
+Relevance · Technical Strength · Functionality · Creativity/Innovation · Social Cause Impact · Presentation & Team Synergy
+
+## Prizes & perks
+1st ₹75,000 · 2nd ₹50,000 · 3rd ₹25,000 · 4th/5th ₹15,000 each. All 36 national finalists: ₹6,000 development grant + IIT Bombay mentorship. Top-5 national teams get cash; national showcase in Delhi Jan 2027.
+
+## IP & code
+Teams keep all IP. MoYAS/IIT-B may display/promote entries with credit. Code submitted must be open-source licensed.
+
+## Rules to remember
+- Edits allowed until deadline; latest version counts.
+- Disclose any AI assistance (we use AI-assisted coding/framing — disclose honestly).
+- Name must be appropriate/non-derogatory.
+- Jury decisions final.
