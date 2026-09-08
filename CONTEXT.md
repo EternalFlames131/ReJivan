@@ -32,7 +32,7 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 ## How to continue from any device (drive-only workflow)
 1. Carry this folder (USB drive or a synced cloud folder like OneDrive/Dropbox).
 2. On the device: opencode is already installed (per user). Open THIS folder with opencode — `AGENTS.md` inside loads the context automatically.
-3. **First time on any new PC:** run `pwsh -File tools\setup.ps1` (installs Python/pypdf/Edge/Git if missing via winget, sets repo-local git identity, locks remote to SanjivanAI's GitHub only, enables auto-push, checks GitHub login).
+3. **Setup is automatic - nothing to type:** at the start of every session opencode checks for the per-computer marker `tools\.setup-done-<PC>.txt`; if missing it runs `pwsh -ExecutionPolicy Bypass -File tools\setup.ps1` on its own (installs Python/pypdf/Edge/Git via winget, sets repo-local identity, locks remote to SanjivanAI ONLY, enables auto-push, checks GitHub login). The user just sees "Auto-setup completed on this device."
 4. The folder is the single source of truth. Commit normally (`git add -A`, `git commit -m "..."`) — **push to GitHub is automatic** via `.githooks/post-commit` (this project only). If offline, the commit stays safe; run `git push` later. On a second device, `git pull` first if you want its latest state.
 5. To rebuild the PDF after editing `docs/source/SanjivanAI_doc_source.html`, run `pwsh -File tools\build_pdf.ps1`.
 
