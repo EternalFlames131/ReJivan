@@ -47,7 +47,9 @@ class AuthStore {
   }
 
   findByEmail(email) {
-    return this.users.find((u) => u.email.toLowerCase() === String(email).toLowerCase());
+    return this.users.find(
+      (u) => u.email.toLowerCase() === String(email || "").trim().toLowerCase()
+    );
   }
 
   register({ name, email, password, role = "family" }) {
@@ -58,7 +60,7 @@ class AuthStore {
       name: String(name).trim(),
       email: String(email).trim(),
       role,
-      password_hash: this._hash(password, salt),
+      password_hash: this._hash(String(password).trim(), salt),
       salt,
       createdAt: Date.now(),
     };
@@ -71,7 +73,7 @@ class AuthStore {
   login(email, password) {
     const u = this.findByEmail(email);
     if (!u) return null;
-    if (u.password_hash !== this._hash(password, u.salt)) return null;
+    if (u.password_hash !== this._hash(String(password || "").trim(), u.salt)) return null;
     const token = this._issueToken(u.id);
     return { token, user: this.publicUser(u) };
   }

@@ -109,9 +109,9 @@
     <button class="btn" id="liSubmit" style="width:100%;margin-top:6px" data-i18n="login_btn"></button>
     <div class="link" id="liSwitch"></div>
     <div class="demo"><b data-i18n="demo_accounts"></b><br>
-      asharma@demo.in · demo123 <span class="muted">(Anita — home)</span><br>
-      rprakash@demo.in · demo123 <span class="muted">(Ram — home)</span><br>
-      wardnurse@demo.in · demo123 <span class="muted">(Virtual Ward)</span>
+      <a onclick="fillDemo('asharma@demo.in','demo123')">asharma@demo.in · demo123</a> <span class="muted">(Anita — home)</span><br>
+      <a onclick="fillDemo('rprakash@demo.in','demo123')">rprakash@demo.in · demo123</a> <span class="muted">(Ram — home)</span><br>
+      <a onclick="fillDemo('wardnurse@demo.in','demo123')">wardnurse@demo.in · demo123</a> <span class="muted">(Virtual Ward)</span>
     </div>
   </div>
 </div>
@@ -259,7 +259,7 @@ function showApp(){ document.getElementById('loginScreen').style.display = 'none
 
 async function doLogin(){
   const email = document.getElementById('liEmail').value.trim();
-  const pass = document.getElementById('liPass').value;
+  const pass = document.getElementById('liPass').value.trim();
   const err = document.getElementById('liErr');
   const ok = document.getElementById('liOk');
   err.textContent = ''; ok.textContent = '';
@@ -296,6 +296,11 @@ async function enterApp(){
 }
 
 document.getElementById('liSubmit').addEventListener('click', doLogin);
+function fillDemo(email, pass){
+  document.getElementById('liEmail').value = email;
+  document.getElementById('liPass').value = pass;
+  doLogin();
+}
 document.getElementById('liPass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('liEmail').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 document.getElementById('liSwitch').addEventListener('click', ()=>{ mode = mode==='login' ? 'register' : 'login'; setLoginStrings(); });
