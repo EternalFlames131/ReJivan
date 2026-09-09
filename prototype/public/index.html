@@ -25,15 +25,16 @@
   nav button.active{background:var(--accent);color:#06231b;font-weight:700}
   main{padding:20px 22px;max-width:1300px;margin:0 auto}
   .banner{background:#14303a;border:1px solid #1f4a57;color:#bfe9f5;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:18px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
   .card h3{margin:0 0 4px;font-size:16px}
   .card .sub{color:var(--muted);font-size:12px;margin-bottom:12px}
   .vitals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
-  .vital{background:var(--panel2);border-radius:10px;padding:10px}
+  .vital{background:var(--panel2);border-radius:10px;padding:10px;min-width:0;overflow:hidden}
+  .vital .top{display:flex;justify-content:space-between;align-items:center;gap:6px;min-width:0}
   .vital .label{font-size:11px;color:var(--muted)}
-  .vital .value{font-size:22px;font-weight:700;margin-top:2px}
-  .vital .unit{font-size:12px;color:var(--muted);font-weight:400}
+  .vital .value{font-size:20px;font-weight:700;margin-top:6px;white-space:nowrap}
+  .vital .unit{font-size:11px;color:var(--muted);font-weight:400}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
   .badge.normal{background:#123528;color:#4ee0a8}
   .badge.caution{background:#3a2d16;color:var(--warn)}
@@ -158,11 +159,8 @@ function statusBadge(status){
 
 function vitalCard(m, value, unit, status){
   return `<div class="vital">
-    <div class="label">${t(m)}</div>
-    <div class="flex-between">
-      <div class="value">${value} <span class="unit">${unit||''}</span></div>
-      ${statusBadge(status)}
-    </div>
+    <div class="top"><span class="label">${t(m)}</span>${statusBadge(status)}</div>
+    <div class="value">${value} <span class="unit">${unit||''}</span></div>
   </div>`;
 }
 
