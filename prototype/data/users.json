@@ -1,0 +1,29 @@
+[
+  {
+    "id": "Ua7ac85b2",
+    "name": "Sharma Family",
+    "email": "asharma@demo.in",
+    "role": "family",
+    "password_hash": "57ccf0038e03224a319512215f23161510b5bc54583ac76bd8f9732ff4fb32a8",
+    "salt": "805d3455f9cb3ea6",
+    "createdAt": 1788925844041
+  },
+  {
+    "id": "U0b480e2b",
+    "name": "Prakash Family",
+    "email": "rprakash@demo.in",
+    "role": "family",
+    "password_hash": "ab77403ed6b05c4bfa1792077fe7c82d21822d8ecf615c2e270b96151e0261da",
+    "salt": "d2c6a6f1a3263d6f",
+    "createdAt": 1788925844077
+  },
+  {
+    "id": "U81699d70",
+    "name": "Ward Nurse Station",
+    "email": "wardnurse@demo.in",
+    "role": "ward",
+    "password_hash": "47a5401fd7a57851db4782ff6f6230725cb5f2525afbf3391eceaccaf1a0f2b7",
+    "salt": "d92c8809e17f29de",
+    "createdAt": 1788925844114
+  }
+]

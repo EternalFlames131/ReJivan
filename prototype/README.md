@@ -13,15 +13,29 @@ npm start
 
 Open **http://localhost:8080** in your browser. Vitals update every 2 seconds.
 
+## Sign in (data isolation)
+
+Every account sees **only the patients it registered**. Passwords are stored hashed (scrypt), sessions are tokens.
+
+| Demo account | Password | Sees |
+|---|---|---|
+| `asharma@demo.in` | `demo123` | Anita Sharma (home) + her camera CAM1 + meds |
+| `rprakash@demo.in` | `demo123` | Ram Prakash (home) + his camera CAM2 + meds |
+| `wardnurse@demo.in` | `demo123` | Virtual Ward beds (Meera, Kavitha) + ward cameras |
+
+New families can register via the "Create account" screen. All `/api/*` endpoints (except auth + health) require `Authorization: Bearer <token>` and are filtered by the logged-in user.
+
 ## What is REAL vs SIMULATED (prototype honesty)
 
 | Layer | Status |
 |---|---|
+| Authentication + per-user data isolation | **Real** (scrypt-hashed passwords, session tokens, every API filtered by user) |
 | Dashboard, patient cards, real-time UI | **Real** |
 | Vitals rule engine + danger detection | **Real** (clinical thresholds) |
 | Alert generation + escalation workflow | **Real** logic (delivery is stubbed) |
 | Medications scheduling + "Mark taken" tracking | **Real** (persisted to JSON) |
 | Multilingual UI (EN / HI / BN / TA / TE) | **Real** |
+| Live camera preview for family | **Real UI**, feed **simulated** (privacy-first: metadata only, nothing recorded/stored) |
 | Vital-sign data from a wearable | **Simulated** (`simulator.js`) |
 | Camera-zone events (fall / out-of-bed / low activity) | **Simulated** (`camerazone.js`) |
 | SMS / WhatsApp / ambulance delivery | **Simulated** (live-API hooks stubbed) |
@@ -32,30 +46,38 @@ Privacy-first by design: camera zones run AI on-device and **never record or sto
 ## Architecture
 
 ```
-server.js        Express server — REST API + static SPA from /public
+server.js        Express server — auth, REST API + static SPA from /public
+auth.js          User accounts (scrypt-hashed passwords) + session tokens + per-user isolation
 simulator.js     Simulated vital-signs engine (per-condition profiles + episodes)
 rules.js         Real clinical thresholds → normal / caution / danger
 alerts.js        Alert generation, de-dupe cooldown + escalation
 medications.js   Medication CRUD + "taken" log (persists to data/medications.json)
-camerazone.js    Simulated privacy-first room events (fall, out-of-bed, low activity)
-public/          Front-end SPA (dashboard, medicines, camera zones, Virtual Ward, alerts)
-data/            JSON persistence (created at runtime)
+camerazone.js    Simulated privacy-first room events + live-preview frame descriptor
+public/          Front-end SPA (login, dashboard, medicines, camera zones, Virtual Ward, alerts, live view)
+data/            JSON persistence (users, medications — created at runtime)
 ```
 
 ## API
 
 | Endpoint | Purpose |
 |---|---|
-| `GET /api/health` | Service health |
-| `GET /api/patients` | Patient roster + snapshots |
+| `POST /api/auth/register` | Create an account |
+| `POST /api/auth/login` | Sign in → token |
+| `POST /api/auth/logout` | End session |
+| `GET /api/me` | Current user |
+| `GET /api/health` | Service health (public) |
+| `GET /api/patients` | Own patient roster |
 | `GET /api/vitals` | Live vitals + per-value status |
-| `GET /api/alerts` | Alerts + escalations |
-| `GET /api/medications` | Medication list |
-| `POST /api/medications` | Add medication |
+| `GET /api/alerts` | Own alerts + escalations |
+| `GET /api/medications` | Own medication list |
+| `POST /api/medications` | Add medication (own patient only) |
 | `POST /api/medications/:id/take` | Log a dose as taken |
 | `DELETE /api/medications/:id` | Remove medication |
-| `GET /api/camera-zones` | Zones + event feed |
+| `GET /api/camera-zones` | Own zones + event feed |
+| `GET /api/camera-zones/:id/live` | Live-preview frame descriptor (simulated) |
 | `GET /api/simulation/status` | Real / simulated transparency |
+
+All data endpoints require `Authorization: Bearer <token>`.
 
 ## Disclaimer
 

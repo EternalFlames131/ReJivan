@@ -4,7 +4,11 @@
  * Real product: edge AI on a privacy-first camera (fall, out-of-bed,
  * low-activity). NO video recorded or stored — only events/alerts.
  */
-const { random } = Math;
+const { random, round } = Math;
+
+function clamp(v, lo, hi) {
+  return Math.max(lo, Math.min(hi, v));
+}
 
 class CameraZoneSim {
   constructor(alertManager, dataDir) {
@@ -27,6 +31,26 @@ class CameraZoneSim {
 
   zonesList() {
     return this.zones;
+  }
+
+  getZone(id) {
+    return this.zones.find((z) => z.id === id);
+  }
+
+  /**
+   * SIMULATED live-preview frame descriptor.
+   * Real product: on-device edge AI returns only scene metadata (person present,
+   * motion level, lighting) — never a video recording. The client renders a
+   * privacy-safe abstract preview from this metadata.
+   */
+  liveFrame(zoneId) {
+    const t = Date.now() / 1000;
+    return {
+      ts: Date.now(),
+      motion: clamp(0.45 + 0.25 * Math.sin(t * 0.7) + (random() * 0.2 - 0.1), 0, 1),
+      person: Math.sin(t * 0.13) > -0.25 || zoneId.startsWith("BED"),
+      lighting: random() < 0.12 ? "night" : "day",
+    };
   }
 
   tick(now = Date.now()) {
