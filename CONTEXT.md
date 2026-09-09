@@ -15,6 +15,7 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 ## What exists today
 - Concept document PDF (v1.1, 9 pages) in `docs/` — built from `docs/source/SanjivanAI_doc_source.html`.
 - PDF pipeline fully portable from this drive: `tools/build_pdf.ps1` (Edge headless) + `tools/verify_pdf.py` (page/content checks).
+- **Working prototype in `prototype/` (built 2026-09-09):** Node + Express web app. Live vitals dashboard, medicines (add/take/delete), real rules engine + alerts + escalations, Virtual Ward nurse view, privacy-first camera-zone feed, 5-language UI. Simulated parts clearly labelled (vitals data, camera events, SMS/WhatsApp). Run: `cd prototype && npm start` → http://localhost:8080.
 - Private GitHub repo: `github.com/EternalFlames131/SanjivanAI` (user `EternalFlames131`), branch `main`.
   - ⚠️ **Must be made PUBLIC before 15 Oct 2026** (HSC requires public repo link).
 - Copy of owner's opencode global config + running activity log: `opencode-config/`.
@@ -37,8 +38,10 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 5. To rebuild the PDF after editing `docs/source/SanjivanAI_doc_source.html`, run `pwsh -File tools\build_pdf.ps1`.
 
 ## Open items / next steps
+- [x] Build the working prototype in `prototype/` (core + dashboard + simulator DONE; PWA offline service-worker still pending — low priority).
+- [ ] User reviews the running prototype at http://localhost:8080; collect feedback.
+- [ ] Wire escalation delivery to real APIs (SMS/WhatsApp/email) OR keep as clearly-labelled stubs for the demo.
 - [ ] Final team name + up to 3 members; confirm AISHE institution + individual registration on MyBharat portal.
-- [ ] Build the working prototype in `prototype/` (next big step — responsive web app).
 - [ ] Write problem statement sheet (state-specific, West Bengal) in `docs/`.
 - [ ] 6–7 slide deck with AI disclosure; 3–5 min demo video (720p); Annexure 1 + student IDs.
 - [ ] Make repo public + push everything before 15 Oct 2026.

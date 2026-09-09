@@ -1,0 +1,45 @@
+{
+  "list": [
+    {
+      "id": "MED001",
+      "patientId": "P1",
+      "name": "Amlodipine",
+      "dose": "5 mg",
+      "frequency": "daily",
+      "times": [
+        "08:00",
+        "20:00"
+      ],
+      "notes": "After food",
+      "active": true
+    },
+    {
+      "id": "MED002",
+      "patientId": "P2",
+      "name": "Metformin",
+      "dose": "500 mg",
+      "frequency": "twice daily",
+      "times": [
+        "09:00",
+        "21:00"
+      ],
+      "notes": "With meals",
+      "active": true
+    },
+    {
+      "id": "MED003",
+      "patientId": "P3",
+      "name": "Paracetamol",
+      "dose": "650 mg",
+      "frequency": "8 hourly",
+      "times": [
+        "08:00",
+        "16:00",
+        "00:00"
+      ],
+      "notes": "For fever",
+      "active": true
+    }
+  ],
+  "log": []
+}

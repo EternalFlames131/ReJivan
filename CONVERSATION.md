@@ -57,6 +57,18 @@
 
 ---
 
+## 2026-09-09 (Day 2 — prototype build, morning)
+
+- **DAY 2 GOAL (from yesterday's plan) achieved:** built the working prototype in `prototype/`.
+- User said "continue" → I resumed (no re-explaining needed per protocol) and built the full first increment in one sitting.
+- Stack: Node + Express + JSON storage. Real-time simulation loop (2s ticks, 4 demo patients: 2 at home, 2 in hospital Virtual Ward Ward A).
+- **REAL:** dashboard with live vitals + green/amber/red status; medicines (add / mark taken / delete, persisted); rules engine (clinical thresholds for HR/SpO2/BP/temp/glucose); alert generation + escalation workflow; Virtual Ward nurse-station view with priority queue (HIGH/MEDIUM/NORMAL); camera-zone feed (privacy-first, no video); UI in 5 languages (EN/HI/BN/TA/TE) with a toggle.
+- **SIMULATED (clearly labelled in UI + /api/simulation/status):** vitals data, camera events, SMS/WhatsApp delivery. Billing noted as simulated, not yet built into UI.
+- Verified live: 6 alerts + 5 escalations over a 95-second run (danger BP, glucose, HR + a no-activity camera event), HTTP 200 on the page. 0 npm vulnerabilities.
+- **How to run:** `cd prototype && npm start` → http://localhost:8080.
+- Next steps: user reviews the running app; then wire escalation channels to real APIs OR move on to problem-statement sheet + slide deck + demo video planning. PWA service-worker (offline) still pending, low priority.
+---
+
 ## Standing auto-save rules (do this every session)
 1. After any turn with decisions/thoughts/new info, append a `## YYYY-MM-DD (Day N — note)` entry above with short bullets.
 2. When resuming, first read this file + CONTEXT.md, then continue — never ask the user to re-explain settled points.

@@ -1,0 +1,25 @@
+{
+  "name": "sanjivanai-prototype",
+  "version": "1.0.0",
+  "description": "SanjivanAI — A Personal AI Nurse for Every Family (Prototype)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "uuid": "^11.1.1"
+  },
+  "overrides": {
+    "qs": "^6.16.0"
+  },
+  "keywords": [
+    "healthcare",
+    "ai-nurse",
+    "remote-monitoring",
+    "hackathon"
+  ],
+  "license": "MIT"
+}
