@@ -1,0 +1,17 @@
+{
+  "appId": "com.sanjivanai.app",
+  "appName": "SanjivanAI",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "allowNavigation": ["sanjivanai.vercel.app"]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0e1420",
+      "showSpinner": false
+    }
+  }
+}

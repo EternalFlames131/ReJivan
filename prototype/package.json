@@ -9,6 +9,9 @@
     "deploy": "vercel deploy --prod --yes"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/core": "^8.5.1",
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "uuid": "^11.1.1"

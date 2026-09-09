@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Medical cross inside a rounded-heart on dark background -->
+    <path
+        android:fillColor="#2FBF8F"
+        android:pathData="M54,26 C54,26 32,42 32,62 C32,76 43,85 54,85 C65,85 76,76 76,62 C76,42 54,26 54,26 Z" />
+    <path
+        android:fillColor="#0E1420"
+        android:pathData="M46,44 h12 v8 h8 v12 h-8 v8 h-12 v-8 h-8 v-12 h8 Z" />
+</vector>
