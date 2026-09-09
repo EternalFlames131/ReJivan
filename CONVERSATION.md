@@ -96,6 +96,19 @@
 - Still open: "Add patient" flow for newly registered families; real API wiring; PWA offline SW.
 ---
 
+## 2026-09-09 (Day 2 — PDF auto-update, early afternoon)
+
+- User asked: "update everything into the pdf as well whenever any changes are made automatically."
+- Built the **auto-updating concept PDF**:
+  - New `.githooks/pre-commit` hook: before EVERY commit it rebuilds `docs\SanjivanAI_Concept_Document_v1.1.pdf` and stages it, so the PDF can never go stale. If Edge fails (e.g. PDF open), it warns but never blocks the commit.
+  - New `docs/features.json` — canonical machine-readable feature list + demo accounts + "real/simulated" status + notes.
+  - `tools/build_pdf.ps1` upgraded: injects an auto-generated **"Live Prototype Status"** section — feature table from features.json, plus the REAL / SIMULATED lists parsed LIVE out of `prototype/server.js` (so the document always mirrors the actual code), plus build date. Writes generated HTML to Temp\opencode, renders via Edge headless, verifies via pypdf.
+  - Placeholders added in `docs/source/SanjivanAI_doc_source.html` (`{{STATUS_ROW}}`, `{{BUILD_DATE}}`, `<!--AUTO:PROTOTYPE_SNAPSHOT-->`).
+  - Verified: PDF rebuilds to 9 pages, snapshot content confirmed in text (demo accounts, emergency call chain, Tamil/Telugu languages, etc.). Hook fired automatically on the commit itself. Auto-pushed (4a6dd9f).
+- **How it works for the user:** no action needed — any future commit (added feature, fix, memory save) automatically refreshes the PDF to match.
+- One maintenance note: when a genuinely NEW feature ships, its row should be added to `docs/features.json` once; the rest (status lists, dates, accounts) updates itself.
+---
+
 ## Standing auto-save rules (do this every session)
 1. After any turn with decisions/thoughts/new info, append a `## YYYY-MM-DD (Day N — note)` entry above with short bullets.
 2. When resuming, first read this file + CONTEXT.md, then continue — never ask the user to re-explain settled points.
