@@ -65,6 +65,7 @@ $snapshot = @"
 <h2 class="sec">5b &nbsp;Live Prototype Status (auto-generated)</h2>
 <p class="small">This section is built automatically from the code on every PDF rebuild &mdash; generated <b>$buildDate</b>. Feature status is read live from the prototype's transparency endpoint (<tt>/api/simulation/status</tt> in <tt>prototype\server.js</tt>), so it always matches what the app actually does.</p>
 <p><b>Run the prototype:</b> <tt>$($data.howToRun.command)</tt> &rarr; open <tt>$($data.howToRun.url)</tt>.</p>
+<p><b>Demo region:</b> $($data.region)</p>
 <h3>Demo accounts (password: $($data.demoPassword))</h3>
 <table class="data">
   <tr><th>Account</th><th>Login</th><th>Sees (data isolation)</th></tr>

@@ -5,7 +5,8 @@
 #   3. Locks this folder's git remote to the SanjivanAI GitHub repo ONLY (never any other repo).
 #   4. Enables the auto-push hook (every commit -> pushed to GitHub automatically).
 #   5. Checks GitHub login so auto-push can work without fail.
-#   6. Tests the PDF pipeline and writes a "setup done" marker for this machine.
+#   6. Enables AUTO-DEPLOY to Vercel (if CLI + login present; production site updates every commit).
+#   7. Tests the PDF pipeline and writes a "setup done" marker for this machine.
 # Run from the SanjivanAI folder:  pwsh -ExecutionPolicy Bypass -File tools\setup.ps1
 # Optional interactive mode (ask before installing):  add -Ask
 
@@ -45,7 +46,7 @@ Write-Host ("Folder : " + $root)
 Write-Host ("Machine: " + $pc)
 
 # ---------- 1. Python + pypdf ----------
-Write-Step "1/6" "Python (needed for building/editing PDFs)"
+Write-Step "1/7" "Python (needed for building/editing PDFs)"
 if (Test-Cmd python) { python -X utf8 --version }
 else {
     Refresh-Path
@@ -69,7 +70,7 @@ if (Test-Cmd python) {
 }
 
 # ---------- 2. Microsoft Edge ----------
-Write-Step "2/6" "Microsoft Edge (renders the PDF)"
+Write-Step "2/7" "Microsoft Edge (renders the PDF)"
 $edge1 = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 $edge2 = "C:\Program Files\Microsoft\Edge\Application\msedge.exe"
 if ((Test-Path -LiteralPath $edge1) -or (Test-Path -LiteralPath $edge2)) { Write-Host "  Edge found." }
@@ -82,7 +83,7 @@ else {
 }
 
 # ---------- 3. Git ----------
-Write-Step "3/6" "Git (syncing to GitHub)"
+Write-Step "3/7" "Git (syncing to GitHub)"
 if (Test-Cmd git) { git --version }
 else {
     Refresh-Path
@@ -101,14 +102,14 @@ else {
 Push-Location $root
 
 # ---------- 4. Local (repo-only) git identity ----------
-Write-Step "4/6" "Git identity (this repo only)"
+Write-Step "4/7" "Git identity (this repo only)"
 if (Test-Cmd git) {
     if (-not (git config user.name))  { git config user.name  "Samrat";  Write-Host "  local user.name set" }
     if (-not (git config user.email)) { git config user.email "samrat@users.noreply.github.com"; Write-Host "  local user.email set" }
 }
 
 # ---------- 5. Lock remote + enable auto-push ----------
-Write-Step "5/6" "Locking remote + enabling auto-push (SanjivanAI repo ONLY)"
+Write-Step "5/7" "Locking remote + enabling auto-push (SanjivanAI repo ONLY)"
 if (Test-Cmd git) {
     if (-not (Test-Path -LiteralPath "$root\.git")) { git init -b main | Out-Null }
     $target = "https://github.com/EternalFlames131/SanjivanAI.git"
@@ -123,7 +124,7 @@ if (Test-Cmd git) {
 }
 
 # ---------- 6. GitHub login ----------
-Write-Step "6/6" "GitHub login (needed for auto-push)"
+Write-Step "6/7" "GitHub login (needed for auto-push)"
 if (Test-Cmd gh) {
     gh auth status 2>&1 | Out-Host
     if ($LASTEXITCODE -ne 0) {
@@ -141,6 +142,38 @@ if (Test-Cmd gh) {
     if (-not (Test-Cmd gh)) { $problems.Add("gh missing - install: winget install -e --id GitHub.cli ; then: gh auth login -h github.com -p https") }
 }
 
+# ---------- 7. Auto-deploy to Vercel (production) ----------
+Write-Step "7/7" "AUTO-DEPLOY to Vercel (production website)"
+Write-Host "  Every commit updates the live website automatically (post-commit hook)."
+Write-Host "  Requirements: Vercel CLI + being logged in to Vercel."
+if (Test-Cmd node) {
+    if (Test-Cmd vercel) {
+        vercel --version 2>$null | ForEach-Object { Write-Host "  vercel CLI: $_" }
+    } else {
+        Write-Host "  Vercel CLI missing - installing globally..." -ForegroundColor Yellow
+        if (Should-Install "Vercel CLI (npm i -g vercel)") {
+            npm install -g vercel 2>$null
+        }
+        if (-not (Test-Cmd vercel)) {
+            Try-Locate 'vercel.cmd' @("$env:APPDATA\npm\vercel.cmd")
+            if (-not (Test-Cmd vercel)) { $problems.Add("Vercel CLI missing - run: npm i -g vercel  (then rerun setup)") }
+        }
+    }
+    if (Test-Cmd vercel) {
+        $who = vercel whoami 2>&1
+        if ($LASTEXITCODE -eq 0 -and "$who" -notmatch 'not logged in') {
+            Write-Host "  Vercel logged in as: $who" -ForegroundColor Green
+            Write-Host "  AUTO-DEPLOY READY - the next commit updates the production website."
+        } else {
+            Write-Host "  Not logged in to Vercel. Login once so every commit auto-deploys:" -ForegroundColor Yellow
+            Write-Host "  vercel login github" -ForegroundColor Yellow
+        }
+    }
+} else {
+    $problems.Add("Node.js missing - Vercel CLI install skipped. Install Node, npm i -g vercel, then run: vercel login github")
+}
+Write-Host "  To disable auto-deploy later: create .git\no-deploy (or set SANJIVANAI_NO_DEPLOY=1)."
+
 # ---------- Test the PDF pipeline ----------
 Write-Step "T" "Testing the PDF pipeline (needs Python + Edge)"
 try { & "$root\tools\build_pdf.ps1" | Out-Host }
@@ -153,11 +186,12 @@ $marker = Join-Path $root ("tools\.setup-done-" + $pc + ".txt")
 Set-Content -LiteralPath $marker -Value ((Get-Date -Format "yyyy-MM-dd HH:mm") + " | setup ran on $pc")
 
 if ($problems.Count -eq 0) {
-    Write-Host "`n===== SETUP COMPLETE - ALL GREEN. Auto-push is ready on this device. =====" -ForegroundColor Green
+    Write-Host "`n===== SETUP COMPLETE - ALL GREEN. Auto-push + auto-deploy are ready on this device. =====" -ForegroundColor Green
 } else {
     Write-Host "`n===== SETUP FINISHED (see reminders below) =====" -ForegroundColor Yellow
     $problems | ForEach-Object { Write-Host ("  * " + $_) -ForegroundColor Yellow }
 }
 Write-Host "Every commit is auto-pushed to github.com/EternalFlames131/SanjivanAI (origin-checked; other repos NEVER touched)."
+Write-Host "If Vercel CLI + login are present, every commit ALSO auto-deploys the production website."
 Write-Host "Your global git settings and other repositories are untouched."
 Write-Host "If a push is skipped (offline / not logged in), your commit is safe - run 'git push' later."

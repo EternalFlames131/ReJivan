@@ -32,6 +32,11 @@ try {
   /* cloud read-only fs — fine */
 }
 
+// Demo scene is anchored in the Andaman & Nicobar Islands (UT) — Samrat's home:
+// family patients at Port Blair / outer-island homes, ward patients at the main
+// referral hospital (GB Pant Hospital, Port Blair).
+const REGION = "Andaman & Nicobar Islands (UT), India";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -42,10 +47,10 @@ const auth = new AuthStore(DATA_DIR); // auto-seeds the three demo accounts
 
 // Static patient metadata (specs). Vitals are generated on demand.
 const patients = [
-  { id: "P1", name: "Anita Sharma", age: 67, sex: "F", condition: "hypertension", location: "Home — Living Room", userId: auth.findByEmail("asharma@demo.in").id },
-  { id: "P2", name: "Ram Prakash", age: 74, sex: "M", condition: "diabetes", location: "Home — Bedroom", userId: auth.findByEmail("rprakash@demo.in").id },
-  { id: "P3", name: "Meera Nair", age: 58, sex: "F", condition: "post-surgery", location: "Virtual Ward", ward: "Ward A · Bed 1", userId: auth.findByEmail("wardnurse@demo.in").id },
-  { id: "P4", name: "Kavitha Rao", age: 61, sex: "F", condition: "heart-arrhythmia", location: "Virtual Ward", ward: "Ward A · Bed 2", userId: auth.findByEmail("wardnurse@demo.in").id },
+  { id: "P1", name: "Anita Sharma", age: 67, sex: "F", condition: "hypertension", location: "Home — Living Room", address: "Junglighat, Port Blair", userId: auth.findByEmail("asharma@demo.in").id },
+  { id: "P2", name: "Ram Prakash", age: 74, sex: "M", condition: "diabetes", location: "Home — Bedroom", address: "Hut Bay, Little Andaman (served via PHC)", userId: auth.findByEmail("rprakash@demo.in").id },
+  { id: "P3", name: "Meera Nair", age: 58, sex: "F", condition: "post-surgery", location: "Virtual Ward", ward: "Ward A · Bed 1", address: "GB Pant Hospital, Port Blair", userId: auth.findByEmail("wardnurse@demo.in").id },
+  { id: "P4", name: "Kavitha Rao", age: 61, sex: "F", condition: "heart-arrhythmia", location: "Virtual Ward", ward: "Ward A · Bed 2", address: "GB Pant Hospital, Port Blair", userId: auth.findByEmail("wardnurse@demo.in").id },
 ];
 
 const meds = new MedicationStore(DATA_DIR);
@@ -79,7 +84,8 @@ function snapshotFor(p, now) {
   const g = generateVitals(p, now);
   return {
     id: p.id, name: p.name, age: p.age, sex: p.sex,
-    location: p.location, ward: p.ward || null, condition: p.condition,
+    location: p.location, addr: p.address || null, ward: p.ward || null,
+    region: REGION, condition: p.condition,
     vitals: g.vitals, lastUpdated: now, episode: g.episode,
   };
 }
@@ -353,6 +359,7 @@ app.get("/api/camera-zones/:id/live", requireAuth, (req, res) => {
 // ---- Misc ------------------------------------------------------------------
 app.get("/api/simulation/status", (req, res) => {
   res.json({
+    region: REGION,
     simulated: ["vitals", "camera-events", "live-preview", "billing", "SMS/WhatsApp delivery", "emergency phone calls"],
     real: ["authentication", "data isolation per user", "dashboard", "medications", "rules engine", "alerts", "escalation", "emergency auto-call chain (priority + retry + escalation)", "multilingual UI"],
     disclaimer: "Prototype: SanjivanAI is not a certified medical device. Always involve a human caregiver/doctor for decisions.",

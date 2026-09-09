@@ -1,6 +1,7 @@
 {
   "docVersion": "1.1",
   "autoUpdate": true,
+  "region": "Andaman & Nicobar Islands (UT), India — homes in Port Blair + Little Andaman; Virtual Ward at GB Pant Hospital, Port Blair",
   "buildDate": "auto-filled by build_pdf.ps1",
   "prototypeVersionNote": "Working prototype built 2026-09-09",
   "howToRun": {

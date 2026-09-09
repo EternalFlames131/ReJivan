@@ -27,6 +27,7 @@
   nav button.active{background:var(--accent);color:#06231b;font-weight:700}
   main{padding:20px 22px;max-width:1300px;margin:0 auto}
   .banner{background:#14303a;border:1px solid #1f4a57;color:#bfe9f5;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:18px}
+  .banner.region{background:#3a3106;border-color:#5a4d0a;color:#ffeeb0;margin-top:-8px;font-size:12px}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
   .card h3{margin:0 0 4px;font-size:16px}
@@ -148,6 +149,7 @@
 
 <main>
   <div class="banner" data-i18n="sim_banner"></div>
+  <div class="banner region" data-i18n="region_note"></div>
   <div id="views"></div>
   <div class="foot" data-i18n="disclaimer"></div>
 </main>
@@ -362,7 +364,7 @@ function patientCard(p){
   const loc = p.ward || p.location;
   return `<div class="card">
     <div class="flex-between">
-      <div><h3>${pname(p.id, p.name)}</h3><div class="sub">${p.age} · ${loc}</div></div>
+      <div><h3>${pname(p.id, p.name)}</h3><div class="sub">${p.age} · ${loc}${p.addr ? ' · ' + p.addr : ''}</div></div>
       <span class="badge ${overall(p)}">${overallLabel(p)}</span>
     </div>
     <div class="vitals">
@@ -411,7 +413,7 @@ function camerasView(){
       <h2 data-i18n="camera_zones"></h2>
       <div class="grid">${state.zones.map(z=>`
         <div class="card"><div class="flex-between"><h3>${z.name}</h3><button class="btn small" onclick="openLive('${z.id}')" data-i18n="view_live"></button></div>
-          <div class="sub">${pname(z.patientId, '')} · <span class="muted">Privacy-first · no video recorded</span></div>
+          <div class="sub">${pname(z.patientId, '')} · ${z.room} · <span class="muted">Privacy-first · no video recorded</span></div>
           <div class="stat" style="margin-top:8px">&#x1F50A; On-device AI: fall · out-of-bed · low activity</div>
         </div>`).join('') || `<div class="empty">—</div>`}
       </div>
@@ -436,6 +438,7 @@ function wardView(){
       return `<div class="wardbed ${cls}">
         <div style="flex:1">
           <b>${p.ward}</b> · ${pname(p.id, p.name)}, ${p.age}
+          <div class="sub">${p.addr || ''}</div>
           <div class="stat">${t('hr')}: ${p.vitals.hr} · ${t('spo2')}: ${p.vitals.spo2}% · ${t('bp')}: ${p.vitals.sbp}/${p.vitals.dbp}</div>
         </div>
         <div><span class="badge ${overall(p)}">${t(overall(p))}</span></div>

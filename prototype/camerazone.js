@@ -21,10 +21,10 @@ function clamp(v, lo, hi) {
 const CAM_SLOT_MS = 150000; // 150 s event-scheduling slot
 
 const ZONES = [
-  { id: "CAM1", patientId: "P1", name: "Home — Living Room", room: "Home" },
-  { id: "CAM2", patientId: "P2", name: "Home — Bedroom", room: "Home" },
-  { id: "BED1", patientId: "P3", name: "Ward A · Bed 1", room: "Ward A", ward: true },
-  { id: "BED2", patientId: "P4", name: "Ward A · Bed 2", room: "Ward A", ward: true },
+  { id: "CAM1", patientId: "P1", name: "Home — Living Room", room: "Home · Junglighat, Port Blair" },
+  { id: "CAM2", patientId: "P2", name: "Home — Bedroom", room: "Home · Hut Bay, Little Andaman" },
+  { id: "BED1", patientId: "P3", name: "GB Pant Virtual Ward · Bed 1", room: "GB Pant Hospital, Port Blair", ward: true },
+  { id: "BED2", patientId: "P4", name: "GB Pant Virtual Ward · Bed 2", room: "GB Pant Hospital, Port Blair", ward: true },
 ];
 
 const KINDS = {
