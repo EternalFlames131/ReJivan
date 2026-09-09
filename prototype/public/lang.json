@@ -2,6 +2,7 @@
   "en": {
     "appName": "SanjivanAI",
     "tagline": "A Personal AI Nurse for Every Family",
+    "patientNames": { "P1": "Anita Sharma", "P2": "Ram Prakash", "P3": "Meera Nair", "P4": "Kavitha Rao" },
     "nav_dashboard": "Dashboard",
     "nav_medications": "Medicines",
     "nav_cameras": "Camera Zones",
@@ -46,6 +47,7 @@
   "hi": {
     "appName": "संजीवन एआई",
     "tagline": "हर परिवार के लिए एक व्यक्तिगत AI नर्स",
+    "patientNames": { "P1": "अनीता शर्मा", "P2": "राम प्रकाश", "P3": "मीरा नायर", "P4": "कविता राव" },
     "nav_dashboard": "डैशबोर्ड",
     "nav_medications": "दवाइयाँ",
     "nav_cameras": "कैमरा क्षेत्र",
@@ -90,6 +92,7 @@
   "bn": {
     "appName": "সঞ্জীবন এআই",
     "tagline": "প্রতিটি পরিবারের জন্য একটি ব্যক্তিগত AI নার্স",
+    "patientNames": { "P1": "অনিতা শর্মা", "P2": "রাম প্রকাশ", "P3": "মীরা নায়ার", "P4": "কবিতা রাও" },
     "nav_dashboard": "ড্যাশবোর্ড",
     "nav_medications": "ওষুধ",
     "nav_cameras": "ক্যামেরা অঞ্চল",
@@ -134,6 +137,7 @@
   "ta": {
     "appName": "சஞ்சீவன்ஏஐ",
     "tagline": "ஒவ்வொரு குடும்பத்திற்கும் ஒரு தனிப்பட்ட AI செவிலியர்",
+    "patientNames": { "P1": "அனிதா ஷர்மா", "P2": "ராம் பிரகாஷ்", "P3": "மீரா நாயர்", "P4": "கவிதா ராவ்" },
     "nav_dashboard": "டாஷ்போர்டு",
     "nav_medications": "மருந்துகள்",
     "nav_cameras": "கேமரா மண்டலங்கள்",
@@ -178,6 +182,7 @@
   "te": {
     "appName": "సంజీవన్AI",
     "tagline": "ప్రతి కుటుంబానికి వ్యక్తిగత AI నర్సు",
+    "patientNames": { "P1": "అనితా శర్మ", "P2": "రామ్ ప్రకాష్", "P3": "మీరా నాయర్", "P4": "కవితా రావు" },
     "nav_dashboard": "డాష్‌బోర్డ్",
     "nav_medications": "మందులు",
     "nav_cameras": "కెమెరా జోన్లు",

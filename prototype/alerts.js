@@ -92,6 +92,7 @@ class AlertManager {
     const escalation = {
       id: "ESC" + String(++this.seq).padStart(3, "0"),
       alertId: alert.id,
+      patientId: alert.patientId,
       patientName: alert.patientName,
       severity: alert.severity,
       channels, // real product: Twilio / WhatsApp Business / email + ambulance API

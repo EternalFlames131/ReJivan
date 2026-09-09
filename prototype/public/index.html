@@ -126,6 +126,12 @@ let eventSource = null;
 const state = { view: 'dashboard', alerts: [], escalations: [], meds: [], zones: [], camEvents: [] };
 
 function t(key){ return LANG[curLang] && LANG[curLang][key] ? LANG[curLang][key] : (LANG.en?.[key] || key); }
+function pname(id, fallback){ return (LANG[curLang]?.patientNames?.[id]) || fallback || id || ''; }
+function stripName(msg, name){
+  if (!msg || !name) return msg || '';
+  if (msg.startsWith(name)) return msg.slice(name.length).replace(/^\s*[—–-]\s*/, '');
+  return msg;
+}
 function walk(node){ node.querySelectorAll('[data-i18n]').forEach(el=> el.textContent = t(el.dataset.i18n)); }
 
 async function loadLang(){
@@ -165,7 +171,7 @@ function patientCard(p){
   const loc = p.ward || p.location;
   return `<div class="card">
     <div class="flex-between">
-      <div><h3>${p.name}</h3><div class="sub">${p.age} · ${loc}</div></div>
+      <div><h3>${pname(p.id, p.name)}</h3><div class="sub">${p.age} · ${loc}</div></div>
       <span class="badge ${overall(p)}">${overallLabel(p)}</span>
     </div>
     <div class="vitals">
@@ -230,7 +236,7 @@ function camerasView(){
       <h2 data-i18n="events"></h2>
       ${state.camEvents.slice(0,10).map(e=>`
         <div class="alert ${e.severity}"><span class="sev">${statusBadge(e.severity)}</span>
-          <b>${e.zoneName}</b><br>${e.message}
+          <b>${e.zoneName}</b> · ${pname(e.patientId, '')}<br>${e.message}
           <div class="time">${new Date(e.at).toLocaleTimeString()}</div></div>`).join('') || `<div class="empty">${t('no_alerts')}</div>`}
     </div>
   </div>`;
@@ -245,7 +251,7 @@ function wardView(){
       const prio = overall(p)==='danger'?'HIGH':overall(p)==='caution'?'MEDIUM':'NORMAL';
       return `<div class="wardbed ${cls}">
         <div style="flex:1">
-          <b>${p.ward}</b> · ${p.name}, ${p.age}
+          <b>${p.ward}</b> · ${pname(p.id, p.name)}, ${p.age}
           <div class="stat">${t('hr')}: ${p.vitals.hr} · ${t('spo2')}: ${p.vitals.spo2}% · ${t('bp')}: ${p.vitals.sbp}/${p.vitals.dbp}</div>
         </div>
         <div><span class="badge ${overall(p)}">${t(overall(p))}</span></div>
@@ -260,12 +266,12 @@ function alertsView(){
     <div class="col"><h2 data-i18n="alerts_feed"></h2>
       ${state.alerts.slice(0,15).map(a=>`
         <div class="alert ${a.severity}"><span class="sev">${statusBadge(a.severity)}</span>
-          <b>${a.patientName}</b> — ${a.message}
+          <b>${pname(a.patientId, a.patientName)}</b> — ${stripName(a.message, a.patientName)}
           <div class="time">${new Date(a.createdAt).toLocaleTimeString()}</div></div>`).join('') || `<div class="empty">${t('no_alerts')}</div>`}
     </div>
     <div class="col"><h2 data-i18n="escalations"></h2>
       ${state.escalations.slice(0,10).map(e=>`
-        <div class="alert"><b>${e.patientName}</b> · ${e.severity}
+        <div class="alert"><b>${pname(e.patientId, e.patientName)}</b> · ${e.severity}
           <div>→ ${e.channels.join(' + ')} =&gt; ${e.to}</div>
           <div class="time">${new Date(e.dispatchedAt).toLocaleTimeString()}</div>
           <div class="stat" style="margin-top:4px">${e.simulationNotice}</div></div>`).join('') || `<div class="empty">—</div>`}
