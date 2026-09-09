@@ -83,6 +83,19 @@
 - Note for later: registering a NEW family does not yet create a patient for them (no "Add patient" flow yet) — the seeded demo accounts own the 4 demo patients.
 ---
 
+## 2026-09-09 (Day 2 — auto emergency-call chain, noon)
+
+- User asked: "add auto alert feature to call the emergency services and family members immediately without delay."
+- Built **AutoCaller** (`caller.js`): the instant any DANGER alert fires, a call chain starts with NO delay:
+  1. **Family caregiver** → 2. **Backup contact** (2 retries, then escalate) → 3. **Emergency services 108/112** (automatic ambulance dispatch, GPS + vitals sent).
+- Wired into `AlertManager` via `onDangerAlert` callback → fires for BOTH vitals danger alerts AND camera fall/danger events.
+- Real-time **call-flow panel** on the Alerts tab: one card per call, status per step (pending/dialing/answered/unanswered), timestamps, full event log, next-in-line escalation indicator.
+- Honesty: call PLACEMENT is SIMULATED (real product uses a telecom API such as Twilio/India's 108 integration); the auto-trigger, priority order, retry and escalation logic is REAL and runs live.
+- Verified: ward danger alert → CAL002, family (ward nurse) answered → backup + emergency stayed pending.
+- All new strings translated EN/HI/BN/TA/TE. Committed + auto-pushed (8a45aba).
+- Still open: "Add patient" flow for newly registered families; real API wiring; PWA offline SW.
+---
+
 ## Standing auto-save rules (do this every session)
 1. After any turn with decisions/thoughts/new info, append a `## YYYY-MM-DD (Day N — note)` entry above with short bullets.
 2. When resuming, first read this file + CONTEXT.md, then continue — never ask the user to re-explain settled points.
