@@ -15,7 +15,7 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 ## What exists today
 - Concept document PDF (v1.1, 9 pages) in `docs/` — built from `docs/source/SanjivanAI_doc_source.html`.
 - PDF pipeline fully portable from this drive: `tools/build_pdf.ps1` (Edge headless) + `tools/verify_pdf.py` (page/content checks).
-- **Working prototype in `prototype/` (built 2026-09-09):** Node + Express web app. Live vitals dashboard, medicines (add/take/delete), real rules engine + alerts + escalations, Virtual Ward nurse view, privacy-first camera-zone feed, 5-language UI. Simulated parts clearly labelled (vitals data, camera events, SMS/WhatsApp). Run: `cd prototype && npm start` → http://localhost:8080.
+- **Working prototype in `prototype/` (built 2026-09-09):** Node + Express web app. **Login required** — each account sees only its own registered patients (real per-user data isolation; scrypt-hashed passwords). Live vitals dashboard, medicines (add/take/delete), real rules engine + alerts + escalations, Virtual Ward nurse view, privacy-first camera-zone feed + **live camera preview** (privacy-safe simulated metadata, nothing recorded/stored), 5-language UI. Simulated parts clearly labelled (vitals data, camera events, SMS/WhatsApp, live preview). Run: `cd prototype && npm start` → http://localhost:8080. Demo logins: asharma@demo.in / rprakash@demo.in / wardnurse@demo.in (password: demo123).
 - Private GitHub repo: `github.com/EternalFlames131/SanjivanAI` (user `EternalFlames131`), branch `main`.
   - ⚠️ **Must be made PUBLIC before 15 Oct 2026** (HSC requires public repo link).
 - Copy of owner's opencode global config + running activity log: `opencode-config/`.
@@ -39,7 +39,9 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 
 ## Open items / next steps
 - [x] Build the working prototype in `prototype/` (core + dashboard + simulator DONE; PWA offline service-worker still pending — low priority).
-- [ ] User reviews the running prototype at http://localhost:8080; collect feedback.
+- [x] Add login + per-user data isolation + privacy-first live camera view (both DONE via commit d6dec9b).
+- [ ] User reviews the running prototype at http://localhost:8080 (login with a demo account); collect feedback.
+- [ ] "Add patient" flow for newly registered families (currently only the 3 demo accounts own the 4 seeded patients).
 - [ ] Wire escalation delivery to real APIs (SMS/WhatsApp/email) OR keep as clearly-labelled stubs for the demo.
 - [ ] Final team name + up to 3 members; confirm AISHE institution + individual registration on MyBharat portal.
 - [ ] Write problem statement sheet (state-specific, West Bengal) in `docs/`.
