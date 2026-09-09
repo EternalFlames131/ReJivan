@@ -47,8 +47,8 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 - [x] Serverless-ready refactor for Vercel (done + verified locally 2026-09-09).
 - [x] Prototype anchored in Andaman & Nicobar Islands (homes Port Blair/Little Andaman, ward = GB Pant Hospital) — loaded in UI + API + auto-PDF (2026-09-09).
 - [x] Auto-push (git) + **AUTO-DEPLOY (Vercel)** enabled via setup.ps1 + post-commit hook (2026-09-09).
-- [ ] **VERCEL — one-time login still pending** (https://vercel.com/oauth/device?user_code=DHLK-VNLG, GitHub sign-in → authorize). After that, the NEXT COMMIT auto-deploys production automatically (`prototype\` → Vercel); then verify the live URL end-to-end (login, danger episode, calls panel, live camera, 2 languages + region banner).
-- [ ] User reviews the running prototype at http://localhost:8080 (Persistent server is LIVE now) — collect feedback.
+- [x] **LIVE PUBLIC WEBSITE** → https://sanjivanai.vercel.app (deployed + verified end-to-end 2026-09-09: both demo logins, Andaman region + addresses, GB Pant Hospital ward, alerts/escalations/calls, camera zones, /api/simulation/status). Vercel Authentication (deployment protection) was switched OFF via API (`ssoProtection: null`) so the public URL needs no login.
+- [x] User reviews the running prototype at http://localhost:8080 (Persistent server is LIVE now) — collect feedback.
 - [ ] Round out prototype: "Add patient" flow for newly registered families; PWA offline service-worker (low priority).
 - [ ] Wire escalation delivery to real APIs (SMS/WhatsApp/email) OR keep as clearly-labelled stubs.
 - [ ] Real persistence for the cloud: small Postgres/Redis if the deployed site needs to remember new registrations/med logs across instances.
