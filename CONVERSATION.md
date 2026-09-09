@@ -69,6 +69,20 @@
 - Next steps: user reviews the running app; then wire escalation channels to real APIs OR move on to problem-statement sheet + slide deck + demo video planning. PWA service-worker (offline) still pending, low priority.
 ---
 
+## 2026-09-09 (Day 2 — auth + live camera, late morning)
+
+- User asked for two additions to the prototype:
+  1. **Login so every user only sees their own registered patients.**
+  2. **Live camera view so family can observe the patient anytime.**
+- Built both:
+  - **Auth (REAL):** `auth.js` — register/login/logout; passwords hashed with Node scrypt (never plain text); session tokens; `GET /api/me`. Every data endpoint now requires `Authorization: Bearer <token>` and is filtered by the logged-in user (patients, vitals, meds, alerts, escalations, cameras). Cross-user action returns 403/404.
+  - **Demo accounts:** `asharma@demo.in` (owns Anita P1), `rprakash@demo.in` (owns Ram P2), `wardnurse@demo.in` (owns ward beds P3+P4). Password for all: `demo123`.
+  - **Live camera (UI REAL, feed SIMULATED + labelled):** `View live` button on each camera zone → modal with animated privacy-safe room preview (canvas) + person/motion/lighting metadata from `/api/camera-zones/:id/live`. On-device-AI framing — **no video recorded or stored**, consistent with privacy-first promise. Connect/Disconnect + live clock.
+  - All new UI text translated into all 5 languages (EN/HI/BN/TA/TE).
+- Verified end-to-end: no-token → 401; Sharma family sees only P1 + own meds + CAM1; nurse sees only P3/P4; nurse blocked from CAM1; wrong password rejected. Committed + auto-pushed (d6dec9b).
+- Note for later: registering a NEW family does not yet create a patient for them (no "Add patient" flow yet) — the seeded demo accounts own the 4 demo patients.
+---
+
 ## Standing auto-save rules (do this every session)
 1. After any turn with decisions/thoughts/new info, append a `## YYYY-MM-DD (Day N — note)` entry above with short bullets.
 2. When resuming, first read this file + CONTEXT.md, then continue — never ask the user to re-explain settled points.
