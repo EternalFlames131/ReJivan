@@ -22,14 +22,24 @@ Full rules: `references/hsc_guidelines_summary.md`
 5. Annexure 1 self-declaration + ID proofs
 
 ## Folder layout (portable brain)
-- `docs/` — `SanjivanAI_Concept_Document_v1.1.pdf` (9 pages) + `source/` (the HTML that builds it)
-- `prototype/` — app code (to build: responsive web app PWA + Node backend)
+- `docs/` — `SanjivanAI_Concept_Document_v1.1.pdf` (9 pages) + `source/` (the HTML that builds it) + `features.json` (canonical feature/status list)
+- `prototype/` — app code (responsive web app + Node backend; login, live vitals, medicines, Virtual Ward, camera zones + live view, emergency auto-call chain)
 - `video/` — demo video + script (to build)
 - `references/` — HSC rules summary, notes
 - `tools/` — `build_pdf.ps1` + `verify_pdf.py` (rebuild/check the PDF anywhere)
 - `opencode-config/` — backup of global opencode config + master activity log
 - `AGENTS.md` — auto-loaded context (see `CONTEXT.md` for the full snapshot)
 - `CHANGELOG.md` — running log for this project
+
+## The PDF auto-updates itself (no remembering needed)
+- On **every commit**, a `pre-commit` hook automatically rebuilds
+  `docs/SanjivanAI_Concept_Document_v1.1.pdf` so it is always in sync with the
+  prototype. It injects a "Live Prototype Status (auto-generated)" section that:
+  1. reads the canonical feature list from `docs/features.json`,
+  2. pulls the REAL / SIMULATED lists **directly from `prototype/server.js`**,
+  3. stamps the build date, and adds the demo accounts for the judges.
+- To rebuild manually at any time: `pwsh -File tools\build_pdf.ps1`.
+- If the PDF is open/locked during a commit, the hook warns but never blocks your work.
 
 ## How to continue from any device (drive-only workflow)
 1. Carry this folder (USB stick or a synced cloud folder like OneDrive/Dropbox).
@@ -56,5 +66,5 @@ Full rules: `references/hsc_guidelines_summary.md`
 
 ## Open items
 - Final team name, up to 3 members, AISHE institution confirmation, MyBharat individual registrations
-- Build the working prototype in `prototype/` (next big step)
+- User review of the running prototype (login with a demo account); "Add patient" flow for newly registered families
 - Problem statement sheet, 6–7 slide deck, demo video, Annexure 1

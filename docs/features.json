@@ -1,0 +1,88 @@
+{
+  "docVersion": "1.1",
+  "autoUpdate": true,
+  "buildDate": "auto-filled by build_pdf.ps1",
+  "prototypeVersionNote": "Working prototype built 2026-09-09",
+  "howToRun": {
+    "command": "cd prototype && npm start",
+    "url": "http://localhost:8080"
+  },
+  "demoAccounts": [
+    { "name": "Sharma Family", "email": "asharma@demo.in", "sees": "Anita Sharma (home) + camera CAM1 + her medicines" },
+    { "name": "Prakash Family", "email": "rprakash@demo.in", "sees": "Ram Prakash (home) + camera CAM2 + his medicines" },
+    { "name": "Ward Nurse Station", "email": "wardnurse@demo.in", "sees": "Virtual Ward beds (Meera, Kavitha) + ward cameras" }
+  ],
+  "demoPassword": "demo123",
+  "features": [
+    {
+      "name": "Login & per-user data isolation",
+      "status": "real",
+      "notes": "Scrypt-hashed passwords + session tokens; every account sees only its own patients, medicines, alerts and cameras"
+    },
+    {
+      "name": "Dashboard (live vitals)",
+      "status": "real",
+      "notes": "Responsive web app, live refresh every 2 seconds, Safe / Caution / Danger badges"
+    },
+    {
+      "name": "Medication manager",
+      "status": "real",
+      "notes": "Add schedule, mark taken, adherence log persisted to disk"
+    },
+    {
+      "name": "AI danger-score rules engine",
+      "status": "real",
+      "notes": "Transparent clinical thresholds for heart rate, SpO2, BP, temperature, glucose"
+    },
+    {
+      "name": "Alert generation + escalation workflow",
+      "status": "real",
+      "notes": "Instant danger alerts with de-dupe cooldown and a full escalation log"
+    },
+    {
+      "name": "Emergency auto-call chain",
+      "status": "real",
+      "notes": "Danger alert triggers an immediate call chain: family -> backup contact -> emergency services 108/112 (ambulance dispatch with GPS + vitals). Placement is SIMULATED (telecom API in production); the trigger/retry/escalation logic is real"
+    },
+    {
+      "name": "Hospital Virtual Ward view",
+      "status": "real",
+      "notes": "Nurse-station bed list with live vitals and HIGH / MEDIUM / NORMAL priority queue"
+    },
+    {
+      "name": "Privacy-first camera zones",
+      "status": "real",
+      "notes": "Fall / out-of-bed / low-activity event feed; on-device AI, NO video recorded or stored"
+    },
+    {
+      "name": "Live camera preview for family",
+      "status": "real",
+      "notes": "Privacy-safe real-time view of a camera zone (privacy-safe metadata feed rendered on canvas)"
+    },
+    {
+      "name": "Multilingual UI",
+      "status": "real",
+      "notes": "English, Hindi, Bengali, Tamil, Telugu — including patient names"
+    },
+    {
+      "name": "Vital-sign data (patient readings)",
+      "status": "simulated",
+      "notes": "Simulation engine with per-condition profiles and danger episodes (real hardware is the roadmap)"
+    },
+    {
+      "name": "Camera event data",
+      "status": "simulated",
+      "notes": "Event generator drives the fall / out-of-bed / low-activity alerts"
+    },
+    {
+      "name": "SMS / WhatsApp / email / phone-call delivery",
+      "status": "simulated",
+      "notes": "Delivery endpoints are stubbed here; live APIs (telecom, WhatsApp) in production"
+    },
+    {
+      "name": "Billing / payments",
+      "status": "simulated",
+      "notes": "Pricing pages planned; payment gateway in pilot phase"
+    }
+  ]
+}

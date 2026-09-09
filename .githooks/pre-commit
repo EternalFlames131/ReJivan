@@ -1,0 +1,21 @@
+#!/bin/sh
+# SanjivanAI pre-commit hook - rebuilds the concept PDF automatically before
+# every commit, so the document always reflects the latest real/simulated status.
+#
+# SAFETY: only runs when this folder's git root is the SanjivanAI project.
+# If the build fails (e.g. PDF currently open/locked), it warns but does NOT
+# block the commit - your work is never stuck.
+
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null || true)
+case "$ROOT" in
+  *SanjivanAI) ;;
+  *) exit 0 ;;
+esac
+
+if pwsh -ExecutionPolicy Bypass -File "$ROOT/tools/build_pdf.ps1" >/tmp/sanjivanai_pdf_build.log 2>&1; then
+  git add "$ROOT/docs/SanjivanAI_Concept_Document_v1.1.pdf"
+  printf '\033[36m[SanjivanAI] Concept PDF auto-rebuilt before commit (fresh status snapshot).\033[0m\n'
+else
+  printf '\033[33m[SanjivanAI] PDF auto-build FAILED (see /tmp/sanjivanai_pdf_build.log) - committed anyway, PDF may be stale.\033[0m\n'
+fi
+exit 0
