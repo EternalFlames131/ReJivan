@@ -9,10 +9,12 @@
 const { random } = Math;
 
 class AlertManager {
-  constructor() {
+  constructor(onDangerAlert) {
     this.alerts = [];
     this.escalations = [];
     this.seq = 0;
+    // Called immediately when a DANGER alert fires (wired to AutoCaller).
+    this.onDangerAlert = onDangerAlert || null;
     // dedupe: don't spam the same patient+type while "active"
     this.active = new Map(); // key -> until ms
   }
@@ -60,6 +62,7 @@ class AlertManager {
     };
     this.alerts.unshift(alert);
     this._escalate(alert);
+    if (this.onDangerAlert) this.onDangerAlert(alert);
     return alert;
   }
 
@@ -82,7 +85,10 @@ class AlertManager {
       createdAt: now,
     };
     this.alerts.unshift(alert);
-    if (severity === "danger") this._escalate(alert);
+    if (severity === "danger") {
+      this._escalate(alert);
+      if (this.onDangerAlert) this.onDangerAlert(alert);
+    }
     return alert;
   }
 

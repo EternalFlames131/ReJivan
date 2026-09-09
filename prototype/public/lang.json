@@ -66,7 +66,19 @@
     "connect": "Connect",
     "disconnect": "Disconnect",
     "live_banner": "SIMULATED live preview — on-device AI. No video is recorded or stored.",
-    "live_note": "Privacy-first: scene data is processed on the device and never saved."
+    "live_note": "Privacy-first: scene data is processed on the device and never saved.",
+    "emergency_calls": "Emergency auto-call",
+    "sim_call": "SIMULATED: in the real product this call chain is placed instantly through a telecom API — no real calls are made here.",
+    "family": "Family caregiver",
+    "backup": "Backup contact",
+    "emergency": "Emergency services 108/112",
+    "answered": "Answered",
+    "unanswered": "Unanswered",
+    "dialing": "Dialing…",
+    "alert_ref": "Alert",
+    "dispatched": "Ambulance dispatched",
+    "escalating": "Escalating",
+    "complete": "Call chain complete"
   },
   "hi": {
     "appName": "संजीवन एआई",
@@ -135,7 +147,19 @@
     "connect": "कनेक्ट",
     "disconnect": "डिस्कनेक्ट",
     "live_banner": "सिम्युलेटेड लाइव पूर्वावलोकन — ऑन-डिवाइस AI। कोई वीडियो रिकॉर्ड या संग्रहीत नहीं होता।",
-    "live_note": "गोपनीयता-प्रथम: दृश्य डेटा डिवाइस पर संसाधित होता है और कभी सहेजा नहीं जाता।"
+    "live_note": "गोपनीयता-प्रथम: दृश्य डेटा डिवाइस पर संसाधित होता है और कभी सहेजा नहीं जाता।",
+    "emergency_calls": "आपातकालीन ऑटो-कॉल",
+    "sim_call": "सिम्युलेटेड: वास्तविक उत्पाद में यह कॉल श्रृंखला टेलीकॉम API द्वारा तुरंत होती है — यहाँ कोई वास्तविक कॉल नहीं होती।",
+    "family": "परिवार के देखभालकर्ता",
+    "backup": "बैकअप संपर्क",
+    "emergency": "आपातकालीन सेवाएँ 108/112",
+    "answered": "कॉल उठाई गई",
+    "unanswered": "कॉल नहीं उठाई गई",
+    "dialing": "कॉल हो रही है…",
+    "alert_ref": "अलर्ट",
+    "dispatched": "एम्बुलेंस भेजी गई",
+    "escalating": "आगे बढ़ रहा है",
+    "complete": "कॉल श्रृंखला पूर्ण"
   },
   "bn": {
     "appName": "সঞ্জীবন এআই",
@@ -204,7 +228,19 @@
     "connect": "সংযোগ করুন",
     "disconnect": "সংযোগ বিচ্ছিন্ন করুন",
     "live_banner": "সিমুলেটেড লাইভ প্রিভিউ — অন-ডিভাইস AI। কোনো ভিডিও রেকর্ড বা সংরক্ষিত হয় না।",
-    "live_note": "গোপনীয়তা-প্রথম: দৃশ্য ডেটা ডিভাইসে প্রক্রিয়া হয় এবং কখনও সংরক্ষিত হয় না।"
+    "live_note": "গোপনীয়তা-প্রথম: দৃশ্য ডেটা ডিভাইসে প্রক্রিয়া হয় এবং কখনও সংরক্ষিত হয় না।",
+    "emergency_calls": "জরুরি অটো-কল",
+    "sim_call": "সিমুলেটেড: আসল পণ্যে এই কল শৃঙ্খলা টেলিকম API-র মাধ্যমে তাৎক্ষণিক শুরু হয় — এখানে কোনো আসল কল হয় না।",
+    "family": "পরিবারের পরিচর্যাকারী",
+    "backup": "ব্যাকআপ যোগাযোগ",
+    "emergency": "জরুরি পরিষেবা ১০৮/১১২",
+    "answered": "কল ধরা হয়েছে",
+    "unanswered": "কল ধরা হয়নি",
+    "dialing": "কল হচ্ছে…",
+    "alert_ref": "সতর্কতা",
+    "dispatched": "অ্যাম্বুলেন্স পাঠানো হয়েছে",
+    "escalating": "এস্কেলেট হচ্ছে",
+    "complete": "কল শৃঙ্খলা সম্পূর্ণ"
   },
   "ta": {
     "appName": "சஞ்சீவன்ஏஐ",
@@ -273,7 +309,19 @@
     "connect": "இணை",
     "disconnect": "துண்டி",
     "live_banner": "உருவகப்படுத்தப்பட்ட நேரடி முன்னோட்டம் — சாதன உள்ளூர் AI. எந்த வீடியோவும் பதிவு அல்லது சேமிப்பு இல்லை.",
-    "live_note": "தனியுரிமை-முதல்: காட்சித் தரவு சாதனத்தில் செயலாக்கப்பட்டு ஒருபோதும் சேமிக்கப்படாது."
+    "live_note": "தனியுரிமை-முதல்: காட்சித் தரவு சாதனத்தில் செயலாக்கப்பட்டு ஒருபோதும் சேமிக்கப்படாது.",
+    "emergency_calls": "அவசர தானியங்கி அழைப்பு",
+    "sim_call": "உருவகப்படுத்தப்பட்டது: உண்மையான தயாரிப்பில் இந்த அழைப்புச் சங்கிலி தொலைத்தொடர்பு API மூலம் உடனடியாகத் தொடங்கும் — இங்கு உண்மையான அழைப்புகள் இல்லை.",
+    "family": "குடும்ப பராமரிப்பாளர்",
+    "backup": "காப்பு தொடர்பு",
+    "emergency": "அவசர சேவைகள் 108/112",
+    "answered": "அழைப்பு எடுக்கப்பட்டது",
+    "unanswered": "அழைப்பு எடுக்கப்படவில்லை",
+    "dialing": "அழைக்கிறது…",
+    "alert_ref": "எச்சரிக்கை",
+    "dispatched": "ஆம்புலன்ஸ் அனுப்பப்பட்டது",
+    "escalating": "மேலேற்றம்",
+    "complete": "அழைப்புச் சங்கிலி முடிந்தது"
   },
   "te": {
     "appName": "సంజీవన్AI",
@@ -342,6 +390,18 @@
     "connect": "కనెక్ట్",
     "disconnect": "డిస్‌కనెక్ట్",
     "live_banner": "సిమ్యులేటెడ్ లైవ్ ప్రివ్యూ — ఆన్-డివైస్ AI. ఎటువంటి వీడియో రికార్డ్ లేదా నిల్వ లేదు.",
-    "live_note": "ప్రైవసీ-ఫస్ట్: సీన్ డేటా పరికరంలోనే ప్రాసెస్ అవుతుంది, ఎప్పటికీ సేవ్ చేయబడదు."
+    "live_note": "ప్రైవసీ-ఫస్ట్: సీన్ డేటా పరికరంలోనే ప్రాసెస్ అవుతుంది, ఎప్పటికీ సేవ్ చేయబడదు.",
+    "emergency_calls": "అత్యవసర ఆటో-కాల్",
+    "sim_call": "సిమ్యులేటెడ్: రియల్ ప్రొడక్ట్‌లో ఈ కాల్ చైన్ టెలికాం API ద్వారా వెంటనే ప్రారంభమవుతుంది — ఇక్కడ నిజమైన కాల్స్ లేవు.",
+    "family": "కుటుంబ సంరక్షకుడు",
+    "backup": "బ్యాకప్ కాంటాక్ట్",
+    "emergency": "అత్యవసర సేవలు 108/112",
+    "answered": "కాల్ అందుకున్నారు",
+    "unanswered": "కాల్ అందుకోలేదు",
+    "dialing": "కాల్ చేస్తోంది…",
+    "alert_ref": "హెచ్చరిక",
+    "dispatched": "యాంబులెన్స్ పంపబడింది",
+    "escalating": "మరింత పెంచుతోంది",
+    "complete": "కాల్ చైన్ పూర్తయింది"
   }
 }

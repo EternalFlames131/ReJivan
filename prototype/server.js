@@ -15,6 +15,7 @@ const cors = require("cors");
 const { Patient } = require("./simulator");
 const { vitalsReport } = require("./rules");
 const { AlertManager } = require("./alerts");
+const { AutoCaller } = require("./caller");
 const { MedicationStore } = require("./medications");
 const { CameraZoneSim } = require("./camerazone");
 const { AuthStore } = require("./auth");
@@ -47,7 +48,9 @@ patients[2].ward = "Ward A · Bed 1";
 patients[3].userId = uWard.id;
 patients[3].ward = "Ward A · Bed 2";
 
-const alerts = new AlertManager();
+const caller = new AutoCaller();
+// Every DANGER alert fires the emergency call chain immediately.
+const alerts = new AlertManager((alert) => caller.trigger(alert));
 const meds = new MedicationStore(DATA_DIR);
 const cams = new CameraZoneSim(alerts, DATA_DIR);
 
@@ -149,6 +152,11 @@ app.get("/api/escalations", requireAuth, (req, res) => {
   res.json({ escalations: alerts.listEscalations().filter((e) => ids.has(e.patientId)) });
 });
 
+app.get("/api/calls", requireAuth, (req, res) => {
+  const ids = ownPatientIds(req.user);
+  res.json({ calls: caller.list().filter((c) => ids.has(c.patientId)) });
+});
+
 // ---- Medications ----------------------------------------------------------
 app.get("/api/medications", requireAuth, (req, res) => {
   const ids = ownPatientIds(req.user);
@@ -202,8 +210,8 @@ app.get("/api/camera-zones/:id/live", requireAuth, (req, res) => {
 // ---- Misc ------------------------------------------------------------------
 app.get("/api/simulation/status", (req, res) => {
   res.json({
-    simulated: ["vitals", "camera-events", "live-preview", "billing", "SMS/WhatsApp delivery"],
-    real: ["authentication", "data isolation per user", "dashboard", "medications", "rules engine", "alerts", "escalation", "multilingual UI"],
+    simulated: ["vitals", "camera-events", "live-preview", "billing", "SMS/WhatsApp delivery", "emergency phone calls"],
+    real: ["authentication", "data isolation per user", "dashboard", "medications", "rules engine", "alerts", "escalation", "emergency auto-call chain (priority + retry + escalation)", "multilingual UI"],
     disclaimer: "Prototype: SanjivanAI is not a certified medical device. Always involve a human caregiver/doctor for decisions.",
   });
 });

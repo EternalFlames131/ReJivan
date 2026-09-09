@@ -88,6 +88,15 @@
   .cam-stage canvas{width:100%;height:auto;display:block}
   .cam-hud{position:absolute;top:10px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;font-size:12px;pointer-events:none}
   .cam-banner{margin-top:10px;background:#14303a;border:1px solid #1f4a57;color:#bfe9f5;padding:8px 12px;border-radius:8px;font-size:12px}
+  .callcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+  .callstep{display:flex;align-items:center;gap:8px;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .callstep:last-child{border-bottom:none}
+  .callstep .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+  .callstep.pending .dot{background:#4a5a70}
+  .callstep.dialing .dot{background:var(--warn);animation:pulse 1s infinite}
+  .callstep.answered .dot{background:var(--ok)}
+  .callstep.unanswered .dot{background:var(--danger)}
+  @keyframes pulse{50%{opacity:.35}}
 </style>
 </head>
 <body>
@@ -190,7 +199,7 @@ let token = localStorage.getItem('sanjivanai_token') || '';
 let me = null;
 let mode = 'login'; // login | register
 
-const state = { view: 'dashboard', patients: [], alerts: [], escalations: [], meds: [], zones: [], camEvents: [] };
+const state = { view: 'dashboard', patients: [], alerts: [], escalations: [], meds: [], zones: [], camEvents: [], calls: [] };
 let live = { zoneId: null, connected: false, timer: null, raf: null, frame: null, name: '' };
 
 function t(key){ return LANG[curLang] && LANG[curLang][key] ? LANG[curLang][key] : (LANG.en?.[key] || key); }
@@ -437,6 +446,15 @@ function wardView(){
 }
 
 function alertsView(){
+  const callSteps = (st, idx) => `
+    <div class="callstep ${st.state}">
+      <span class="dot"></span>
+      <span>${t(idx===0?'family': idx===1?'backup':'emergency')}</span>
+      <span class="muted" style="flex:1">${st.to} · ${st.mode}</span>
+      ${st.state==='answered' ? `<span class="badge normal">${t('answered')}</span>`
+        : st.state==='unanswered' ? `<span class="badge danger">${t('unanswered')}</span>`
+        : st.state==='dialing' ? `<span class="badge caution">${t('dialing')}</span>` : ''}
+    </div>`;
   return `<div class="flow">
     <div class="col"><h2 data-i18n="alerts_feed"></h2>
       ${state.alerts.slice(0,15).map(a=>`
@@ -450,6 +468,16 @@ function alertsView(){
           <div>→ ${e.channels.join(' + ')} =&gt; ${e.to}</div>
           <div class="time">${new Date(e.dispatchedAt).toLocaleTimeString()}</div>
           <div class="stat" style="margin-top:4px">${e.simulationNotice}</div></div>`).join('') || `<div class="empty">—</div>`}
+      <h2 style="margin-top:22px" data-i18n="emergency_calls"></h2>
+      <div class="cam-banner" data-i18n="sim_call"></div>
+      ${state.calls.slice(0,6).map(c=>`
+        <div class="callcard">
+          <div class="flex-between"><b>${pname(c.patientId, c.patientName)}</b>
+            <span class="badge ${c.status==='answered'||c.status==='dispatched'?'normal':c.status==='dialing'||c.status==='escalating'?'caution':'danger'}">${t(c.status)}</span></div>
+          <div class="stat" style="margin:4px 0 6px">${new Date(c.startedAt).toLocaleTimeString()} · ${t('alert_ref')} ${c.alertId}</div>
+          ${c.ladder.map(callSteps).join('')}
+          <div class="stat" style="margin-top:6px">${c.log.map(l=>`· ${new Date(l.t).toLocaleTimeString()} ${l.msg}`).join('<br>')}</div>
+        </div>`).join('') || `<div class="empty">—</div>`}
     </div>
   </div>`;
 }
@@ -489,6 +517,8 @@ async function poll(){
   state.alerts = ad.alerts; state.escalations = ad.escalations;
   const cd = await api('/api/camera-zones');
   state.zones = cd.zones; state.camEvents = cd.events;
+  const cld = await api('/api/calls');
+  state.calls = cld.calls || [];
   render();
 }
 
