@@ -6,9 +6,23 @@ National tech challenge under Viksit Bharat Young Leaders Dialogue (VBYLD) 2027,
 
 ## Key dates
 - **Registration & Submission window: 1 Sep – 15 Oct 2026** (LAST DATE = 15 October 2026)
-- State-level hackathons: 16 Oct – 30 Nov 2026
-- IIT Bombay screening → 36 national finalists: 1–15 Dec 2026
+- **State / Regional Level Competition: 23 Oct – 5 Nov 2026**
+- **National Mentorship phase (IIT Bombay): 10 Nov – 31 Dec 2026**
 - National Showcase: VBYLD 2027, New Delhi, 10–12 Jan 2027
+
+## Levels (updated from the mybharat VBYLD-2027 portal — there is NO district round)
+1. **Institutional level (Stage 1)** — an internal hackathon at your college/University.
+   Multiple teams can compete; the winning team (ONE per institution) is
+   nominated to represent the institution at the state level.
+2. **State / Regional level (Stage 2)** — judged with expert mentoring; the top
+   teams (nominally top 3) are shortlisted and sent forward.
+3. **National (Stage 3 + 4)** — IIT Bombay screening picks the 36 national
+   finalists (with national mentorship), who showcase at the National Showcase
+   (VBYLD 2027, New Delhi, 10–12 Jan 2027).
+
+> Note: the online submission (by 15 Oct) is what puts you into this pipeline.
+> Practical implication for us: we should also win/take part in our own college's
+> internal hackathon so our institution nominates the SanjivanAI team.
 
 ## Eligibility
 - Indian citizen; age **18–29 as of 17 Aug 2026**
