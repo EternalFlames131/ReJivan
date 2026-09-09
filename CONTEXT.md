@@ -51,7 +51,7 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 - [ ] Wire escalation delivery to real APIs (SMS/WhatsApp/email) OR keep as clearly-labelled stubs.
 - [ ] Real persistence for the cloud: small Postgres/Redis if the deployed site needs to remember new registrations/med logs across instances.
 - [ ] Final team name + up to 3 members; confirm AISHE institution + individual registration on MyBharat portal.
-- [ ] Write problem statement sheet (state-specific, West Bengal) in `docs/`.
+- [ ] Write problem statement sheet (state-specific, **Andaman & Nicobar Islands — Samrat is based in A&N**, a Union Territory) in `docs/`.
 - [ ] 6–7 slide deck with AI disclosure; 3–5 min demo video (720p); Annexure 1 + student IDs.
 
 ## Standing rules (per owner's global AGENTS.md)

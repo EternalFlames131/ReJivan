@@ -153,6 +153,25 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - One maintenance note: when a genuinely NEW feature ships, its row should be added to `docs/features.json` once; the rest (status lists, dates, accounts) updates itself.
 ---
 
+## 2026-09-09 (Day 2, late — two corrections: competition levels + state = Andaman & Nicobar)
+
+### 1) Competition levels (user's doubt) — NO district round
+- Verified from mybharat.gov.in/vbyld-2027: HSC 2027 = **4 stages**:
+  1. **Institutional** — internal hackathon at your college; ONE winning team nominated per institution.
+  2. **State/Regional** — 23 Oct – 5 Nov 2026, top ~3 shortlisted per state/UT.
+  3. **National** — IIT Bombay screening → **36 finalists** + mentorship (10 Nov – 31 Dec 2026).
+  4. **National Showcase** — VBYLD 2027, New Delhi, 10–12 Jan 2027.
+- Practical: also enter our own college's internal hackathon so the institution nominates SanjivanAI.
+- `references/hsc_guidelines_summary.md` updated.
+
+### 2) Samrat is based in **Andaman & Nicobar Islands** (UT) — not West Bengal!
+- All "West Bengal" references corrected → **Andaman & Nicobar Islands (UT)**:
+  - `README.md` (problem statement state-specific A&N), `CONTEXT.md` (open item), `hsc_guidelines_summary.md` (file naming example `AndamanNicobar_SanjivanAI_...` + UT note), `docs/source/SanjivanAI_doc_source.html` (Team row, "Hack Local" context section, Relevance cell, naming example).
+- New "Hack Local" narrative angle for the concept doc (A&N, 36 inhabited islands): one major referral hospital (GB Pant Hospital, Port Blair), specialists centred on the main island, PHCs/Cottage Hospitals on outer islands, sea/air travel for specialist care, seasonal connectivity gaps, split island–mainland families → SanjivanAI's offline-friendly, multilingual, SMS-fallback, remote-monitoring design fits perfectly.
+- PDF will be auto-rebuilt with these edits on next commit (pre-commit hook).
+
+---
+
 ## Standing auto-save rules (do this every session)
 1. After any turn with decisions/thoughts/new info, append a `## YYYY-MM-DD (Day N — note)` entry above with short bullets.
 2. When resuming, first read this file + CONTEXT.md, then continue — never ask the user to re-explain settled points.

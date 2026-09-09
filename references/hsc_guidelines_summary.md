@@ -44,7 +44,10 @@ National tech challenge under Viksit Bharat Young Leaders Dialogue (VBYLD) 2027,
 5. **Team Self-Declaration (Annexure 1)** — member details, signed self-cert, self-attested student ID.
 
 ## File naming convention
-`<State>_<TeamName>_<Document>.pdf` (e.g. `WestBengal_SanjivanAI_ProblemStatement.pdf`)
+`<State>_<TeamName>_<Document>.pdf` (e.g. `AndamanNicobar_SanjivanAI_ProblemStatement.pdf`)
+
+> Note: Andaman & Nicobar Islands is a **Union Territory** — you compete in its
+> State/Regional round (23 Oct – 5 Nov 2026).
 
 ## Evaluation (6 parameters)
 Relevance · Technical Strength · Functionality · Creativity/Innovation · Social Cause Impact · Presentation & Team Synergy

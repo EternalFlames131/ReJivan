@@ -15,7 +15,7 @@ State hackathon: 16 Oct – 30 Nov 2026 · National showcase: 10–12 Jan 2027, 
 Full rules: `references/hsc_guidelines_summary.md`
 
 ## What we must eventually submit
-1. Problem Statement (state-specific, West Bengal)
+1. Problem Statement (state-specific, Andaman &amp; Nicobar Islands)
 2. 6–7 slide Presentation Deck (≤10 MB, incl. AI-tools disclosure)
 3. Working Prototype — GitHub repo (⚠️ must be PUBLIC before 15 Oct; MIT, README, architecture, sample data)
 4. Demo Video 3–5 min, ≥720p, ≤80 MB
