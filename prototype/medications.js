@@ -26,7 +26,11 @@ class MedicationStore {
   }
 
   _save() {
-    fs.writeFileSync(this.file, JSON.stringify(this.data, null, 2), "utf8");
+    try {
+      fs.writeFileSync(this.file, JSON.stringify(this.data, null, 2), "utf8");
+    } catch (e) {
+      // Cloud read-only fs — medical schedule still works in memory.
+    }
   }
 
   list() {

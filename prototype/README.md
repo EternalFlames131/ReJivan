@@ -11,7 +11,25 @@ npm install
 npm start
 ```
 
-Open **http://localhost:8080** in your browser. Vitals update every 2 seconds.
+Open **http://localhost:8080** in your browser. Vitals update on every poll (~2.5 s).
+
+## Deploy to Vercel (live public website)
+
+The app is serverless-ready: the whole simulation is a **deterministic, stateless
+function of (patient, wall-clock time)** — no background process, so it runs on
+short-lived Vercel functions exactly as it runs on your laptop.
+
+```bash
+vercel          # link + deploy preview (first time: browser sign-in)
+vercel --prod   # publish to production
+```
+
+- Generates a free domain like `https://<project>.vercel.app`; attach your own
+  domain in the Vercel dashboard later.
+- Entry points: `api/index.js` (serverless handler) + `vercel.json` (route all → `/api/index`).
+- Cloud notes: demo accounts always exist; new registrations / medication logs
+  live in memory per instance (JSON writes are best-effort). For chatty offline
+  persistence, add Postgres/Redis.
 
 ## Sign in (data isolation)
 
@@ -46,16 +64,29 @@ Privacy-first by design: camera zones run AI on-device and **never record or sto
 ## Architecture
 
 ```
-server.js        Express server — auth, REST API + static SPA from /public
-auth.js          User accounts (scrypt-hashed passwords) + session tokens + per-user isolation
-simulator.js     Simulated vital-signs engine (per-condition profiles + episodes)
+server.js        Express app — auth, REST API + static SPA from /public
+                 (also the Vercel handler; app.listen only when run directly)
+api/index.js     Vercel serverless entrypoint (requires ../server.js)
+vercel.json      Vercel config — rewrites every route to /api/index
+auth.js          User accounts (scrypt-hashed) + stateless HMAC-signed tokens
+simulator.js     Deterministic vital-signs engine (pure function of the clock)
 rules.js         Real clinical thresholds → normal / caution / danger
-alerts.js        Alert generation, de-dupe cooldown + escalation
-medications.js   Medication CRUD + "taken" log (persists to data/medications.json)
-camerazone.js    Simulated privacy-first room events + live-preview frame descriptor
+medications.js   Medication CRUD + "taken" log (JSON, best-effort persistence)
+camerazone.js    Deterministic privacy-first room events + live-preview frames
 public/          Front-end SPA (login, dashboard, medicines, camera zones, Virtual Ward, alerts, live view)
 data/            JSON persistence (users, medications — created at runtime)
 ```
+
+Design notes
+- **Deterministic & stateless:** every request computes the same state for the
+  same time on any instance (serverless-friendly); no `setInterval`, no mutable
+  engine state. Danger episodes recur on a schedule so a demo session always
+  shows real alerts + the emergency call chain progressing.
+- **Emergency auto-call chain:** danger alert → family (0–4.2 s) → backup
+  (5.5–9.8 s) → emergency services 108/112 (11–13.2 s). Real trigger/priority/
+  retry logic, simulated placement.
+- **Privacy-first:** cameras never record/store video — the "live" view is a
+  simulated metadata descriptor (person, motion, lighting).
 
 ## API
 
@@ -69,6 +100,8 @@ data/            JSON persistence (users, medications — created at runtime)
 | `GET /api/patients` | Own patient roster |
 | `GET /api/vitals` | Live vitals + per-value status |
 | `GET /api/alerts` | Own alerts + escalations |
+| `GET /api/escalations` | Own escalations only |
+| `GET /api/calls` | Emergency auto-call chain status (from danger alerts) |
 | `GET /api/medications` | Own medication list |
 | `POST /api/medications` | Add medication (own patient only) |
 | `POST /api/medications/:id/take` | Log a dose as taken |

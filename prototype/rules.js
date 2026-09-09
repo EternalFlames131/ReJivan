@@ -57,4 +57,20 @@ function vitalsReport(patient, vitals) {
   };
 }
 
-module.exports = { RULES, statusFor, bloodPressureStatus, vitalsReport };
+/**
+ * Human-readable list of metrics currently at DANGER level,
+ * e.g. ["HR", "Blood Pressure"]. Empty array = all normal/caution.
+ */
+function dangerLabels(report) {
+  const labels = [];
+  for (const m of ["hr", "spo2", "bp", "temp", "glucose"]) {
+    const s = report[m];
+    const status = typeof s === "object" ? s.status : s;
+    if (status === "danger") {
+      labels.push(m === "bp" ? "Blood Pressure" : m.toUpperCase());
+    }
+  }
+  return labels;
+}
+
+module.exports = { RULES, statusFor, bloodPressureStatus, vitalsReport, dangerLabels };

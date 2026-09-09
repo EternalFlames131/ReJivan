@@ -1,97 +1,85 @@
 "use strict";
 /**
- * CameraZone simulator — SIMULATED room-event detection.
+ * CameraZone — deterministic, serverless-ready SIMULATED room-event detection.
  * Real product: edge AI on a privacy-first camera (fall, out-of-bed,
  * low-activity). NO video recorded or stored — only events/alerts.
+ *
+ * Serverless design: events and live-preview frames are pure, deterministic
+ * functions of (zone, wall-clock time) — no background loop, same answer on
+ * any instance.
  */
-const { random, round } = Math;
+const crypto = require("crypto");
+
+function hash01(seed) {
+  return parseInt(crypto.createHash("md5").update(String(seed)).digest("hex").slice(0, 8), 16) / 0xffffffff;
+}
 
 function clamp(v, lo, hi) {
   return Math.max(lo, Math.min(hi, v));
 }
 
-class CameraZoneSim {
-  constructor(alertManager, dataDir) {
-    this.alerts = alertManager;
-    this.zones = [];
-    this.events = [];
-    this.nextEventAt = Date.now() + 60000; // first demo event ~60s in
-    this._seedZones();
-  }
+const CAM_SLOT_MS = 150000; // 150 s event-scheduling slot
 
-  _seedZones() {
-    // Home zone + Virtual Ward beds
-    this.zones = [
-      { id: "CAM1", patientId: "P1", name: "Home — Living Room", room: "Home" },
-      { id: "CAM2", patientId: "P2", name: "Home — Bedroom", room: "Home" },
-      { id: "BED1", patientId: "P3", name: "Ward A · Bed 1", room: "Ward A", ward: true },
-      { id: "BED2", patientId: "P4", name: "Ward A · Bed 2", room: "Ward A", ward: true },
-    ];
-  }
+const ZONES = [
+  { id: "CAM1", patientId: "P1", name: "Home — Living Room", room: "Home" },
+  { id: "CAM2", patientId: "P2", name: "Home — Bedroom", room: "Home" },
+  { id: "BED1", patientId: "P3", name: "Ward A · Bed 1", room: "Ward A", ward: true },
+  { id: "BED2", patientId: "P4", name: "Ward A · Bed 2", room: "Ward A", ward: true },
+];
 
-  zonesList() {
-    return this.zones;
-  }
+const KINDS = {
+  fall: { sev: "danger", msg: (z) => `${z.name}: possible fall detected — no movement response.` },
+  out_of_bed: { sev: "caution", msg: (z) => `${z.name}: out of bed at an unexpected hour.` },
+  low_activity: { sev: "caution", msg: (z) => `${z.name}: very low activity over 6 hours.` },
+  no_activity_10min: { sev: "caution", msg: (z) => `${z.name}: no movement for 10 minutes.` },
+};
 
-  getZone(id) {
-    return this.zones.find((z) => z.id === id);
-  }
-
-  /**
-   * SIMULATED live-preview frame descriptor.
-   * Real product: on-device edge AI returns only scene metadata (person present,
-   * motion level, lighting) — never a video recording. The client renders a
-   * privacy-safe abstract preview from this metadata.
-   */
-  liveFrame(zoneId) {
-    const t = Date.now() / 1000;
-    return {
-      ts: Date.now(),
-      motion: clamp(0.45 + 0.25 * Math.sin(t * 0.7) + (random() * 0.2 - 0.1), 0, 1),
-      person: Math.sin(t * 0.13) > -0.25 || zoneId.startsWith("BED"),
-      lighting: random() < 0.12 ? "night" : "day",
-    };
-  }
-
-  tick(now = Date.now()) {
-    if (now > this.nextEventAt) {
-      const zone = this.zones[(random() * this.zones.length) | 0];
-      const kinds = ["fall", "out_of_bed", "low_activity", "no_activity_10min"];
-      const kind = kinds[(random() * kinds.length) | 0];
-      this._emit(zone, kind, now);
-      // next event 45–150s later
-      this.nextEventAt = now + 45000 + random() * 105000;
+/**
+ * Deterministic camera events for the most recent `span` slots,
+ * newest first.
+ */
+function deriveCameraEvents(nowMs = Date.now(), span = 20) {
+  const cur = Math.floor(nowMs / CAM_SLOT_MS);
+  const out = [];
+  const keys = Object.keys(KINDS);
+  for (let k = span; k >= 0; k--) {
+    const s = cur - k;
+    const rh = hash01("cam:" + s);
+    if (rh < 0.32) {
+      const zone = ZONES[Math.floor(hash01("camz:" + s) * ZONES.length)];
+      const kind = keys[Math.floor(hash01("camk:" + s) * keys.length)];
+      const l = KINDS[kind];
+      out.push({
+        id: "EVENT-CAM-" + s,
+        zoneId: zone.id,
+        patientId: zone.patientId,
+        zoneName: zone.name,
+        kind,
+        severity: l.sev,
+        message: l.msg(zone),
+        at: s * CAM_SLOT_MS,
+      });
     }
   }
-
-  _emit(zone, kind, now) {
-    const labels = {
-      fall: { sev: "danger", msg: `${zone.name}: possible fall detected — no movement response.` },
-      out_of_bed: { sev: "caution", msg: `${zone.name}: out of bed at an unexpected hour.` },
-      low_activity: { sev: "caution", msg: `${zone.name}: very low activity over 6 hours.` },
-      no_activity_10min: { sev: "caution", msg: `${zone.name}: no movement for 10 minutes.` },
-    };
-    const l = labels[kind];
-    const event = {
-      id: "CAM" + String(this.events.length + 1).padStart(3, "0"),
-      zoneId: zone.id,
-      patientId: zone.patientId,
-      zoneName: zone.name,
-      kind,
-      severity: l.sev,
-      message: l.msg,
-      at: now,
-    };
-    this.events.unshift(event);
-    if (this.alerts) {
-      this.alerts.eventAlert(zone.patientId, zone.patientId, "camera", l.msg, l.sev);
-    }
-    return event;
-  }
-
-  eventsList() {
-    return this.events;
-  }
+  return out;
 }
 
-module.exports = { CameraZoneSim };
+/**
+ * SIMULATED live-preview frame descriptor (privacy-safe metadata only).
+ * Real product: on-device edge AI returns only scene metadata — never video.
+ */
+function liveFrame(zoneId, nowMs = Date.now()) {
+  const t = nowMs / 1000;
+  const ph1 = hash01(zoneId + ":m") * Math.PI * 2;
+  const ph2 = hash01(zoneId + ":p") * Math.PI * 2;
+  const seq = Math.floor(t / 2);
+  const jit = (hash01(zoneId + ":j:" + seq) - 0.5) * 0.2;
+  return {
+    ts: nowMs,
+    motion: clamp(0.45 + 0.25 * Math.sin(t * 0.7 + ph1) + jit, 0, 1),
+    person: zoneId.startsWith("BED") || Math.sin(t * 0.13 + ph2) > -0.25,
+    lighting: hash01(zoneId + ":day:" + Math.floor(t / 900)) < 0.12 ? "night" : "day",
+  };
+}
+
+module.exports = { cameraZones: ZONES, deriveCameraEvents, liveFrame, CAM_SLOT_MS, hash01 };

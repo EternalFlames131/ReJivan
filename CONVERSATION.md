@@ -5,6 +5,50 @@
 
 ---
 
+## 2026-09-09 (Day 2, afternoon — public repo + serverless/Vercel refactor)
+
+### What the user asked (in order)
+1. Refactor the engine to be stateless so the prototype can run as a website on **Vercel** (user chose Vercel, on a public/different domain) for a friend to monitor.
+2. **Make the GitHub repo PUBLIC** and give the link → done: **https://github.com/EternalFlames131/SanjivanAI** (now PUBLIC, branch main; HSC requirement satisfied — no longer a pending task).
+3. "Did you save every last detail?" → this entry is that save.
+
+### Repo made public
+- `gh repo edit EternalFlames131/SanjivanAI --visibility public --accept-visibility-change-consequences` — verified PUBLIC before finishing.
+- Note: `--accept-visibility-change-consequences` flag is required by gh before the visibility takes effect.
+
+### SERVERLESS-READY REFACTOR (the big change)
+Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The old prototype ran a `setInterval` tick loop holding all state in memory → that cannot work on Vercel. Solution: made the whole engine a **pure, deterministic function of (patient, wall-clock time)** — same output for the same time on any instance, works on a laptop and in the cloud unchanged.
+- `prototype/simulator.js` (rewritten): no more `Patient` class / `tick()`. Export `generateVitals(spec, nowMs)` → vitals + optional episode. Per-200s slot: `hash01(id+":ep:"+slot)` < 0.5 → one named danger episode active for that whole slot, rising/falling sinusoidally (peak mid-slot); always-drifting sines + 2s jitter keep values alive. **Diabetes baseline glucose 190 → 150** (190 was permanently "danger" because cautionHi is 180).
+- `prototype/camerazone.js` (rewritten): `deriveCameraEvents(now)` (150s slots, 32% chance of an event: fall/out-of-bed/low-activity/no-activity-10min) + `liveFrame(zoneId, now)` — all deterministic, no state.
+- `prototype/server.js` (rewritten): no background loop. Everything computed per request: `alertsFor()`, `callsFor()`, `cameraFor()`. The **emergency call chain lives here now** (the old `alerts.js` + `caller.js` classes were removed): per alert, ladder = family (dial 0 → answer attempt 4.2s) → backup (5.5s → 9.8s) → emergency 108/112 (11s → 13.2s); deterministic answer odds family 55% / backup 45% / emergency 90%; status derived from elapsed time; log lines derived from elapsed; contact numbers unchanged. Exports the Express app; `app.listen` only when `require.main === module` (so `npm start` still works). `/api/simulation/status` kept identical (the PDF builder parses it).
+- `prototype/auth.js` (rewritten): **stateless signed tokens** — login signs `{uid, exp}` with HMAC-SHA256 (`SESSION_SECRET` env, else dev fallback), 7-day expiry; no session Map (that died between serverless instances). Demo accounts auto-seeded in code (even if data/users.json is unreadable); disk writes are best-effort (cloud fs is read-only). Logout is client-side discard.
+- `prototype/medications.js`: `_save()` now try/catch (in-memory schedule on cloud, persisted JSON on laptop).
+- `prototype/rules.js`: added `dangerLabels(report)` (moved from old evaluate()).
+- NEW `prototype/api/index.js` — Vercel serverless entrypoint (`module.exports = require("../server.js")`).
+- NEW `prototype/vercel.json` — rewrites every route to `/api/index`.
+
+### Bug found + fixed during testing (important)
+- Auth tokens were **double-encoded**: `digest("base64")` returns a *string*, then `_b64url()` base-64-url-encoded that text again → token issued ≠ token verified → first request after login returned `401 auth_required`. Fixed `_issueToken` to hash the raw digest once. Verified: fresh token verifies, tampered token rejected.
+- Also learned: flakiness earlier was NOT a server bug — a leftover background server on port 8080 was intercepting tests (killed PID 16900); after the fix + clean start, login is 8/8 and two full E2E runs gave identical output.
+
+### Verification (all green, deterministic)
+- Nurse login: sees only P3 Meera (post-surgery) + P4 Kavitha (heart-arrhythmia, mid DANGER episode hr≈175); alerts capped 15; escalations 10; calls 3; newest call ladder family:unanswered → backup:answered → emergency:pending; camera zones 2, events 3; BED1 live frame person=true.
+- Sharma family login: sees only P1 — 1 patient, 1 med, 1 zone (isolation holds).
+- Static site + lang.json served; /api/simulation/status returns SIM=6 / REAL=9 (unchanged for the PDF).
+
+### Vercel deployment — IN PROGRESS, waiting on the user
+- `vercel` CLI 59.13.1 installed globally (`npm i -g vercel`; npm warned about esbuild postinstall allow-scripts — harmless).
+- Not logged in → started `vercel login github` in background → device-code flow:
+  - URL: **https://vercel.com/oauth/device?user_code=DHLK-VNLG** (user signs in with GitHub / creates account → Authorize).
+  - After that: `vercel` deploy from `prototype/` → free `<project>.vercel.app` URL; custom domain attachable later in the dashboard.
+- The user pivoted to a localhost login problem before finishing the browser step — root cause was **no server running** (test instances were killed), not a bug. Persistent server relaunched: `node server.js` in prototype\ → **http://localhost:8080** (asharma@demo.in / demo123).
+
+### To-do after this save
+- Finish Vercel auth (user) → run `vercel deploy` → give the live public URL → verify the app fully on Vercel (logins, danger episode, calls panel, live camera, 2 languages).
+- Note honestly in docs: on Vercel, data (new registrations, med "taken" log) is in-memory per instance — demo accounts + seeds are the source of truth; fine for the hack, real persistence would need a DB (Postgres/Redis).
+
+---
+
 ## 2026-09-08 (Day 1 — project start)
 
 ### 1. Idea origin

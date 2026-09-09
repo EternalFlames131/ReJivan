@@ -13,22 +13,24 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 - Full rules: `references/hsc_guidelines_summary.md`.
 
 ## What exists today
-- Concept document PDF (v1.1, 9 pages) in `docs/` — built from `docs/source/SanjivanAI_doc_source.html`.
+- Concept document PDF (v1.1, 9 pages) in `docs/` — built from `docs/source/SanjivanAI_doc_source.html`. **Auto-updates on every commit** (`.githooks/pre-commit` rebuilds + injects a live Real/Simulated status snapshot parsed from `prototype/server.js` + `docs/features.json` + build date).
 - PDF pipeline fully portable from this drive: `tools/build_pdf.ps1` (Edge headless) + `tools/verify_pdf.py` (page/content checks).
-- **Working prototype in `prototype/` (built 2026-09-09):** Node + Express web app. **Login required** — each account sees only its own registered patients (real per-user data isolation; scrypt-hashed passwords). Live vitals dashboard, medicines (add/take/delete), real rules engine + alerts + escalations, Virtual Ward nurse view, privacy-first camera-zone feed + **live camera preview** (privacy-safe simulated metadata, nothing recorded/stored), 5-language UI. Simulated parts clearly labelled (vitals data, camera events, SMS/WhatsApp, live preview). Run: `cd prototype && npm start` → http://localhost:8080. Demo logins: asharma@demo.in / rprakash@demo.in / wardnurse@demo.in (password: demo123).
-- Private GitHub repo: `github.com/EternalFlames131/SanjivanAI` (user `EternalFlames131`), branch `main`.
-  - ⚠️ **Must be made PUBLIC before 15 Oct 2026** (HSC requires public repo link).
+- **Working prototype in `prototype/` (built 2026-09-09, SERVERLESS-READY):** Node + Express web app that runs identically on a laptop AND on Vercel (deterministic, stateless engine — every request computes vitals/alerts/calls/camera from the wall clock; no background loop). **Login required** — each account sees only its own registered patients (real per-user data isolation; scrypt-hashed passwords; stateless HMAC-signed tokens). Live vitals dashboard, medicines (add/take/delete), real rules engine + alerts + escalations, **automatic emergency-call chain** (family → backup → 108/112; REAL trigger/priority/retry logic, SIMULATED placement), Virtual Ward nurse view, privacy-first camera-zone feed + **live camera preview** (privacy-safe simulated metadata, nothing recorded/stored), 5-language UI. Simulated parts clearly labelled (vitals data, camera events, SMS/WhatsApp, live preview).
+  - Run: `cd prototype && npm start` → **http://localhost:8080**. Vercel entry: `prototype/api/index.js` + `prototype/vercel.json` (deployment IN PROGRESS — awaiting user's browser login: https://vercel.com/oauth/device?user_code=DHLK-VNLG, then `vercel deploy`).
+  - Demo logins: asharma@demo.in / rprakash@demo.in / wardnurse@demo.in (password: demo123).
+- **PUBLIC GitHub repo (DONE 2026-09-09):** `github.com/EternalFlames131/SanjivanAI` (user `EternalFlames131`), branch `main`. ✅ HSC public-repo requirement now satisfied.
 - Copy of owner's opencode global config + running activity log: `opencode-config/`.
 
 ## Key decisions made (so far)
 1. **Theme:** Healthcare, Wellbeing & Service Delivery + Elderly Care & Healthy Ageing.
-2. **Format:** responsive web app (PWA) so judges click it live; Android packaging later. Node + Express + SQLite/JSON; alerting via email/SMS/WhatsApp APIs.
+2. **Format:** responsive web app (PWA) so judges click it live; Android packaging later. Node + Express + JSON (SQLite optional later). Alerting via email/SMS/WhatsApp APIs (stubbed/demo).
 3. **Two monitoring layers:** wearables/At-Home Monitor (vitals) + CCTV-style room cameras (falls, out-of-bed, low activity → alert-only).
 4. **Hospital mode "Virtual Ward":** nurse-station view, bed/room list, priority alert queue.
 5. **Privacy-first by design:** camera AI runs on-device, NO video recorded/stored, consent-based, DPDP-aligned — this is a highlighted winning point.
-6. **Prototype honesty:** vitals + camera events + billing **simulated**; dashboard, medicines, rules engine, alerts, escalation, multilingual UI **fully real**. Safety disclaimer included (not a medical device; human-in-the-loop).
+6. **Prototype honesty:** vitals + camera events + billing + call/SMS placement **simulated**; dashboard, medicines, rules engine, alerts, escalation, emergency-call chain logic, data isolation + multilingual UI **fully real**. Safety disclaimer included (not a medical device; human-in-the-loop).
 7. **Business model:** affordable home subscriptions (₹ family plans) + hospital/institutional per-bed "Virtual Ward" B2B. Roadmap: low-cost "Made in India" monitor (<₹5,000).
 8. **Extras (winning points):** DPI alignment (ABHA, tele-MANAS 14416, Ayushman), vernacular + offline + feature-phone SMS fallback, SDG 3, heatwave/climate alerting, AI-tools disclosure honesty, measured impact story.
+9. **Serverless-first architecture (2026-09-09, Vercel):** the prototype must run on Vercel for a permanent public URL (friend/judges can monitor 24/7). Engine is now a pure deterministic function of (patient, clock) — no long-running process; stateless HMAC auth tokens; JSON persistence is best-effort (real persistence → Postgres/Redis later).
 
 ## How to continue from any device (drive-only workflow)
 1. Carry this folder (USB drive or a synced cloud folder like OneDrive/Dropbox).
@@ -38,15 +40,19 @@ A personal AI nurse for every family — affordable health monitoring with on-ti
 5. To rebuild the PDF after editing `docs/source/SanjivanAI_doc_source.html`, run `pwsh -File tools\build_pdf.ps1`.
 
 ## Open items / next steps
-- [x] Build the working prototype in `prototype/` (core + dashboard + simulator DONE; PWA offline service-worker still pending — low priority).
-- [x] Add login + per-user data isolation + privacy-first live camera view (both DONE via commit d6dec9b).
-- [ ] User reviews the running prototype at http://localhost:8080 (login with a demo account); collect feedback.
-- [ ] "Add patient" flow for newly registered families (currently only the 3 demo accounts own the 4 seeded patients).
-- [ ] Wire escalation delivery to real APIs (SMS/WhatsApp/email) OR keep as clearly-labelled stubs for the demo.
+- [x] Build the working prototype in `prototype/` (core + dashboard done).
+- [x] Add login + per-user data isolation + privacy-first live camera view (done d6dec9b).
+- [x] Make repo PUBLIC (done 2026-09-09, github.com/EternalFlames131/SanjivanAI).
+- [x] Auto-updating concept PDF (pre-commit hook, done 4a6dd9f).
+- [x] Serverless-ready refactor for Vercel (done + verified locally 2026-09-09).
+- [ ] **VERCEL DEPLOY — waiting on user browser login** (https://vercel.com/oauth/device?user_code=DHLK-VNLG, GitHub sign-in → authorize). Then `vercel deploy` from `prototype\` → `sanjivanai.vercel.app`-style URL; attach a custom domain via the Vercel dashboard if wanted. Then verify the live URL end-to-end (login, danger episode, calls panel, live camera, 2 languages).
+- [ ] User reviews the running prototype at http://localhost:8080 (Persistent server is LIVE now) — collect feedback.
+- [ ] Round out prototype: "Add patient" flow for newly registered families; PWA offline service-worker (low priority).
+- [ ] Wire escalation delivery to real APIs (SMS/WhatsApp/email) OR keep as clearly-labelled stubs.
+- [ ] Real persistence for the cloud: small Postgres/Redis if the deployed site needs to remember new registrations/med logs across instances.
 - [ ] Final team name + up to 3 members; confirm AISHE institution + individual registration on MyBharat portal.
 - [ ] Write problem statement sheet (state-specific, West Bengal) in `docs/`.
 - [ ] 6–7 slide deck with AI disclosure; 3–5 min demo video (720p); Annexure 1 + student IDs.
-- [ ] Make repo public + push everything before 15 Oct 2026.
 
 ## Standing rules (per owner's global AGENTS.md)
 - After any change: append a timestamped line to `CHANGELOG.md` here AND to the master activity log `C:\Users\samra\OneDrive\Desktop\Opencode task\LOG.md` (snapshot kept in `opencode-config\LOG.md`).

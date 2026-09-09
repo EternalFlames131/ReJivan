@@ -4,7 +4,7 @@
 **Competition:** Hack for Social Cause 2027 (VBYLD 2027), MyBharat / MoYAS + IIT Bombay
 **Owner:** Samrat (teacher trainee, non-technical — explain plainly)
 **This folder is the SINGLE SOURCE OF TRUTH — portable to any device/drive.**
-**GitHub (private):** github.com/EternalFlames131/SanjivanAI
+**GitHub (PUBLIC):** github.com/EternalFlames131/SanjivanAI
 
 ## Idea in one line
 Affordable health monitoring + on-time medicines + automatic emergency help — at **home and in hospital "Virtual Ward" rooms** — using **wearables plus privacy-first camera zones**, so patients are watched even when no one is in the room.
@@ -65,6 +65,7 @@ Full rules: `references/hsc_guidelines_summary.md`
 - Extra winning points: DPI alignment (ABHA/tele-MANAS), vernacular + offline + SMS fallback, privacy-by-design, SDG 3, climate alerting, honest AI disclosure
 
 ## Open items
+- Finish the Vercel live website (user browser login at https://vercel.com/oauth/device?user_code=DHLK-VNLG, then `vercel deploy` from prototype\) — gives a 24/7 public URL the friend/judges can open.
 - Final team name, up to 3 members, AISHE institution confirmation, MyBharat individual registrations
-- User review of the running prototype (login with a demo account); "Add patient" flow for newly registered families
+- User review of the running prototype at http://localhost:8080 (login with a demo account); "Add patient" flow for newly registered families
 - Problem statement sheet, 6–7 slide deck, demo video, Annexure 1
