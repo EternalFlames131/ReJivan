@@ -20,6 +20,10 @@
 - Watcher started right now in the background and confirmed running (log line "AutoSave started for ..."); it will sweep up the current pending changes (new files + PDF refresh) automatically.
 - Live-checked earlier this session: rejivan.vercel.app serves the ReJivan build (health {"ok":true,"service":"ReJivan"}).
 
+### Follow-up (same session) — PDF delta that would have made AutoSave loop
+- After the first AutoSave auto-commit, the concept PDF showed "modified" again — if left, the watcher would have committed forever. Diagnosed: `git add` had been staging a HALF-WRITTEN PDF (Edge headless returns before the last bytes flush), so the committed blob was shorter than the finished file. Dashboard evidence: on-disk file byte-identical to HEAD, but the git index held a shorter blob.
+- Fixed in build_pdf.ps1 (wait until file size is stable across two reads, up to 10 s) + pre-commit hook (re-stages the PDF twice with a 1 s beat). Commit 96eca5d verified: `git status --porcelain` prints NOTHING immediately after commit. Autosave was paused for this surgery, then resumed.
+
 ### Notes / cautions
 - The repo is PUBLIC (HSC 2027). Since AutoSave pushes everything, only keep safe content in the folder — never passwords/secrets in files.
 - Frequent rapid edits → at most one auto-commit every ~2 min, which comfortably stays inside Vercel's free deployment quota.
