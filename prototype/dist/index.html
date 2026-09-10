@@ -202,7 +202,7 @@ let me = null;
 let mode = 'login'; // login | register
 
 const IS_CAPACITOR = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-const API_BASE = IS_CAPACITOR ? 'https://prototype-omega-self.vercel.app' : '';
+const API_BASE = IS_CAPACITOR ? 'https://sanjivanai.vercel.app' : '';
 
 const state = { view: 'dashboard', patients: [], alerts: [], escalations: [], meds: [], zones: [], camEvents: [], calls: [] };
 let live = { zoneId: null, connected: false, timer: null, raf: null, frame: null, name: '' };

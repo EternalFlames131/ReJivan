@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-09-10 (Day 3 — Vercel deploy fix + domain = sanjivanai.vercel.app)
+
+### What the user reported
+- His email said a Vercel deployment failed. Also: make **sanjivanai.vercel.app** the domain for the project instead of the separate prototype-omega-self URL.
+
+### Diagnosis (verified via Vercel API, same CLI account)
+- sanjivanai.vercel.app was NOT in another account — it is an alias in the SAME account (samrat1312004-1117/token, project prj_26QbwEMnqgU7Bur4MlF03g24ZwMF = "prototype"), but it still pointed at an OLD pre-rebrand deployment (health used to return {"ok":true,"service":"SanjivanAI"}).
+- A few auto-deploys errored instantly with `type_error: Cannot read properties of undefined (reading 'fsPath')` — transient upload/build hiccups on the flaky network (same-commit deploys also succeeded). Current production was already READY; nothing was actually broken.
+
+### What was done (all verified)
+- Fresh production deploys (with retries) → latest READY deployment = prototype-qbtfhgiug-samrat1312004-1117s-projects.vercel.app.
+- `vercel alias set` → **sanjivanai.vercel.app now serves the ReJivan build**: homepage 200 with ReJivan branding (zero old-name), /api/health = {"ok":true,"service":"ReJivan"} (live-checked).
+- Made it durable: post-commit auto-deploy hook now ALSO re-assigns the aliases (sanjivanai.vercel.app + prototype-omega-self.vercel.app) to the freshly deployed URL on every commit — so the domain can never go stale again.
+- app code/config pointed at the new domain: capacitor allowNavigation now lists sanjivanai + omega-self (fallback for old APKs); API_BASE in dist/index.html and android-assets public/index.html = https://sanjivanai.vercel.app; README.md + CONTEXT.md canonical URL updated.
+- Note in this day's rebrand entry corrected: the "two-account" conclusion was WRONG (alias was in the same account, just stale).
+
+### Honest note for judging
+- sanjivanai.vercel.app is the friendly/old brand URL the user wants to keep. prototype-omega-self.vercel.app stays as a silent alias so already-built APKs keep working. No other domains involved.
+
+---
+
 ## 2026-09-10 (Day 3 — FULL REBRAND executed; repo now EternalFlames131/ReJivan)
 
 ### What the user asked (and approved)
@@ -21,7 +42,7 @@
 - Sanity: node --check OK on all 11 JS, JSON parse OK on 8 files, Kotlin package com.rejivan.app consistent; rg shows zero leftover "sanjivanai" (any case) except intentionally kept historical log lines in opencode-config/LOG.md (LP-Generator project) and the opencode.ai schema URL (false positive).
 
 ### Notes / decisions
-- Live URL everywhere = **prototype-omega-self.vercel.app** (the old short sanjivanai.vercel.app URL removed from all docs — it belongs to a different account).
+- Live URL = **sanjivanai.vercel.app** (requested by user 2026-09-10; this domain is a project alias in THIS account — the earlier "different account" guess was wrong — and was re-pointed to the current ReJivan production build; prototype-omega-self.vercel.app kept as a working fallback so existing APKs keep talking).
 - Local disk folder is still literally "SanjivanAI" — FINE: hooks accept both names; user may rename the folder manually anytime (close opencode first).
 - APK side already com.rejivan.app (native app-android Debug APK earlier at Downloads/ReJivan_v1.0.apk); Capacitor APK would need a rebuild for a fresh package name.
 - The medical-grade model stack recommendations (NEWS2/MEWS now; MediaPipe pose→LSTM falls; COMPOSER/TREWS/DeepMind-AKI as validated-upgrade research) live in the Day-3 research section below.

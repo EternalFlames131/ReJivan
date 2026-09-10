@@ -53,6 +53,9 @@ DEPLOYED=$(cd "$ROOT/prototype" && vercel deploy --prod --yes ${VERCEL_TOKEN:+--
 if echo "$DEPLOYED" | grep -q "https://"; then
   URL=$(echo "$DEPLOYED" | grep -o 'https://[^ ]*' | tail -1)
   printf '\033[32m[ReJivan] auto-deployed (production) -> %s\033[0m\n' "$URL"
+  vercel alias set "$URL" sanjivanai.vercel.app >/dev/null 2>&1
+  vercel alias set "$URL" prototype-omega-self.vercel.app >/dev/null 2>&1
+  printf '\033[32m[ReJivan] aliases kept fresh -> sanjivanai.vercel.app + prototype-omega-self.vercel.app\033[0m\n'
 else
   printf '\033[33m[ReJivan] auto-deploy finished with a warning (offline? deployment quota?). Live site may be unchanged. First deploy: run "cd prototype && npm run deploy".\033[0m\n'
 fi
