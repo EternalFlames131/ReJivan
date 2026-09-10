@@ -24,6 +24,9 @@
 - After the first AutoSave auto-commit, the concept PDF showed "modified" again — if left, the watcher would have committed forever. Diagnosed: `git add` had been staging a HALF-WRITTEN PDF (Edge headless returns before the last bytes flush), so the committed blob was shorter than the finished file. Dashboard evidence: on-disk file byte-identical to HEAD, but the git index held a shorter blob.
 - Fixed in build_pdf.ps1 (wait until file size is stable across two reads, up to 10 s) + pre-commit hook (re-stages the PDF twice with a 1 s beat). Commit 96eca5d verified: `git status --porcelain` prints NOTHING immediately after commit. Autosave was paused for this surgery, then resumed.
 
+### Follow-up — local verification up (12:35)
+- Started the prototype locally for on-machine checks: `node server.js` → **http://localhost:8080**. Caught + killed a STALE dev server from this morning (PID 16652, pre-rebrand) that still owned port 8080 and served the old SanjivanAI build; started the fresh server (PID 332). Verified: health JSON now {"ok":true,"service":"ReJivan"}, homepage loads, family login → live vitals (HR 86 / SpO2 96), ward login → alerts + escalations + camera zones. Logins: asharma@demo.in / rprakash@demo.in / wardnurse@demo.in (demo123).
+
 ### Notes / cautions
 - The repo is PUBLIC (HSC 2027). Since AutoSave pushes everything, only keep safe content in the folder — never passwords/secrets in files.
 - Frequent rapid edits → at most one auto-commit every ~2 min, which comfortably stays inside Vercel's free deployment quota.
