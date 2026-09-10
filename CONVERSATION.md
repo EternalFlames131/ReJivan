@@ -223,6 +223,16 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 
 ---
 
+## 2026-09-10 (Day 3 — Vercel account note, important)
+
+### Auto-deploy now goes to a DIFFERENT URL (two Vercel accounts exist)
+- The medical-device build auto-deployed to the "prototype" project at **https://prototype-omega-self.vercel.app** (production, fully verified E2E: login, devices, 80% confidence, 11-device catalogue).
+- The OLD **https://sanjivanai.vercel.app** STILL WORKS but serves the PREVIOUS build (no medical devices) — and the Vercel API says "you don't have access to sanjivanai.vercel.app" from the current CLI account.
+- Root cause: there are TWO Vercel accounts. The current CLI login (samrat1312004-1117 / samrat1312004-1117s-projects team) owns projects: prototype, lpgenerator-new, lp-generator-v2, v0-tourism-app-prototype. `sanjivanai.vercel.app` lives in a DIFFERENT account (likely the `vercel login github` device-flow from 2026-09-09, code DHLK-VNLG, under the GitHub identity).
+- Impact: the post-commit auto-deploy hook now updates prototype-omega-self.vercel.app. If Samrat wants the new build on the nice short URL sanjivanai.vercel.app, he must log into that other account once (`vercel login`) and deploy — otherwise keep using prototype-omega-self.vercel.app.
+
+---
+
 ## 2026-09-10 (Day 3 — medical device integration + reliability explained)
 
 ### What the user asked
