@@ -384,6 +384,22 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 
 ---
 
+## 2026-09-10 (Day 3 — Android app rewritten as a true NATIVE app)
+- **User asked:** the Android application must be a real native app, NOT the website wrapped in an APK (no Capacitor/WebView). It must be fully independent/offline-capable AND linked to the website+server, with two-way sync of actions and automatic online/offline switching. (Confirmed both options.)
+- **What was built (package com.rejivan.app, v2.0.0):**
+  - `Models.kt` — patient/vitals/report/meds/alerts/escalations/call-chain/camera/device definitions shared by engine + server view.
+  - `Engine.kt` — full Kotlin port of the server's deterministic logic (vitals simulator, clinical rules, reliability validation/confidence/rate-limit, camera zones + live frame, medical-device catalogue + per-patient registry, alerts/pushDanger/callForAlert). Because the server is a pure function of (patient, time), the phone and the website ALWAYS compute identical state — parity is the offline story.
+  - `Store.kt` — on-device SharedPreferences: login session, medications, taken-log, pending two-way sync queue.
+  - `Sync.kt` — REST client to https://rejivan.vercel.app (same endpoints the website uses: login, vitals, alerts, calls, camera-zones, medications + POST take/create).
+  - `Repository.kt` — server-first with automatic fallback to the on-device engine whenever the network is down (= auto offline mode), plus two-way medication sync (takes/creates flush up; server list comes down).
+  - `MainActivity.kt` — Jetpack Compose UI: login (works offline via demo accounts), dashboard cards, patient detail (live vitals, reliability, medications with "Take now", privacy-first camera zone feed, alerts, automatic call chain), Connected/On-device indicator, 5-second heartbeat poll, honest "prototype simulation" labels.
+- **Capacitor fully removed:** web assets deleted, MainActivity.java + XML layouts + config.xml + capacitor-cordova-android-plugins dir gone; manifest is clean (INTERNET only).
+- **APK verified:** `C:\Users\samra\Downloads\ReJivan-Android-20260910-1349.apk` (11.1 MB) — package com.rejivan.app, v2, launcher = native MainActivity, native classes present, 0 webview/capacitor refs, 0 "sanjivanai".
+- **Build helper** `build-apk.ps1` now builds offline-first (fully cached deps), ~5 s warm.
+- AutoSave watcher already committed + auto-pushed everything during the session.
+
+---
+
 ## Standing auto-save rules (do this every session)
 1. After any turn with decisions/thoughts/new info, append a `## YYYY-MM-DD (Day N — note)` entry above with short bullets.
 2. When resuming, first read this file + CONTEXT.md, then continue — never ask the user to re-explain settled points.
