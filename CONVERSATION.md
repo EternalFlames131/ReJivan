@@ -418,3 +418,5 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 1. After any turn with decisions/thoughts/new info, append a `## YYYY-MM-DD (Day N — note)` entry above with short bullets.
 2. When resuming, first read this file + CONTEXT.md, then continue — never ask the user to re-explain settled points.
 3. Also append one line to `CHANGELOG.md` and the master log for real work changes (not for pure planning).
+
+2026-09-10 14:16 | User asked to list the SPECIFIC named AI models (not AI types) in the concept PDF. Added Section 6.1 table: NEWS2/MEWS engine, Isolation Forest, LSTM autoencoder, ROCKET/MiniRocket, UniTS, BlazePose + UR-Fall/Le2i BiLSTM, YOLOv8, rPPG, Gemma/Gemini LLM optional, LiteRT+MediaPipe runtime; each marked Real-in-prototype vs Roadmap; honesty note kept. PDF rebuilt (11 pages) + verified all keywords present. Autosave will commit/push.
