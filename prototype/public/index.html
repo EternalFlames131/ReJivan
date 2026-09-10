@@ -62,6 +62,17 @@
   .table th,.table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
   .table th{color:var(--muted);font-weight:600}
   .muted{color:var(--muted)}
+  .confidence{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
+  .confidence.high{background:#123528;color:#4ee0a8}
+  .confidence.medium{background:#3a2d16;color:var(--warn)}
+  .confidence.low{background:#3a1821;color:var(--danger)}
+  .reliability-bar{height:3px;border-radius:2px;margin-top:4px}
+  .reliability-bar.high{background:var(--ok)}
+  .reliability-bar.medium{background:var(--warn)}
+  .reliability-bar.low{background:var(--danger)}
+  .sensor-badge{display:inline-block;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:700;margin-left:4px}
+  .sensor-badge.ok{background:#123528;color:#4ee0a8}
+  .sensor-badge.off{background:#3a1821;color:var(--danger)}
   .stat{font-size:12px;color:var(--muted)}
   .wardbed{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;border-left:4px solid var(--ok)}
   .wardbed.danger{border-left-color:var(--danger)}
@@ -73,6 +84,33 @@
   .flex-between{display:flex;justify-content:space-between;align-items:center;gap:8px}
   .err{color:var(--danger);font-size:13px;min-height:18px;margin:6px 0}
   .okmsg{color:var(--ok);font-size:13px;min-height:18px;margin:6px 0}
+
+  /* Medical devices */
+  .device-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .device-row:last-child{border-bottom:none}
+  .device-dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .device-dot.on{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+  .device-dot.off{background:var(--danger)}
+  .device-name{font-weight:700;font-size:13px}
+  .device-meta{font-size:11px;color:var(--muted)}
+  .device-badge{font-size:9px;padding:2px 6px;border-radius:8px;font-weight:700;flex:none}
+  .device-badge.connected{background:#123528;color:#4ee0a8}
+  .device-badge.disconnected{background:#3a1821;color:var(--danger)}
+  .device-badge.indian{background:#1a2540;color:var(--accent2)}
+  .battery-bar{width:40px;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;flex:none}
+  .battery-fill{height:100%;border-radius:3px}
+  .battery-fill.high{background:var(--ok)}
+  .battery-fill.mid{background:var(--warn)}
+  .battery-fill.low{background:var(--danger)}
+  .signal-bars{display:flex;align-items:flex-end;gap:1px;height:12px;flex:none}
+  .signal-bars span{width:3px;background:var(--muted);border-radius:1px}
+  .signal-bars span.on{background:var(--ok)}
+  .catalogue-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+  .catalogue-card h4{margin:0 0 2px;font-size:14px}
+  .catalogue-card .sub{font-size:11px;color:var(--muted)}
+  .catalogue-card .price{font-size:13px;font-weight:700;color:var(--accent);margin-top:6px}
+  .catalogue-card .measures{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+  .catalogue-card .measures span{background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:6px;font-size:10px}
 
   /* Login screen */
   .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
@@ -319,7 +357,7 @@ document.getElementById('liSwitch').addEventListener('click', ()=>{ mode = mode=
 // ---- Nav ------------------------------------------------------------------
 const NAV = [
   ['dashboard','nav_dashboard'], ['medications','nav_medications'], ['cameras','nav_cameras'],
-  ['ward','nav_ward'], ['alerts','nav_alerts'],
+  ['ward','nav_ward'], ['alerts','nav_alerts'], ['devices','nav_devices'],
 ];
 function buildNav(){
   const nav = document.getElementById('nav');
@@ -362,17 +400,31 @@ function overallLabel(p){ return t(overall(p)); }
 function patientCard(p){
   const v = p.vitals; const rep = p.report;
   const loc = p.ward || p.location;
+  const rel = p.reliability || {};
+  const conf = rel.confidence || 0;
+  const confClass = conf >= 75 ? 'high' : conf >= 50 ? 'medium' : 'low';
+  const confLabel = conf >= 75 ? t('high_reliability') : conf >= 50 ? t('medium_reliability') : t('low_reliability');
+  const degraded = rel.degradation && rel.degradation.missing && rel.degradation.missing.length > 0;
+  const devices = p.devices || [];
+  const medDevices = devices.filter(d => d.connected && d.productionTier === 'medical');
+  const deviceBadges = medDevices.map(d => `<span style="background:#1a2540;border:1px solid #2a4570;padding:1px 5px;border-radius:4px;font-size:9px;color:var(--accent2)">● ${d.name.split(' ').slice(0,2).join(' ')}</span>`).join(' ');
   return `<div class="card">
     <div class="flex-between">
       <div><h3>${pname(p.id, p.name)}</h3><div class="sub">${p.age} · ${loc}${p.addr ? ' · ' + p.addr : ''}</div></div>
-      <span class="badge ${overall(p)}">${overallLabel(p)}</span>
+      <div style="text-align:right">
+        <span class="badge ${overall(p)}">${overallLabel(p)}</span>
+        <div class="confidence ${confClass}" title="${t('confidence_title')}: ${conf}%">${t('confidence')}: ${conf}%</div>
+      </div>
     </div>
+    <div class="reliability-bar ${confClass}" style="width:${conf}%"></div>
+    ${degraded ? `<div class="stat" style="color:var(--warn);margin:6px 0">⚠ ${rel.degradation.warning}</div>` : ''}
+    ${deviceBadges ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin:6px 0">${deviceBadges}</div>` : ''}
     <div class="vitals">
       ${vitalCard('hr', v.hr, t('bpm'), rep.hr.status)}
-      ${vitalCard('spo2', v.spo2+'%', '', rep.spo2.status)}
-      ${vitalCard('bp', v.sbp+'/'+v.dbp, t('mmhg'), rep.bp)}
-      ${vitalCard('temp', v.temp+'°C', '', rep.temp.status)}
-      ${vitalCard('glucose', v.glucose, 'mg/dL', rep.glucose.status)}
+      ${vitalCard('spo2', v.spo2 !== null ? v.spo2+'%' : '—', '', v.spo2 !== null ? rep.spo2.status : 'danger')}
+      ${vitalCard('bp', v.sbp !== null && v.dbp !== null ? v.sbp+'/'+v.dbp : '—', v.sbp !== null ? t('mmhg') : '', v.sbp !== null ? rep.bp : 'danger')}
+      ${vitalCard('temp', v.temp !== null ? v.temp+'°C' : '—', '', v.temp !== null ? rep.temp.status : 'danger')}
+      ${vitalCard('glucose', v.glucose !== null ? v.glucose : '—', v.glucose !== null ? 'mg/dL' : '', v.glucose !== null ? rep.glucose.status : 'danger')}
     </div>
   </div>`;
 }
@@ -448,6 +500,58 @@ function wardView(){
   </div>`;
 }
 
+function devicesView(){
+  if (!state.devices || !state.devices.length) return `<div class="empty">${t('loading')}</div>`;
+  // Group by patient
+  const rows = state.devices.map(d => {
+    const devRows = d.devices.map(dev => {
+      const connClass = dev.connected ? 'connected' : 'disconnected';
+      const connLabel = dev.connected ? t('device_connected') : t('device_disconnected');
+      const batLevel = dev.battery > 50 ? 'high' : dev.battery > 20 ? 'mid' : 'low';
+      const signalBars = Math.ceil(dev.signalStrength / 25);
+      const indianBadge = dev.madeInIndia ? `<span class="device-badge indian">🇮🇳 Made in India</span>` : '';
+      return `<div class="device-row">
+        <div class="device-dot ${dev.connected?'on':'off'}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="device-name">${dev.name}</div>
+          <div class="device-meta">${dev.manufacturer} · ${dev.approval}</div>
+          <div class="device-meta">${dev.connectivity} · ${dev.description ? dev.description.substring(0, 80) + '...' : ''}</div>
+          <div class="measures" style="display:flex;gap:3px;margin-top:4px">${(dev.measures||[]).map(m => `<span style="background:var(--panel2);border:1px solid var(--line);padding:1px 5px;border-radius:4px;font-size:9px">${t(m)}</span>`).join('')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <span class="device-badge ${connClass}">${connLabel}</span>
+          <div class="battery-bar"><div class="battery-fill ${batLevel}" style="width:${dev.battery}%"></div></div>
+          <div class="device-meta">${dev.battery}% · ${dev.secondsSinceLastSeen}s ago</div>
+          <div class="signal-bars">${[1,2,3,4].map(i => `<span style="height:${i*3}px" class="${i<=signalBars?'on':''}"></span>`).join('')}</div>
+          ${indianBadge}
+        </div>
+      </div>`;
+    }).join('');
+    return `<div class="card" style="margin-bottom:16px">
+      <h3>${pname(d.patientId, d.patientName)} — ${t('connected_devices')}</h3>
+      <div class="stat" style="margin-bottom:8px">${d.devices.length} ${t('device_count')} · ${d.devices.filter(x=>x.connected).length} ${t('device_online')}</div>
+      ${devRows || `<div class="empty">${t('no_devices')}</div>`}
+    </div>`;
+  }).join('');
+  return `<h2 data-i18n="nav_devices"></h2>
+  <div class="banner" style="background:#1a2540;border-color:#2a4570;color:#a0c4ff;margin-bottom:14px" data-i18n="device_banner"></div>
+  ${rows}
+  <h3 style="margin-top:22px" data-i18n="device_catalogue_title"></h3>
+  <div class="stat" style="margin-bottom:12px" data-i18n="device_catalogue_sub"></div>
+  <div class="grid">${(state.catalogue||[]).map(c => `
+    <div class="catalogue-card">
+      <div class="flex-between">
+        <h4>${c.name}</h4>
+        ${c.madeInIndia ? '<span class="device-badge indian">🇮🇳</span>' : ''}
+      </div>
+      <div class="sub">${c.manufacturer} · ${c.approval}</div>
+      <div class="price">₹${parseInt(c.priceINR).toLocaleString('en-IN')}</div>
+      <div class="measures">${(c.measures||[]).map(m => `<span>${t(m)}</span>`).join('')}</div>
+      <div class="device-meta" style="margin-top:6px">${c.description||''}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
 function alertsView(){
   const callSteps = (st, idx) => `
     <div class="callstep ${st.state}">
@@ -485,7 +589,7 @@ function alertsView(){
   </div>`;
 }
 
-const VIEWS = { dashboard: dashboardView, medications: medicationsView, cameras: camerasView, ward: wardView, alerts: alertsView };
+const VIEWS = { dashboard: dashboardView, medications: medicationsView, cameras: camerasView, ward: wardView, alerts: alertsView, devices: devicesView };
 
 // ---- Medications modal -----------------------------------------------------
 function openModal(){
@@ -522,6 +626,12 @@ async function poll(){
   state.zones = cd.zones; state.camEvents = cd.events;
   const cld = await api('/api/calls');
   state.calls = cld.calls || [];
+  const dd = await api('/api/devices');
+  state.devices = dd.patients || [];
+  if (!state.catalogue) {
+    const cat = await api('/api/devices/catalogue');
+    state.catalogue = cat.catalogue || [];
+  }
   render();
 }
 

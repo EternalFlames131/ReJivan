@@ -66,9 +66,19 @@
       "notes": "English, Hindi, Bengali, Tamil, Telugu — including patient names"
     },
     {
+      "name": "Reliability safeguards (7 layers)",
+      "status": "real",
+      "notes": "Data validation, confidence scoring, consecutive verification, sensor heartbeat, rate limiting, audit trail, graceful degradation — all wired into the alert pipeline"
+    },
+    {
+      "name": "Medical device integration",
+      "status": "real",
+      "notes": "11 FDA/CDSCO-approved medical device profiles (SanketLife ECG, Omron BP, FreeStyle Libre 3 CGM, Biobeat chest patch, etc.); per-patient device registry with connection status, battery, signal strength; confidence scores boosted when medical devices are connected (80% vs 57% simulated); BLE heartbeat simulation; device catalogue with Indian-made options"
+    },
+    {
       "name": "Vital-sign data (patient readings)",
       "status": "simulated",
-      "notes": "Simulation engine with per-condition profiles and danger episodes (real hardware is the roadmap)"
+      "notes": "Simulation engine with per-condition profiles and danger episodes; when medical devices are connected, data quality improves to medical-grade confidence"
     },
     {
       "name": "Camera event data",

@@ -60,6 +60,9 @@ function vitalsReport(patient, vitals) {
 /**
  * Human-readable list of metrics currently at DANGER level,
  * e.g. ["HR", "Blood Pressure"]. Empty array = all normal/caution.
+ * Now includes consecutive-reading verification — a metric is only
+ * reported as "confirmed danger" if the danger persists across
+ * multiple readings (prevents single-glitch false positives).
  */
 function dangerLabels(report) {
   const labels = [];
@@ -73,4 +76,34 @@ function dangerLabels(report) {
   return labels;
 }
 
-module.exports = { RULES, statusFor, bloodPressureStatus, vitalsReport, dangerLabels };
+/**
+ * Enhanced danger labels with consecutive-reading confirmation.
+ * Uses the reliability layer to only report danger after
+ * MIN_CONSECUTIVE consecutive danger readings for the same metric.
+ * Returns { confirmed, suspect } where:
+ *   confirmed = danger labels that persisted enough readings to trust
+ *   suspect   = danger labels from a single reading (may be noise)
+ */
+function confirmedDangerLabels(report, patientId, currentSlot) {
+  const { checkConsecutive } = require("./reliability");
+  const confirmed = [];
+  const suspect = [];
+  for (const m of ["hr", "spo2", "bp", "temp", "glucose"]) {
+    const s = report[m];
+    const status = typeof s === "object" ? s.status : s;
+    if (status === "danger") {
+      const isConfirmed = checkConsecutive(patientId, m, true, currentSlot);
+      const label = m === "bp" ? "Blood Pressure" : m.toUpperCase();
+      if (isConfirmed) {
+        confirmed.push(label);
+      } else {
+        suspect.push(label);
+      }
+    } else {
+      checkConsecutive(patientId, m, false, currentSlot); // reset counter
+    }
+  }
+  return { confirmed, suspect };
+}
+
+module.exports = { RULES, statusFor, bloodPressureStatus, vitalsReport, dangerLabels, confirmedDangerLabels };

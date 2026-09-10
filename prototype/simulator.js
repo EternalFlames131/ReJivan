@@ -124,7 +124,9 @@ if (rh < 0.5) {
   }
   vitals.sys = vitals.sbp;
 
-  return { vitals, episode, slot, at: Date.now() };
+  // Reliability metadata: which device tier would produce this data
+  const deviceTier = "simulated"; // "medical" when real hardware is connected
+  return { vitals, episode, slot, at: Date.now(), deviceTier };
 }
 
 module.exports = { BASELINES, EPISODES, hash01, SLOT_MS, generateVitals };

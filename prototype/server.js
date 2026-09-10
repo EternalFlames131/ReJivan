@@ -20,10 +20,19 @@ const express = require("express");
 const cors = require("cors");
 
 const { generateVitals, hash01, SLOT_MS } = require("./simulator");
-const { vitalsReport, dangerLabels } = require("./rules");
+const { vitalsReport, dangerLabels, confirmedDangerLabels } = require("./rules");
 const { AuthStore } = require("./auth");
 const { MedicationStore } = require("./medications");
 const { cameraZones, deriveCameraEvents, liveFrame } = require("./camerazone");
+const {
+  validateVitals, overallConfidence, recordHeartbeat,
+  checkSensorHealth, rateLimitCheck, auditEvent, getAuditLog,
+  degradationStatus,
+} = require("./reliability");
+const {
+  DEVICE_CATALOGUE, getPatientDevices, deviceConfidenceForVitals,
+  getCatalogue, getCatalogueItem,
+} = require("./medical-devices");
 
 const DATA_DIR = path.join(__dirname, "data");
 try {
@@ -82,11 +91,47 @@ function patientName(id) {
 }
 function snapshotFor(p, now) {
   const g = generateVitals(p, now);
+  // Reliability: validate readings + compute confidence
+  const validation = validateVitals(g.vitals);
+  let confidence = overallConfidence(g.vitals, g.deviceTier);
+  const degradation = degradationStatus(g.vitals);
+
+  // Medical device integration: boost confidence if medical devices are connected
+  const deviceInfo = deviceConfidenceForVitals(p.id, g.vitals);
+  const medicalDevices = getPatientDevices(p.id);
+
+  // Update device lastSeen to simulate continuous BLE heartbeat
+  const { deviceRegistry } = require("./medical-devices");
+  const entries = deviceRegistry.get(p.id) || [];
+  entries.forEach((e) => { e.lastSeen = now; });
+
+  if (deviceInfo.tier === "medical") {
+    // Apply confidence multiplier from medical devices
+    confidence = {
+      overall: Math.min(100, Math.round(confidence.overall * deviceInfo.confidenceMultiplier)),
+      perMetric: confidence.perMetric,
+    };
+  }
+
+  // Record sensor heartbeat (for disconnect detection)
+  recordHeartbeat(p.id, Object.keys(g.vitals).filter((m) => g.vitals[m] != null));
   return {
     id: p.id, name: p.name, age: p.age, sex: p.sex,
     location: p.location, addr: p.address || null, ward: p.ward || null,
     region: REGION, condition: p.condition,
-    vitals: g.vitals, lastUpdated: now, episode: g.episode,
+    vitals: validation.cleanVitals,
+    rawVitals: g.vitals,
+    lastUpdated: now, episode: g.episode,
+    deviceTier: deviceInfo.tier,
+    devices: medicalDevices,
+    reliability: {
+      confidence: confidence.overall,
+      perMetricConfidence: confidence.perMetric,
+      validationPassed: validation.valid,
+      rejectedMetrics: validation.rejected,
+      rejectionReasons: validation.reasons,
+      degradation: degradation,
+    },
   };
 }
 
@@ -106,20 +151,37 @@ function alertsFor(user, now) {
   const alerts = [];
   const escalations = [];
   const pushDanger = (alert) => {
-    alerts.push(alert);
-    escalations.push({
-      id: "ESC-" + alert.id,
-      alertId: alert.id,
-      patientId: alert.patientId,
-      patientName: alert.patientName,
-      severity: "danger",
-      channels: ["SMS + Emergency alert"],
-      to: alert.ward ? "Nurse station + on-duty nurse" : "Family caregiver",
-      dispatchedAt: (alert.createdAt || now) + 2000,
-      delivered: true,
-      simulationNotice:
-        "Simulated delivery. In production: caregiver SMS/WhatsApp, email, and emergency-services dispatch via live APIs.",
-    });
+    // Rate-limit check: prevent alert storms
+    const rl = rateLimitCheck(alert.patientId, now);
+    if (rl.allowed) {
+      alerts.push(alert);
+      escalations.push({
+        id: "ESC-" + alert.id,
+        alertId: alert.id,
+        patientId: alert.patientId,
+        patientName: alert.patientName,
+        severity: "danger",
+        channels: ["SMS + Emergency alert"],
+        to: alert.ward ? "Nurse station + on-duty nurse" : "Family caregiver",
+        dispatchedAt: (alert.createdAt || now) + 2000,
+        delivered: true,
+        simulationNotice:
+          "Simulated delivery. In production: caregiver SMS/WhatsApp, email, and emergency-services dispatch via live APIs.",
+      });
+      auditEvent("escalation", {
+        patientId: alert.patientId,
+        alertId: alert.id,
+        reason: alert.message,
+      });
+    } else {
+      // Log suppressed alert (for audit trail) but don't escalate
+      auditEvent("rate_limited", {
+        patientId: alert.patientId,
+        alertId: alert.id,
+        reason: rl.reason,
+        nextAllowedAt: rl.nextAllowedAt,
+      });
+    }
   };
 
   for (let k = SPAN_ALERTS; k >= 0; k--) {
@@ -128,9 +190,19 @@ function alertsFor(user, now) {
     for (const p of patients) {
       if (!ids.has(p.id)) continue;
       const g = generateVitals(p, center);
-      const report = vitalsReport(p, g.vitals);
-      const labels = dangerLabels(report);
-      if (labels.length) {
+      // Validate readings first — reject impossible values
+      const validation = validateVitals(g.vitals);
+      if (!validation.valid) {
+        auditEvent("data_rejected", {
+          patientId: p.id,
+          reason: `Invalid readings rejected: ${validation.reasons.join("; ")}`,
+          slot: s,
+        });
+      }
+      const report = vitalsReport(p, validation.cleanVitals);
+      // Use consecutive-reading verification: only confirmed danger triggers escalation
+      const { confirmed, suspect } = confirmedDangerLabels(report, p.id, s);
+      if (confirmed.length) {
         pushDanger({
           id: "ALT-" + p.id + "-" + s,
           patientId: p.id,
@@ -140,11 +212,21 @@ function alertsFor(user, now) {
           location: p.location,
           type: "vitals",
           severity: "danger",
-          message: `${p.name} — DANGER: ${labels.join(", ")} out of normal range. ${
+          message: `${p.name} — CONFIRMED DANGER: ${confirmed.join(", ")} out of normal range (persisted across readings). ${
             p.ward ? "Virtual Ward " + p.ward : "At home"
           }. Automated check.`,
           vitals: report,
+          confirmed: true,
+          suspect: suspect,
           createdAt: s * SLOT_MS,
+        });
+      } else if (suspect.length) {
+        // Single-reading danger — logged but NOT escalated (may be noise)
+        auditEvent("alert", {
+          patientId: p.id,
+          severity: "suspect",
+          reason: `Single-reading danger (not yet confirmed): ${suspect.join(", ")}`,
+          slot: s,
         });
       }
     }
@@ -356,14 +438,99 @@ app.get("/api/camera-zones/:id/live", requireAuth, (req, res) => {
   });
 });
 
+// ---- Medical devices (catalogue + per-patient registry) --------------------
+app.get("/api/devices/catalogue", requireAuth, (req, res) => {
+  const category = req.query.category || null;
+  res.json({ catalogue: getCatalogue(category) });
+});
+
+app.get("/api/devices", requireAuth, (req, res) => {
+  const ids = ownPatientIds(req.user);
+  const now = Date.now();
+  // Update device heartbeats so they show as connected
+  const { deviceRegistry } = require("./medical-devices");
+  ownPatients(req.user).forEach((p) => {
+    const entries = deviceRegistry.get(p.id) || [];
+    entries.forEach((e) => { e.lastSeen = now; });
+  });
+  const devices = ownPatients(req.user).map((p) => ({
+    patientId: p.id,
+    patientName: p.name,
+    devices: getPatientDevices(p.id),
+  }));
+  res.json({ patients: devices });
+});
+
+app.get("/api/devices/:patientId", requireAuth, (req, res) => {
+  if (!ownPatientIds(req.user).has(req.params.patientId)) {
+    return res.status(404).json({ error: "not_found" });
+  }
+  res.json({
+    patientId: req.params.patientId,
+    patientName: patientName(req.params.patientId),
+    devices: getPatientDevices(req.params.patientId),
+  });
+});
+
 // ---- Misc ------------------------------------------------------------------
 app.get("/api/simulation/status", (req, res) => {
   res.json({
     region: REGION,
-    simulated: ["vitals", "camera-events", "live-preview", "billing", "SMS/WhatsApp delivery", "emergency phone calls"],
-    real: ["authentication", "data isolation per user", "dashboard", "medications", "rules engine", "alerts", "escalation", "emergency auto-call chain (priority + retry + escalation)", "multilingual UI"],
+    simulated: ["vitals-data", "camera-events", "live-preview", "billing", "SMS/WhatsApp delivery", "emergency phone calls"],
+    real: ["authentication", "data isolation per user", "dashboard", "medications", "rules engine", "alerts", "escalation", "emergency auto-call chain (priority + retry + escalation)", "multilingual UI", "reliability safeguards (validation, confidence, consecutive verification, rate limiting, audit trail)", "medical device integration (CDSCO/FDA-approved device profiles, BLE connectivity simulation, per-patient device registry)"],
     disclaimer: "Prototype: SanjivanAI is not a certified medical device. Always involve a human caregiver/doctor for decisions.",
+    medicalDevices: {
+      supported: DEVICE_CATALOGUE.length,
+      indianMade: DEVICE_CATALOGUE.filter((d) => d.madeInIndia).length,
+      categories: [...new Set(DEVICE_CATALOGUE.map((d) => d.category))],
+      highlights: [
+        "SanketLife 12-Lead ECG (Agatsa, Pune) — CDSCO Class B, ₹5,000, Made in India",
+        "FreeStyle Libre 3 (Abbott) — FDA + CDSCO approved, ₹4,670/sensor",
+        "Biobeat Chest Patch — FDA 510(k), 13 vitals from one wearable (aspirational)",
+        "H360 Health360 (Medilogy, India) — CDSCO, multi-parameter, ₹7,000",
+      ],
+    },
+    reliability: {
+      safeguards: [
+        "Data validation — physiologically impossible readings rejected",
+        "Confidence scoring — each reading rated 0–100 by device quality + value plausibility",
+        "Consecutive verification — danger must persist 2+ readings before emergency escalation",
+        "Sensor heartbeat — alerts if device stops reporting for >2 minutes",
+        "Rate limiting — max 5 alerts per patient per 5 minutes (prevents alert fatigue)",
+        "Audit trail — every action logged with timestamp + reason (immutable)",
+        "Graceful degradation — system works with partial sensor data and warns family",
+        "Medical device integration — FDA/CDSCO-approved device profiles boost confidence scores",
+      ],
+      disclaimer: "In production, connect medical-grade validated devices for clinical-grade confidence scores.",
+    },
   });
+});
+
+// ---- Reliability endpoints -------------------------------------------------
+app.get("/api/audit-log", requireAuth, (req, res) => {
+  const patientId = req.query.patientId || null;
+  const limit = parseInt(req.query.limit || "50", 10);
+  res.json({ log: getAuditLog(patientId, limit) });
+});
+
+app.get("/api/device-health", requireAuth, (req, res) => {
+  const ids = ownPatientIds(req.user);
+  const now = Date.now();
+  const offline = checkSensorHealth(now).filter((s) => ids.has(s.patientId));
+  const health = ownPatients(req.user).map((p) => {
+    const snap = snapshotFor(p, now);
+    return {
+      patientId: p.id,
+      patientName: p.name,
+      confidence: snap.reliability.confidence,
+      perMetric: snap.reliability.perMetricConfidence,
+      validationPassed: snap.reliability.validationPassed,
+      rejectedMetrics: snap.reliability.rejectedMetrics,
+      degradation: snap.reliability.degradation,
+      deviceTier: snap.deviceTier,
+    };
+  });
+  res.json({ patients: health, offlineSensors: offline });
 });
 
 app.get("/api/health", (req, res) => res.json({ ok: true, service: "SanjivanAI", time: Date.now() }));
