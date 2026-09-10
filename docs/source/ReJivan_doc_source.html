@@ -180,6 +180,21 @@
   <tr><td>Repo &amp; license</td><td>Public GitHub/GitLab &middot; MIT</td><td>Meets HSC open-source + README/architecture/documentation requirement.</td></tr>
 </table>
 
+<h3>6.1 &nbsp;AI models in ReJivan (specific &amp; named)</h3>
+<p class="nobreak">ReJivan&rsquo;s AI is built from <b>specific, published, verifiable models</b> &mdash; not a vague &ldquo;machine learning&rdquo; black box. Every model below runs <b>on-device (privacy-first)</b>, and the transparent rule engine (NEWS2-style) stays the permanent safety net: <b>a model never makes a life-or-death call alone</b>.</p>
+<table class="data">
+  <tr><th>AI job in ReJivan</th><th>Named model / technique</th><th>What it adds</th><th>Status</th></tr>
+  <tr><td>Deterioration early-warning (vitals) &mdash; the &ldquo;Prajn&#257; nurse&rdquo;</td><td>Rule engine aligned to hospital standard <b>NEWS2 / MEWS</b> thresholds (transparent, explainable) + an on-device <b>Isolation Forest</b> personal-baseline score</td><td>Flags readings that quietly drift away from <i>this patient&rsquo;s own normal</i>, ahead of fixed rules</td><td class="green">Real in prototype</td></tr>
+  <tr><td>Vitals anomaly detection (time-series)</td><td><b>LSTM autoencoder</b> + light alternative <b>ROCKET / MiniRocket</b>, trained per-patient on HR / SpO&sup2; / BP / temperature sequences</td><td>Catches &ldquo;looks fine but is not fine for this patient&rdquo; patterns; runs offline on the phone</td><td>Roadmap (demo-able with simulated data)</td></tr>
+  <tr><td>Universal signal option (research)</td><td><b>UniTS</b> (CIKM &rsquo;25 universal time-series foundation model) as a later single multi-signal scorer</td><td>One model reads HR + SpO&sup2; + BP + activity together</td><td>Roadmap</td></tr>
+  <tr><td>Fall detection (camera zones)</td><td><b>Google BlazePose / MediaPipe Pose</b> (33 body keypoints only &mdash; no video) feeding a <b>LSTM&ndash;BiLSTM fall classifier</b> trained on public <b>UR-Fall / Le2i</b> datasets (published 95&ndash;99% accuracy)</td><td>Instant fall / collapse-to-floor recognition; nothing recorded</td><td>Roadmap (camera-zone UI already real)</td></tr>
+  <tr><td>Presence / out-of-bed (camera zones)</td><td>Lightweight on-device person detection + tracking (<b>YOLOv8</b>-class detector or MediaPipe detector)</td><td>Out-of-bed, prolonged stillness, wandering, empty-room detection</td><td>Roadmap</td></tr>
+  <tr><td>Contactless vitals (advanced)</td><td><b>rPPG &mdash; remote photoplethysmography</b> (heart/respiration rate from the camera face region; MIT-Pulse line of research)</td><td>Vitals without touching the patient</td><td>Roadmap (lab-documented, not demoed)</td></tr>
+  <tr><td>Plain-language family assistant (optional)</td><td>Small on-device <b>Google Gemma</b> model or a cloud LLM (<b>Gemini</b> / GPT-family), clearly labelled</td><td>Explains scores in simple Bengali / Hindi / English &mdash; never diagnoses</td><td>Optional add-on (not required for core demo)</td></tr>
+  <tr><td>On-device AI runtime</td><td><b>LiteRT (TensorFlow Lite)</b> + <b>MediaPipe Tasks</b> (+ ONNX Runtime Mobile)</td><td>Every model above runs on the phone, fully offline</td><td class="green">Strategy ready (native Android app)</td></tr>
+</table>
+<div class="note nobreak"><b>Honesty note:</b> all models listed are public, reuse-friendly research used across medical-IoT projects. ReJivan never uploads raw video or raw health data for AI &mdash; inference happens on the phone. In the v1 prototype the rule engine is real; the model layer is a documented, blueprint-ready roadmap matching Section 5&rsquo;s Real vs Simulated table.</div>
+
 <!-- ================= page break ================= -->
 <div class="pagebreak"></div>
 
