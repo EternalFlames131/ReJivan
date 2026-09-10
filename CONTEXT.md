@@ -48,7 +48,7 @@ A personal Prajñā nurse for every family — affordable health monitoring with
 - [x] Serverless-ready refactor for Vercel (done + verified locally 2026-09-09).
 - [x] Prototype anchored in Andaman & Nicobar Islands (homes Port Blair/Little Andaman, ward = GB Pant Hospital) — loaded in UI + API + auto-PDF (2026-09-09).
 - [x] Auto-push (git) + **AUTO-DEPLOY (Vercel)** enabled via setup.ps1 + post-commit hook (2026-09-09).
-- [x] **LIVE PUBLIC WEBSITE** → https://sanjivanai.vercel.app (deployed + verified end-to-end 2026-09-09; domain re-pointed to the ReJivan build 2026-09-10; prototype-omega-self.vercel.app kept as a fallback alias): both demo logins, Andaman region + addresses, GB Pant Hospital ward, alerts/escalations/calls, camera zones, /api/simulation/status. Vercel Authentication (deployment protection) was switched OFF via API (`ssoProtection: null`) so the public URL needs no login.
+- [x] **LIVE PUBLIC WEBSITE** → https://rejivan.vercel.app (deployed + verified end-to-end 2026-09-09; domain renamed to rejivan.vercel.app 2026-09-10, old URLs removed): both demo logins, Andaman region + addresses, GB Pant Hospital ward, alerts/escalations/calls, camera zones, /api/simulation/status. Vercel Authentication (deployment protection) was switched OFF via API (`ssoProtection: null`) so the public URL needs no login.
 - [x] User reviews the running prototype at http://localhost:8080 (Persistent server is LIVE now) — collect feedback.
 - [ ] Round out prototype: "Add patient" flow for newly registered families; PWA offline service-worker (low priority).
 - [ ] Wire escalation delivery to real APIs (SMS/WhatsApp/email) OR keep as clearly-labelled stubs.

@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-09-10 (Day 3 — URL renamed to rejivan.vercel.app; second URL removed)
+
+### What the user asked
+- Rename the URL from sanjivanai to rejivan, and REMOVE the second URL (prototype-omega-self.vercel.app) completely.
+
+### What was done (verified)
+- Claimed **rejivan.vercel.app** as a project domain (API POST /v10/projects/{id}/domains) → `verified: true`. As a project domain it AUTO-FOLLOWS production deploys (no staleness possible) — the post-commit hook additionally re-assigns it so it can never drift.
+- Deleted both old aliases: sanjivanai.vercel.app and prototype-omega-self.vercel.app → both `SUCCESS`.
+- app/config/docs updated: capacitor allowNavigation = only rejivan.vercel.app (both prototype + android assets), API_BASE in dist/index.html + android-assets public/index.html = https://rejivan.vercel.app, README.md + CONTEXT.md canonical URL, post-commit hook alias line = rejivan.vercel.app only.
+- Verified live: https://rejivan.vercel.app/api/health → 200 {"ok":true,"service":"ReJivan"}; homepage ReJivan, no old-name text. Old URLs no longer resolve.
+- Implication recorded: the native offline Android app doesn't depend on the server, so removing the second URL costs nothing; only a future web-wrapper APK (hypothetical) would need a rebuild to talk to rejivan.vercel.app.
+
+---
+
 ## 2026-09-10 (Day 3 — Vercel deploy fix + domain = sanjivanai.vercel.app)
 
 ### What the user reported
@@ -42,7 +56,7 @@
 - Sanity: node --check OK on all 11 JS, JSON parse OK on 8 files, Kotlin package com.rejivan.app consistent; rg shows zero leftover "sanjivanai" (any case) except intentionally kept historical log lines in opencode-config/LOG.md (LP-Generator project) and the opencode.ai schema URL (false positive).
 
 ### Notes / decisions
-- Live URL = **sanjivanai.vercel.app** (requested by user 2026-09-10; this domain is a project alias in THIS account — the earlier "different account" guess was wrong — and was re-pointed to the current ReJivan production build; prototype-omega-self.vercel.app kept as a working fallback so existing APKs keep talking).
+- Live URL = **rejivan.vercel.app** (final, per user 2026-09-10 afternoon: renamed the URL from sanjivanai.vercel.app to rejivan.vercel.app and REMOVED the prototype-omega-self.vercel.app fallback alias entirely — one URL only, matching the brand). The native offline app does not talk to the server, so removing the second URL has no downside; a future web-wrapper APK will use rejivan.vercel.app.
 - Local disk folder is still literally "SanjivanAI" — FINE: hooks accept both names; user may rename the folder manually anytime (close opencode first).
 - APK side already com.rejivan.app (native app-android Debug APK earlier at Downloads/ReJivan_v1.0.apk); Capacitor APK would need a rebuild for a fresh package name.
 - The medical-grade model stack recommendations (NEWS2/MEWS now; MediaPipe pose→LSTM falls; COMPOSER/TREWS/DeepMind-AKI as validated-upgrade research) live in the Day-3 research section below.

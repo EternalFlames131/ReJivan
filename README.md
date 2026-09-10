@@ -65,7 +65,7 @@ Full rules: `references/hsc_guidelines_summary.md`
 - Extra winning points: DPI alignment (ABHA/tele-MANAS), vernacular + offline + SMS fallback, privacy-by-design, SDG 3, climate alerting, honest disclosure of digital tools used
 
 ## Open items
-- ~~Finish the Vercel live website~~ **DONE — live at https://sanjivanai.vercel.app** (deployed + verified 2026-09-09; auto-deploy now updates it on every commit and re-points this domain).
+- ~~Finish the Vercel live website~~ **DONE — live at https://rejivan.vercel.app** (deployed + verified 2026-09-09; auto-deploy now updates it on every commit and re-points this domain).
 - Final team name, up to 3 members, AISHE institution confirmation, MyBharat individual registrations
 - User review of the running prototype at http://localhost:8080 (login with a demo account); "Add patient" flow for newly registered families
 - Problem statement sheet (state-specific **Andaman & Nicobar Islands**), 6–7 slide deck, demo video, Annexure 1
