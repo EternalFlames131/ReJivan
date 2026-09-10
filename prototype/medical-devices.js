@@ -1,9 +1,9 @@
 "use strict";
 /**
- * SanjivanAI — Medical Device Integration Layer
+ * ReJivan — Medical Device Integration Layer
  *
  * Defines medically-approved wearable devices that can feed real data into
- * the SanjivanAI dashboard. In the prototype, device data is simulated to
+ * the ReJivan dashboard. In the prototype, device data is simulated to
  * match each device's actual specs (accuracy, refresh rate, precision).
  * In production, BLE/WiFi APIs connect to the real hardware.
  *
@@ -110,7 +110,7 @@ const DEVICE_CATALOGUE = [
     priceINR: "25000",
     refreshSec: 5,
     madeInIndia: false,
-    description: "Gold-standard chest patch: 13 vitals from one wearable (BP, SpO2, HR, temperature, ECG). Partner-gated API. EMR integration (Epic). Aspirational device for SanjivanAI.",
+    description: "Gold-standard chest patch: 13 vitals from one wearable (BP, SpO2, HR, temperature, ECG). Partner-gated API. EMR integration (Epic). Aspirational device for ReJivan.",
     productionTier: "medical",
   },
 

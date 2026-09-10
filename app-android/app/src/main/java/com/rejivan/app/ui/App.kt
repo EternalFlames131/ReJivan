@@ -1,4 +1,4 @@
-package com.sanjivanai.app.ui
+package com.rejivan.app.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,7 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sanjivanai.app.core.*
+import com.rejivan.app.core.*
 
 @Composable
 fun App(state: AppState) {
@@ -50,8 +50,8 @@ private fun LoginScreen(state: AppState) {
             shape = RoundedCornerShape(18.dp),
             modifier = Modifier.padding(20.dp).widthIn(max = 400.dp)) {
             Column(Modifier.padding(26.dp)) {
-                Text("SanjivanAI", color = AppColors.accent, fontSize = 26.sp, fontWeight = FontWeight.Bold)
-                Text("A Personal AI Nurse for Every Family", color = AppColors.muted, fontSize = 13.sp)
+                Text("ReJivan", color = AppColors.accent, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+                Text("A Personal Nurse for Every Family", color = AppColors.muted, fontSize = 13.sp)
                 Spacer(Modifier.height(14.dp))
                 OutlinedTextField(value = email, onValueChange = { email = it },
                     label = { Text("Email") }, singleLine = true,
@@ -110,7 +110,7 @@ fun MainShell(state: AppState) {
         topBar = {
             Column {
                 Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("SanjivanAI", color = AppColors.accent, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Text("ReJivan", color = AppColors.accent, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.weight(1f))
                     Text("${state.currentUser?.role ?: ""}", color = AppColors.muted, fontSize = 12.sp)
                     Spacer(Modifier.width(10.dp))
@@ -402,7 +402,7 @@ fun Camera(state: AppState) {
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
             Section("Privacy-First Camera Zones")
-            Text("No video recorded or stored • on-device AI only (SIMULATED)", color = AppColors.muted, fontSize = 11.sp)
+            Text("No video recorded or stored • on-device Prajñā only (SIMULATED)", color = AppColors.muted, fontSize = 11.sp)
         }
         zones.forEach { z ->
             item { CameraCard(state, z) }

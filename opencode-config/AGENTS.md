@@ -61,7 +61,7 @@
 - Shared task spec: documentary video "ANDAMAN — THE ISLAND THAT REMEMBERS", ~2:30, English narration+subtitles, 1920x1080@30fps H.264/AAC 48kHz yuv420p MP4.
 - User decisions: visuals = free-licence online media (Wikimedia Commons, documented locations); narration = Samrat records his own voice later — NO TTS; no uploads ever.
 - Tooling: ffmpeg 7.1 at imageio path (see Song project); ffprobe NOT installed — parse `ffmpeg -i` + blackdetect/freezedetect/silencedetect/volumedetect for QC. Fonts: arialbd.ttf, segoeui.ttf.
-- Hard rules: no uploads, never delete originals, no AI/invented footage as evidence, no unverified tribal imagery (dignity policy), don't present wrong-location stock as Andaman, attribution screen required (CC BY/BY-SA), don't claim completion unless QC passes.
+- Hard rules: no uploads, never delete originals, no invented/synthetic footage as evidence, no unverified tribal imagery (dignity policy), don't present wrong-location stock as Andaman, attribution screen required (CC BY/BY-SA), don't claim completion unless QC passes.
 
 ## Project: Animated video (started 2026-08-24)
 - User asked for a standalone animated video, style = mix (photos-with-motion + text/titles + shapes/graphics), no topic chosen yet.

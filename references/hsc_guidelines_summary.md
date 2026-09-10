@@ -22,7 +22,7 @@ National tech challenge under Viksit Bharat Young Leaders Dialogue (VBYLD) 2027,
 
 > Note: the online submission (by 15 Oct) is what puts you into this pipeline.
 > Practical implication for us: we should also win/take part in our own college's
-> internal hackathon so our institution nominates the SanjivanAI team.
+> internal hackathon so our institution nominates the ReJivan team.
 
 ## Eligibility
 - Indian citizen; age **18–29 as of 17 Aug 2026**
@@ -34,17 +34,17 @@ National tech challenge under Viksit Bharat Young Leaders Dialogue (VBYLD) 2027,
 ## Our relevant themes (11 total)
 - Healthcare, Wellbeing & Service Delivery
 - Elderly Care & Healthy Ageing
-(also: Digital Inclusion, AI/GIS/Emerging Tech, Assistive Tech)
+(also: Digital Inclusion, Emerging Tech, Assistive Tech)
 
 ## What we must submit
 1. **Problem Statement** — state-specific, beneficiaries, current gaps.
-2. **Presentation Deck** — 6–7 slides, PPT/PDF, ≤10 MB, incl. disclosure of AI tool usage.
+2. **Presentation Deck** — 6–7 slides, PPT/PDF, ≤10 MB, incl. disclosure of digital-tool usage.
 3. **Working Prototype** — public GitHub/GitLab repo, MIT/Apache/GPL, with README, architecture, sample data/test-cases, license.
 4. **Demo Video** — 3–5 min, MP4/MOV, ≥720p, ≤80 MB (preferred, not mandatory). Cover: team, problem, prototype interaction, impact.
 5. **Team Self-Declaration (Annexure 1)** — member details, signed self-cert, self-attested student ID.
 
 ## File naming convention
-`<State>_<TeamName>_<Document>.pdf` (e.g. `AndamanNicobar_SanjivanAI_ProblemStatement.pdf`)
+`<State>_<TeamName>_<Document>.pdf` (e.g. `AndamanNicobar_ReJivan_ProblemStatement.pdf`)
 
 > Note: Andaman & Nicobar Islands is a **Union Territory** — you compete in its
 > State/Regional round (23 Oct – 5 Nov 2026).
@@ -60,6 +60,6 @@ Teams keep all IP. MoYAS/IIT-B may display/promote entries with credit. Code sub
 
 ## Rules to remember
 - Edits allowed until deadline; latest version counts.
-- Disclose any AI assistance (we use AI-assisted coding/framing — disclose honestly).
+- Disclose any digital-tool assistance (we use a coding assistant for coding/framing — disclose honestly).
 - Name must be appropriate/non-derogatory.
 - Jury decisions final.

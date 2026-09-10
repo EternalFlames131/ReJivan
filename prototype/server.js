@@ -1,6 +1,6 @@
 "use strict";
 /**
- * SanjivanAI — prototype server (serverless-ready).
+ * ReJivan — prototype server (serverless-ready).
  * Express + lightweight JSON storage. Serves the SPA from /public and exposes
  * a REST API. Runs the same on a laptop (`npm start`) and on Vercel.
  *
@@ -434,7 +434,7 @@ app.get("/api/camera-zones/:id/live", requireAuth, (req, res) => {
     simulated: true,
     zone: { id: zone.id, name: zone.name, patientName: patientName(zone.patientId) },
     frame: liveFrame(zone.id),
-    note: "Simulated live preview. On-device AI only — no video is recorded or stored.",
+    note: "Simulated live preview. On-device Prajñā only — no video is recorded or stored.",
   });
 });
 
@@ -478,7 +478,7 @@ app.get("/api/simulation/status", (req, res) => {
     region: REGION,
     simulated: ["vitals-data", "camera-events", "live-preview", "billing", "SMS/WhatsApp delivery", "emergency phone calls"],
     real: ["authentication", "data isolation per user", "dashboard", "medications", "rules engine", "alerts", "escalation", "emergency auto-call chain (priority + retry + escalation)", "multilingual UI", "reliability safeguards (validation, confidence, consecutive verification, rate limiting, audit trail)", "medical device integration (CDSCO/FDA-approved device profiles, BLE connectivity simulation, per-patient device registry)"],
-    disclaimer: "Prototype: SanjivanAI is not a certified medical device. Always involve a human caregiver/doctor for decisions.",
+    disclaimer: "Prototype: ReJivan is not a certified medical device. Always involve a human caregiver/doctor for decisions.",
     medicalDevices: {
       supported: DEVICE_CATALOGUE.length,
       indianMade: DEVICE_CATALOGUE.filter((d) => d.madeInIndia).length,
@@ -533,7 +533,7 @@ app.get("/api/device-health", requireAuth, (req, res) => {
   res.json({ patients: health, offlineSensors: offline });
 });
 
-app.get("/api/health", (req, res) => res.json({ ok: true, service: "SanjivanAI", time: Date.now() }));
+app.get("/api/health", (req, res) => res.json({ ok: true, service: "ReJivan", time: Date.now() }));
 
 // ---- Export for Vercel; direct listen only when run locally -----------------
 module.exports = app;
@@ -541,7 +541,7 @@ module.exports = app;
 if (require.main === module) {
   const PORT = process.env.PORT || 8080;
   app.listen(PORT, () => {
-    console.log(`SanjivanAI prototype running at http://localhost:${PORT}`);
+    console.log(`ReJivan prototype running at http://localhost:${PORT}`);
     console.log(`Demo accounts: asharma@demo.in / rprakash@demo.in / wardnurse@demo.in  (password: demo123)`);
   });
 }

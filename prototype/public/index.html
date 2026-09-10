@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SanjivanAI</title>
+<title>ReJivan</title>
 <link rel="manifest" href="/manifest.json" />
 <style>
   :root{
@@ -143,7 +143,7 @@
 <!-- LOGIN / REGISTER SCREEN -->
 <div id="loginScreen" class="login-wrap" style="display:none">
   <div class="login-card">
-    <h1>SanjivanAI</h1>
+    <h1>ReJivan</h1>
     <div class="sub" data-i18n="login_sub"></div>
     <input id="liName" type="text" style="display:none" data-i18n-ph="login_name" />
     <input id="liEmail" type="email" autocomplete="email" data-i18n-ph="login_email" />
@@ -167,7 +167,7 @@
 <!-- APP -->
 <div id="app" style="display:none">
 <header>
-  <div class="logo">&#x2714; SanjivanAI</div>
+  <div class="logo">&#x2714; ReJivan</div>
   <div class="tag" data-i18n="tagline"></div>
   <div class="spacer"></div>
   <span class="pill live" data-i18n="live"></span>
@@ -234,8 +234,8 @@
 
 <script>
 const LANG = {};
-let curLang = localStorage.getItem('sanjivanai_lang') || 'en';
-let token = localStorage.getItem('sanjivanai_token') || '';
+let curLang = localStorage.getItem('rejivan_lang') || 'en';
+let token = localStorage.getItem('rejivan_token') || '';
 let me = null;
 let mode = 'login'; // login | register
 
@@ -253,7 +253,7 @@ function walk(node){ node.querySelectorAll('[data-i18n]').forEach(el => el.textC
 function walkPlaceholders(node){ node.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t(el.dataset.i18n)); }
 
 function applyI18n(){
-  curLang = localStorage.getItem('sanjivanai_lang') || 'en';
+  curLang = localStorage.getItem('rejivan_lang') || 'en';
   const sel = document.getElementById('langSel');
   if (sel) sel.value = curLang;
   document.querySelectorAll('[id]').forEach(()=>{}); // no-op
@@ -293,7 +293,7 @@ async function api(path, opts={}){
   const data = await r.json().catch(() => ({}));
   if (r.status === 401 && !path.startsWith('/api/auth/')) {
     token = '';
-    localStorage.removeItem('sanjivanai_token');
+    localStorage.removeItem('rejivan_token');
     showLogin();
     const err = document.getElementById('liErr');
     if (err) err.textContent = t('auth_required');
@@ -319,20 +319,20 @@ async function doLogin(){
     if (!name){ err.textContent = t('missing_fields'); return; }
     const reg = await api('/api/auth/register', { method:'POST', body:{ name, email, password:pass, role } });
     if (reg.error){ err.textContent = t(reg.error); return; }
-    token = reg.token; localStorage.setItem('sanjivanai_token', token);
+    token = reg.token; localStorage.setItem('rejivan_token', token);
     me = reg.user;
     ok.textContent = t('register_success');
   } else {
     const res = await api('/api/auth/login', { method:'POST', body:{ email, password:pass } });
     if (res.error){ err.textContent = t('wrong_creds'); return; }
-    token = res.token; localStorage.setItem('sanjivanai_token', token);
+    token = res.token; localStorage.setItem('rejivan_token', token);
     me = res.user;
   }
   await enterApp();
 }
 async function doLogout(){
   try { await api('/api/auth/logout', { method:'POST' }); } catch(_){}
-  token = ''; me = null; localStorage.removeItem('sanjivanai_token');
+  token = ''; me = null; localStorage.removeItem('rejivan_token');
   clearLive();
   showLogin();
 }
@@ -466,7 +466,7 @@ function camerasView(){
       <div class="grid">${state.zones.map(z=>`
         <div class="card"><div class="flex-between"><h3>${z.name}</h3><button class="btn small" onclick="openLive('${z.id}')" data-i18n="view_live"></button></div>
           <div class="sub">${pname(z.patientId, '')} · ${z.room} · <span class="muted">Privacy-first · no video recorded</span></div>
-          <div class="stat" style="margin-top:8px">&#x1F50A; On-device AI: fall · out-of-bed · low activity</div>
+          <div class="stat" style="margin-top:8px">&#x1F50A; On-device Prajñā: fall · out-of-bed · low activity</div>
         </div>`).join('') || `<div class="empty">—</div>`}
       </div>
     </div>
@@ -636,7 +636,7 @@ async function poll(){
 }
 
 document.getElementById('langSel').addEventListener('change', e=>{
-  localStorage.setItem('sanjivanai_lang', e.target.value);
+  localStorage.setItem('rejivan_lang', e.target.value);
   applyI18n(); render();
 });
 
@@ -735,7 +735,7 @@ async function init(){
       const d = await api('/api/me');
       if(d.user){ me = d.user; await enterApp(); return; }
     } catch(_){}
-    token=''; localStorage.removeItem('sanjivanai_token');
+    token=''; localStorage.removeItem('rejivan_token');
   }
   showLogin();
 }

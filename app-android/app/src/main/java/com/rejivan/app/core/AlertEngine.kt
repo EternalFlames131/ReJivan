@@ -1,4 +1,4 @@
-package com.sanjivanai.app.core
+package com.rejivan.app.core
 
 // Alert + escalation generation, ported from the deterministic logic in
 // prototype/server.js. DANGER alerts (vitals or camera fall) trigger the

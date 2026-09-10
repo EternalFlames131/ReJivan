@@ -1,5 +1,5 @@
 # build_pdf.ps1
-# Regenerates the SanjivanAI concept PDF from its HTML source, injecting an
+# Regenerates the ReJivan concept PDF from its HTML source, injecting an
 # AUTO-GENERATED prototype status snapshot so the document can never go stale.
 # Run:   pwsh -File tools\build_pdf.ps1   (from anywhere; script finds its own folder)
 # Needs: Microsoft Edge (headless) + Python (pypdf). Works on any Windows PC.
@@ -14,11 +14,11 @@
 $ErrorActionPreference = "Stop"
 
 $root   = Split-Path -Parent $PSScriptRoot
-$src    = Join-Path $root "docs\source\SanjivanAI_doc_source.html"
-$out    = Join-Path $root "docs\SanjivanAI_Concept_Document_v1.1.pdf"
+$src    = Join-Path $root "docs\source\ReJivan_doc_source.html"
+$out    = Join-Path $root "docs\ReJivan_Concept_Document_v1.1.pdf"
 $feat   = Join-Path $root "docs\features.json"
 $server = Join-Path $root "prototype\server.js"
-$tmp    = "C:\Users\samra\AppData\Local\Temp\opencode\sanjivanai_doc_gen.html"
+$tmp    = "C:\Users\samra\AppData\Local\Temp\opencode\rejivan_doc_gen.html"
 
 $edge = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 if (-not (Test-Path -LiteralPath $edge)) {
@@ -82,7 +82,7 @@ $snapshot = @"
   <tr><td class="green">Real</td><td>$realList</td></tr>
   <tr><td class="red">Simulated (honest disclosure)</td><td>$simList</td></tr>
 </table>
-<div class="note nobreak"><b>Prototype honesty:</b> simulated parts are clearly labelled in the app and this document. SanjivanAI is <b>not</b> a medical device, does not diagnose, and never replaces a doctor &mdash; a human caregiver or clinician always makes the final decision.</div>
+<div class="note nobreak"><b>Prototype honesty:</b> simulated parts are clearly labelled in the app and this document. ReJivan is <b>not</b> a medical device, does not diagnose, and never replaces a doctor &mdash; a human caregiver or clinician always makes the final decision.</div>
 "@
 
 # -- 4) Inject placeholders into the HTML and write the generated copy ----------

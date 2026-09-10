@@ -1,7 +1,7 @@
 "use strict";
 /**
  * CameraZone — deterministic, serverless-ready SIMULATED room-event detection.
- * Real product: edge AI on a privacy-first camera (fall, out-of-bed,
+ * Real product: edge intelligence on a privacy-first camera (fall, out-of-bed,
  * low-activity). NO video recorded or stored — only events/alerts.
  *
  * Serverless design: events and live-preview frames are pure, deterministic
@@ -66,7 +66,7 @@ function deriveCameraEvents(nowMs = Date.now(), span = 20) {
 
 /**
  * SIMULATED live-preview frame descriptor (privacy-safe metadata only).
- * Real product: on-device edge AI returns only scene metadata — never video.
+ * Real product: on-device edge intelligence returns only scene metadata — never video.
  */
 function liveFrame(zoneId, nowMs = Date.now()) {
   const t = nowMs / 1000;

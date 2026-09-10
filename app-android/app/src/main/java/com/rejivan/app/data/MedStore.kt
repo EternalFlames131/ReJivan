@@ -1,12 +1,12 @@
-package com.sanjivanai.app.data
+package com.rejivan.app.data
 
 import android.content.Context
-import com.sanjivanai.app.core.Medication
+import com.rejivan.app.core.Medication
 
 // Offline-first persistence for medications via SharedPreferences.
 // No network access — works fully offline.
 object MedStore {
-    private const val PREFS = "sanjivanai_meds"
+    private const val PREFS = "rejivan_meds"
     private const val KEY_LIST = "list"
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

@@ -1,7 +1,7 @@
 {
-  "name": "sanjivanai-prototype",
+  "name": "rejivan-prototype",
   "version": "1.0.0",
-  "description": "SanjivanAI — A Personal AI Nurse for Every Family (Prototype)",
+  "description": "ReJivan — A Personal Nurse for Every Family (Prototype)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -21,7 +21,7 @@
   },
   "keywords": [
     "healthcare",
-    "ai-nurse",
+    "rejivan",
     "remote-monitoring",
     "hackathon"
   ],

@@ -1,4 +1,4 @@
-package com.sanjivanai.app.core
+package com.rejivan.app.core
 
 // Mirrors prototype/data model. Everything below is embedded in the app so it
 // works fully OFFLINE (no server, no network). Simulation honesty is preserved:

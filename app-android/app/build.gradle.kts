@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.sanjivanai.app"
+    namespace = "com.rejivan.app"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.sanjivanai.app"
+        applicationId = "com.rejivan.app"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

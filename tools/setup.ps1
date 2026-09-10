@@ -1,13 +1,13 @@
-# setup.ps1  —  One-time AUTO-SETUP so SanjivanAI works on any Windows PC with a drive-only folder.
+# setup.ps1  —  One-time AUTO-SETUP so ReJivan works on any Windows PC with a drive-only folder.
 # What it does (no clicks needed, hands-free by default):
 #   1. Installs missing tools automatically (Python, pypdf, Edge, Git, GitHub CLI) using winget.
 #   2. Sets LOCAL git identity for this repo only (never touches your global git settings).
-#   3. Locks this folder's git remote to the SanjivanAI GitHub repo ONLY (never any other repo).
+#   3. Locks this folder's git remote to the ReJivan GitHub repo ONLY (never any other repo).
 #   4. Enables the auto-push hook (every commit -> pushed to GitHub automatically).
 #   5. Checks GitHub login so auto-push can work without fail.
 #   6. Enables AUTO-DEPLOY to Vercel (if CLI + login present; production site updates every commit).
 #   7. Tests the PDF pipeline and writes a "setup done" marker for this machine.
-# Run from the SanjivanAI folder:  pwsh -ExecutionPolicy Bypass -File tools\setup.ps1
+# Run from the ReJivan folder:  pwsh -ExecutionPolicy Bypass -File tools\setup.ps1
 # Optional interactive mode (ask before installing):  add -Ask
 
 [CmdletBinding()]
@@ -41,7 +41,7 @@ function Should-Install([string]$label) {
     return $a -match '^y'
 }
 
-Write-Host "`n===== SanjivanAI AUTO-SETUP =====" -ForegroundColor Cyan
+Write-Host "`n===== ReJivan AUTO-SETUP =====" -ForegroundColor Cyan
 Write-Host ("Folder : " + $root)
 Write-Host ("Machine: " + $pc)
 
@@ -109,10 +109,10 @@ if (Test-Cmd git) {
 }
 
 # ---------- 5. Lock remote + enable auto-push ----------
-Write-Step "5/7" "Locking remote + enabling auto-push (SanjivanAI repo ONLY)"
+Write-Step "5/7" "Locking remote + enabling auto-push (ReJivan repo ONLY)"
 if (Test-Cmd git) {
     if (-not (Test-Path -LiteralPath "$root\.git")) { git init -b main | Out-Null }
-    $target = "https://github.com/EternalFlames131/SanjivanAI.git"
+    $target = "https://github.com/EternalFlames131/ReJivan.git"
     $origin = git config --get remote.origin.url
     if ($origin -ne $target -and -not [string]::IsNullOrWhiteSpace($origin)) { git remote remove origin; Write-Host "  removed wrong origin: $origin" }
     if ($origin -ne $target) {
@@ -172,7 +172,7 @@ if (Test-Cmd node) {
 } else {
     $problems.Add("Node.js missing - Vercel CLI install skipped. Install Node, npm i -g vercel, then run: vercel login github")
 }
-Write-Host "  To disable auto-deploy later: create .git\no-deploy (or set SANJIVANAI_NO_DEPLOY=1)."
+Write-Host "  To disable auto-deploy later: create .git\no-deploy (or set REJIVAN_NO_DEPLOY=1)."
 
 # ---------- Test the PDF pipeline ----------
 Write-Step "T" "Testing the PDF pipeline (needs Python + Edge)"
@@ -191,7 +191,7 @@ if ($problems.Count -eq 0) {
     Write-Host "`n===== SETUP FINISHED (see reminders below) =====" -ForegroundColor Yellow
     $problems | ForEach-Object { Write-Host ("  * " + $_) -ForegroundColor Yellow }
 }
-Write-Host "Every commit is auto-pushed to github.com/EternalFlames131/SanjivanAI (origin-checked; other repos NEVER touched)."
+Write-Host "Every commit is auto-pushed to github.com/EternalFlames131/ReJivan (origin-checked; other repos NEVER touched)."
 Write-Host "If Vercel CLI + login are present, every commit ALSO auto-deploys the production website."
 Write-Host "Your global git settings and other repositories are untouched."
 Write-Host "If a push is skipped (offline / not logged in), your commit is safe - run 'git push' later."

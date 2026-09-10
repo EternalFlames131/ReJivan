@@ -1,13 +1,13 @@
-package com.sanjivanai.app
+package com.rejivan.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.DisposableEffect
-import com.sanjivanai.app.core.DemoData
-import com.sanjivanai.app.data.MedStore
-import com.sanjivanai.app.ui.App
-import com.sanjivanai.app.ui.AppState
+import com.rejivan.app.core.DemoData
+import com.rejivan.app.data.MedStore
+import com.rejivan.app.ui.App
+import com.rejivan.app.ui.AppState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

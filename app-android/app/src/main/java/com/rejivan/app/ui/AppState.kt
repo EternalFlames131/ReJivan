@@ -1,4 +1,4 @@
-package com.sanjivanai.app.ui
+package com.rejivan.app.ui
 
 import android.content.Context
 import android.os.Handler
@@ -6,8 +6,8 @@ import android.os.Looper
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.sanjivanai.app.core.*
-import com.sanjivanai.app.data.MedStore
+import com.rejivan.app.core.*
+import com.rejivan.app.data.MedStore
 
 // Holds app state, computes vitals/alerts/camera deterministically from the
 // wall clock, and refreshes on a UI tick. No network dependency.

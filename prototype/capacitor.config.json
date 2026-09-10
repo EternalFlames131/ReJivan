@@ -1,10 +1,10 @@
 {
-  "appId": "com.sanjivanai.app",
-  "appName": "SanjivanAI",
+  "appId": "com.rejivan.app",
+  "appName": "ReJivan",
   "webDir": "dist",
   "server": {
     "androidScheme": "https",
-    "allowNavigation": ["sanjivanai.vercel.app"]
+    "allowNavigation": ["prototype-omega-self.vercel.app"]
   },
   "plugins": {
     "SplashScreen": {

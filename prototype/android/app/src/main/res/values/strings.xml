@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">SanjivanAI</string>
-    <string name="title_activity_main">SanjivanAI</string>
-    <string name="package_name">com.sanjivanai.app</string>
-    <string name="custom_url_scheme">com.sanjivanai.app</string>
+    <string name="app_name">ReJivan</string>
+    <string name="title_activity_main">ReJivan</string>
+    <string name="package_name">com.rejivan.app</string>
+    <string name="custom_url_scheme">com.rejivan.app</string>
 </resources>

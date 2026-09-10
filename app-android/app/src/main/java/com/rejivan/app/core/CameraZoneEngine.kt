@@ -1,4 +1,4 @@
-package com.sanjivanai.app.core
+package com.rejivan.app.core
 
 import kotlin.math.sin
 

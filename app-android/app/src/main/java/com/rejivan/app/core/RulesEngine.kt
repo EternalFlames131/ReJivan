@@ -1,4 +1,4 @@
-package com.sanjivanai.app.core
+package com.rejivan.app.core
 
 // Ported 1:1 from prototype/rules.js — REAL clinical-style thresholds (REAL logic).
 object RulesEngine {

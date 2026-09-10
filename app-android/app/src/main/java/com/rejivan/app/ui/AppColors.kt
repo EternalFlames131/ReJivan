@@ -1,4 +1,4 @@
-package com.sanjivanai.app.ui
+package com.rejivan.app.ui
 
 import androidx.compose.ui.graphics.Color
 

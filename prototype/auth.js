@@ -15,7 +15,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
-const SESSION_SECRET = process.env.SESSION_SECRET || "sanjivanai-prototype-dev-secret";
+const SESSION_SECRET = process.env.SESSION_SECRET || "rejivan-prototype-dev-secret";
 const TTL_MS = 7 * 24 * 3600 * 1000; // 7 days
 
 class AuthStore {

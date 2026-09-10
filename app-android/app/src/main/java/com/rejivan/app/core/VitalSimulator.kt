@@ -1,4 +1,4 @@
-package com.sanjivanai.app.core
+package com.rejivan.app.core
 
 import java.security.MessageDigest
 import kotlin.math.PI

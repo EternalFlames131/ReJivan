@@ -1,19 +1,37 @@
-# SanjivanAI — CONVERSATION & MEMORY LOG (auto-saved)
+# ReJivan — CONVERSATION & MEMORY LOG (auto-saved)
 
 > Purpose: EVERY meaningful exchange, thought and decision about this project is saved here so the user NEVER has to re-explain anything. Sessions are resumed by reading this file + CONTEXT.md.
 > Auto-save rule: after each turn that involves decisions/new info, a dated entry is appended by the assistant automatically.
 
 ---
 
+## 2026-09-10 (Day 3 — medical-grade ML research; user called the project "ReJivan")
+
+### What the user asked
+Research genuinely medical-grade / clinically validated ML models (NOT general LLMs) for the monitoring engine (HR, SpO2, BP, temp, glucose wearables + privacy-first camera fall/out-of-bed/low-activity + alerts + auto emergency escalation). Categories: (1) early-warning/deterioration scores & ML deterioration models, (2) vital-sign time-series anomaly detection, (3) camera fall detection, (4) RPM ML-as-a-service with clinical validation, (5) on-device/edge runtimes, (6) multi-wearable sensor fusion + concept drift. User used the working name **"ReJivan"** — docs still say ReJivan; name change not yet applied (ASK before renaming everything).
+
+### Key research conclusions (delivered in chat, full list)
+- **Truly clinically validated + usable now:** deterministic NEWS2 / MEWS scoring (RCP UK standard; NEWS2 external validation AUC 0.898 for 24h deterioration; implementable offline, ~50 lines of rules, zero training). Glucose: do NOT build glucose ML — ingest FDA-cleared CGM alarms (FreeStyle Libre 3, Dexcom) instead.
+- **Published + prospective outcome evidence (model code closed):** TREWS/TREWScore (Johns Hopkins, JAMA 2022, 5 hospitals, confirmed alerts → 3.3% absolute mortality reduction; AUC 0.83 septic shock) · COMPOSER (npj Digit Med 2021, conformal feed-forward NN, sepsis AUC 0.938–0.945; npj 2024 shows deployment reduced mortality) · DeepMind/Google AKI RNN (Nature 2019, AUC 92.1%; honest caveat — not released, later ATR paper had data-leakage).
+- **FDA-cleared RPM/SaMD (all proprietary, use only as reference spirit):** Biofourmis Biovitals Analytics Engine (K183282, individualized vitals baseline, decompensation weeks ahead) · CLEW ICU (K200717/K233216, hemodynamic instability) · Tempus ECG-AF (K233549).
+- **Fall detection — NOT clinically validated anywhere (lab-dataset validated only):** MediaPipe BlazePose + LSTM (95.2% acc / 100% recall, UR-Fall) · AFAR 1D-CNN (CPU real-time) · bimodal IMU+vision late-fusion (F1 97.3%, FPR 3.6%, ~20fps CPU, night-tested) · YOLOv8+MediaPipe (96% acc). ALL are on-device-friendly → fits privacy-first claim. Honest pitch: "research-validated on public datasets, edge-only".
+- **Anomaly detection (research stage):** LSTM autoencoders (reconstruction error), VAE-IF (Escudero 2024, unsupervised ICU artifact detection), TS2Vec (AAAI'22), PyCaret/PyOD/Isolation Forest; icu-anomaly open repo (MIMIC III/IV). MIMIC requires credentialing — for the hack, use public UR-Fall + PhysioNet 2012 challenge.
+- **Edge runtimes (choose to underpin architecture):** LiteRT (formerly TFLite) ~1MB, MediaPipe Tasks (pose), ONNX Runtime Mobile, OpenVINO (Intel boxes); so no video leaves the device. Cite COMPOSER's conformal "I don't know" as design-precedent for low false alarms.
+- **Fusion + drift (research stage, great citation fuel):** VitalTrackAI-GatedFusion (Springer 2026, smartphone-edge, F1 0.90) · PECS ECG-PPG drift arbitration (arXiv 2026) · IoMT LSTM-AE + XGBoost fusion (Accuracy 99.76%, edge 84ms) · DOCTOR continual learning (drift adaptation).
+- **Recommended ReJivan/ReJivan stack (2026-hackathon real):** NEWS2/MEWS rules layer (clinically grounded) + per-channel LSTM-AE anomaly scores (on-device) + MediaPipe pose→LSTM/1D-CNN fall classifier (on-device, keypoints only, no video) + CGM alarm ingestion + signal-quality-aware fusion + deterministic escalation ladder. Everything runs on a phone, offline, no cloud dependency.
+- Honesty tiers to quote judges: (a) clinically validated/deployed (NEWS2), (b) clinically evidenced but closed-source (COMPOSER/TREWS — we replicate the *design pattern*, not the weights), (c) research-stage (anomaly/fall/fusion — label SIMULATED per existing rules).
+
+---
+
 ## 2026-09-09 (Day 2, afternoon — reliability / critic counter-arguments)
 
 ### What the user asked
-How to counter a critic who questions SanjivanAI's reliability: "How can we trust this with our family or any patient? What if something goes wrong? What are the precautions?"
+How to counter a critic who questions ReJivan's reliability: "How can we trust this with our family or any patient? What if something goes wrong? What are the precautions?"
 
 ### Response given (6 angles)
 1. **Trust** — human-in-the-loop (nurse, not doctor), transparent clinical thresholds (no black box), 3-tier escalation ladder (no single point of failure).
 2. **Crash / wrong readings** — graceful degradation (independent layers), alert deduplication prevents alarm-failure, honest labelling of simulated data + roadmap for hardware validation.
-3. **Privacy breach** — zero video recorded/stored (on-device AI, alert-only), consent-based, DPDP-aligned, more private than existing hospital CCTV.
+3. **Privacy breach** — zero video recorded/stored (on-device Prajñā, alert-only), consent-based, DPDP-aligned, more private than existing hospital CCTV.
 4. **Emergency call failure** — family → backup → 108/112 with retries, SMS/feature-phone fallback for weak-internet areas like A&N outer islands.
 5. **"Just a student project"** — two-layer monitoring (vitals + camera) nobody else combines, hospital + home dual use case, Andaman-specific offline/multilingual design.
 6. **Concrete safeguards table** — scrypt hashing, per-user isolation, alert cooldown, escalation ladder, threshold transparency, no video storage, consent-based camera, SMS fallback, safety disclaimer.
@@ -25,11 +43,11 @@ How to counter a critic who questions SanjivanAI's reliability: "How can we trus
 
 ### What the user asked (in order)
 1. Refactor the engine to be stateless so the prototype can run as a website on **Vercel** (user chose Vercel, on a public/different domain) for a friend to monitor.
-2. **Make the GitHub repo PUBLIC** and give the link → done: **https://github.com/EternalFlames131/SanjivanAI** (now PUBLIC, branch main; HSC requirement satisfied — no longer a pending task).
+2. **Make the GitHub repo PUBLIC** and give the link → done: **https://github.com/EternalFlames131/ReJivan** (now PUBLIC, branch main; HSC requirement satisfied — no longer a pending task).
 3. "Did you save every last detail?" → this entry is that save.
 
 ### Repo made public
-- `gh repo edit EternalFlames131/SanjivanAI --visibility public --accept-visibility-change-consequences` — verified PUBLIC before finishing.
+- `gh repo edit EternalFlames131/ReJivan --visibility public --accept-visibility-change-consequences` — verified PUBLIC before finishing.
 - Note: `--accept-visibility-change-consequences` flag is required by gh before the visibility takes effect.
 
 ### SERVERLESS-READY REFACTOR (the big change)
@@ -74,32 +92,32 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 ### 2. Competition facts (verified from mybharat.gov.in/pages/hack_social on 2026-09-08)
 - **LAST SUBMISSION DATE: 15 October 2026** (window 1 Sep – 15 Oct). Registration open.
 - Eligibility: Indian citizen, 18–29 as of 17 Aug 2026, enrolled in AISHE-registered institution; team up to 3 (same or different institutions; solo allowed); each member registers individually; 1 Team Lead submits.
-- Deliverables: Problem Statement + 6–7 slide deck (≤10 MB, with AI-tools disclosure) + Working Prototype (PUBLIC GitHub repo, MIT, README, architecture, sample data) + Demo Video 3–5 min / ≥720p / ≤80 MB + Annexure 1 self-declaration & IDs.
+- Deliverables: Problem Statement + 6–7 slide deck (≤10 MB, with intelligence-tools disclosure) + Working Prototype (PUBLIC GitHub repo, MIT, README, architecture, sample data) + Demo Video 3–5 min / ≥720p / ≤80 MB + Annexure 1 self-declaration & IDs.
 - Stages: submission by 15 Oct → State hackathon 16 Oct–30 Nov (3 teams shortlist) → IIT-B screening 1–15 Dec → **36 national finalists**, National Showcase 10–12 Jan 2027 Delhi. Prizes ₹75k/50k/25k/15k/15k; finalists get ₹6k dev grant.
 - Evaluation (6 params): Relevance · Technical Strength · Functionality · Creativity/Innovation · Social Cause Impact · Presentation & Team.
 
 ### 3. Idea selection
 - User theme choice: **Healthcare & Wellbeing** (plus fits **Elderly Care & Healthy Ageing** — 2 themes deliberately).
-- User's own idea (chose over my 4 suggestions): a "**personal AI nurse**" — continuous monitoring, on-time medicines, family can care at home instead of hospital, automatic emergency signals to emergency services, no person needed on-site, affordable subscription.
+- User's own idea (chose over my 4 suggestions): a "**personal Prajñā nurse**" — continuous monitoring, on-time medicines, family can care at home instead of hospital, automatic emergency signals to emergency services, no person needed on-site, affordable subscription.
 - Verified feasibility: full hardware product = multi-year; **hackathon-realistic = working software prototype that SIMULATES sensors** and makes dashboard/meds/alerts/escalation real.
 
 ### 4. Name, folder, repo
-- New working folder (started as "HSC AI Nurse") → renamed **SanjivanAI** (user's choice), path `C:\Users\samra\OneDrive\Desktop\SanjivanAI`.
-- Concept PDF built: **SanjivanAI_Concept_Document_v1.1.pdf** (9 pages) using Edge headless + HTML source (pipeline from owner's AGENTS.md).
-- GitHub: **private repo created** `EternalFlames131/SanjivanAI` (account EternalFlames131), branch **main**. ⚠️ Must be made PUBLIC before 15 Oct (submission requirement).
+- New working folder (started as "HSC Prajñā Nurse") → renamed **ReJivan** (user's choice), path `C:\Users\samra\OneDrive\Desktop\ReJivan`.
+- Concept PDF built: **ReJivan_Concept_Document_v1.1.pdf** (9 pages) using Edge headless + HTML source (pipeline from owner's AGENTS.md).
+- GitHub: **private repo created** `EternalFlames131/ReJivan` (account EternalFlames131), branch **main**. ⚠️ Must be made PUBLIC before 15 Oct (submission requirement).
 
 ### 5. Scope expansion (user's additions)
 - Use case extended beyond home: **hospitals** where doctors/nurses can't always be present → **"Virtual Ward"** mode (nurse-station view, rooms, priority alerts).
-- Monitoring NOT only wearables → **CCTV-style room cameras**: fall detection, out-of-bed, low activity; video can also estimate heart/resp rate contact-free. **Privacy-first design is mandatory** (on-device AI, NO video recorded/stored, consent, DPDP-aligned) — positioned as a winning point.
+- Monitoring NOT only wearables → **CCTV-style room cameras**: fall detection, out-of-bed, low activity; video can also estimate heart/resp rate contact-free. **Privacy-first design is mandatory** (on-device Prajñā, NO video recorded/stored, consent, DPDP-aligned) — positioned as a winning point.
 - Prototype honesty: camera events + vitals + billing **simulated**; dashboard, medications, rules engine, alerts, escalation, multilingual **fully real**.
 
 ### 6. Portability ("perfect folder" + drive)
 - Folder made **self-contained** → works from any drive: `docs/source` (PDF HTML), `tools/build_pdf.ps1` + `verify_pdf.py`, `references/hsc_guidelines_summary.md`, `opencode-config/` (backup of owner's global opencode AGENTS.md, opencode.jsonc, master LOG.md), plus README/CONTEXT/AGENTS.
-- Removable drive F: → full copy at `F:\SanjivanAI` (mirrored, includes .git). F: = "live" folder with opencode on the other device.
+- Removable drive F: → full copy at `F:\ReJivan` (mirrored, includes .git). F: = "live" folder with opencode on the other device.
 
 ### 7. Automation & safety (multi-repo protection)
-- `setup.ps1`: one-time auto-setup per PC — installs missing Python/pypdf/Edge/Git via winget, sets repo-LOCAL git identity, locks remote to SanjivanAI ONLY, enables auto-push, checks GitHub login, tests PDF pipeline, writes per-PC marker `tools\.setup-done-<PC>.txt`.
-- **Auto-push hook** `.githooks/post-commit`: after every commit pushes to SanjivanAI repo. **Hardened:** only fires when origin == SanjivanAI URL; otherwise does nothing (tested with a throwaway repo — other repos cannot be touched). Global git settings untouched (verified).
+- `setup.ps1`: one-time auto-setup per PC — installs missing Python/pypdf/Edge/Git via winget, sets repo-LOCAL git identity, locks remote to ReJivan ONLY, enables auto-push, checks GitHub login, tests PDF pipeline, writes per-PC marker `tools\.setup-done-<PC>.txt`.
+- **Auto-push hook** `.githooks/post-commit`: after every commit pushes to ReJivan repo. **Hardened:** only fires when origin == ReJivan URL; otherwise does nothing (tested with a throwaway repo — other repos cannot be touched). Global git settings untouched (verified).
 - **Fully automatic setup:** opencode auto-runs setup.ps1 at session start whenever the per-PC marker is missing — user never types a command (AGENTS.md RULE).
 - Entered as rule in AGENTS.md: keep commits deliberate; auto-push is enabled.
 
@@ -137,7 +155,7 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - Built both:
   - **Auth (REAL):** `auth.js` — register/login/logout; passwords hashed with Node scrypt (never plain text); session tokens; `GET /api/me`. Every data endpoint now requires `Authorization: Bearer <token>` and is filtered by the logged-in user (patients, vitals, meds, alerts, escalations, cameras). Cross-user action returns 403/404.
   - **Demo accounts:** `asharma@demo.in` (owns Anita P1), `rprakash@demo.in` (owns Ram P2), `wardnurse@demo.in` (owns ward beds P3+P4). Password for all: `demo123`.
-  - **Live camera (UI REAL, feed SIMULATED + labelled):** `View live` button on each camera zone → modal with animated privacy-safe room preview (canvas) + person/motion/lighting metadata from `/api/camera-zones/:id/live`. On-device-AI framing — **no video recorded or stored**, consistent with privacy-first promise. Connect/Disconnect + live clock.
+  - **Live camera (UI REAL, feed SIMULATED + labelled):** `View live` button on each camera zone → modal with animated privacy-safe room preview (canvas) + person/motion/lighting metadata from `/api/camera-zones/:id/live`. On-device Prajñā framing — **no video recorded or stored**, consistent with privacy-first promise. Connect/Disconnect + live clock.
   - All new UI text translated into all 5 languages (EN/HI/BN/TA/TE).
 - Verified end-to-end: no-token → 401; Sharma family sees only P1 + own meds + CAM1; nurse sees only P3/P4; nurse blocked from CAM1; wrong password rejected. Committed + auto-pushed (d6dec9b).
 - Note for later: registering a NEW family does not yet create a patient for them (no "Add patient" flow yet) — the seeded demo accounts own the 4 demo patients.
@@ -160,10 +178,10 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 
 - User asked: "update everything into the pdf as well whenever any changes are made automatically."
 - Built the **auto-updating concept PDF**:
-  - New `.githooks/pre-commit` hook: before EVERY commit it rebuilds `docs\SanjivanAI_Concept_Document_v1.1.pdf` and stages it, so the PDF can never go stale. If Edge fails (e.g. PDF open), it warns but never blocks the commit.
+  - New `.githooks/pre-commit` hook: before EVERY commit it rebuilds `docs\ReJivan_Concept_Document_v1.1.pdf` and stages it, so the PDF can never go stale. If Edge fails (e.g. PDF open), it warns but never blocks the commit.
   - New `docs/features.json` — canonical machine-readable feature list + demo accounts + "real/simulated" status + notes.
   - `tools/build_pdf.ps1` upgraded: injects an auto-generated **"Live Prototype Status"** section — feature table from features.json, plus the REAL / SIMULATED lists parsed LIVE out of `prototype/server.js` (so the document always mirrors the actual code), plus build date. Writes generated HTML to Temp\opencode, renders via Edge headless, verifies via pypdf.
-  - Placeholders added in `docs/source/SanjivanAI_doc_source.html` (`{{STATUS_ROW}}`, `{{BUILD_DATE}}`, `<!--AUTO:PROTOTYPE_SNAPSHOT-->`).
+  - Placeholders added in `docs/source/ReJivan_doc_source.html` (`{{STATUS_ROW}}`, `{{BUILD_DATE}}`, `<!--AUTO:PROTOTYPE_SNAPSHOT-->`).
   - Verified: PDF rebuilds to 9 pages, snapshot content confirmed in text (demo accounts, emergency call chain, Tamil/Telugu languages, etc.). Hook fired automatically on the commit itself. Auto-pushed (4a6dd9f).
 - **How it works for the user:** no action needed — any future commit (added feature, fix, memory save) automatically refreshes the PDF to match.
 - One maintenance note: when a genuinely NEW feature ships, its row should be added to `docs/features.json` once; the rest (status lists, dates, accounts) updates itself.
@@ -177,13 +195,13 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
   2. **State/Regional** — 23 Oct – 5 Nov 2026, top ~3 shortlisted per state/UT.
   3. **National** — IIT Bombay screening → **36 finalists** + mentorship (10 Nov – 31 Dec 2026).
   4. **National Showcase** — VBYLD 2027, New Delhi, 10–12 Jan 2027.
-- Practical: also enter our own college's internal hackathon so the institution nominates SanjivanAI.
+- Practical: also enter our own college's internal hackathon so the institution nominates ReJivan.
 - `references/hsc_guidelines_summary.md` updated.
 
 ### 2) Samrat is based in **Andaman & Nicobar Islands** (UT) — not West Bengal!
 - All "West Bengal" references corrected → **Andaman & Nicobar Islands (UT)**:
-  - `README.md` (problem statement state-specific A&N), `CONTEXT.md` (open item), `hsc_guidelines_summary.md` (file naming example `AndamanNicobar_SanjivanAI_...` + UT note), `docs/source/SanjivanAI_doc_source.html` (Team row, "Hack Local" context section, Relevance cell, naming example).
-- New "Hack Local" narrative angle for the concept doc (A&N, 36 inhabited islands): one major referral hospital (GB Pant Hospital, Port Blair), specialists centred on the main island, PHCs/Cottage Hospitals on outer islands, sea/air travel for specialist care, seasonal connectivity gaps, split island–mainland families → SanjivanAI's offline-friendly, multilingual, SMS-fallback, remote-monitoring design fits perfectly.
+  - `README.md` (problem statement state-specific A&N), `CONTEXT.md` (open item), `hsc_guidelines_summary.md` (file naming example `AndamanNicobar_ReJivan_...` + UT note), `docs/source/ReJivan_doc_source.html` (Team row, "Hack Local" context section, Relevance cell, naming example).
+- New "Hack Local" narrative angle for the concept doc (A&N, 36 inhabited islands): one major referral hospital (GB Pant Hospital, Port Blair), specialists centred on the main island, PHCs/Cottage Hospitals on outer islands, sea/air travel for specialist care, seasonal connectivity gaps, split island–mainland families → ReJivan's offline-friendly, multilingual, SMS-fallback, remote-monitoring design fits perfectly.
 - PDF will be auto-rebuilt with these edits on next commit (pre-commit hook).
 
 ---
@@ -227,9 +245,9 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 
 ### Auto-deploy now goes to a DIFFERENT URL (two Vercel accounts exist)
 - The medical-device build auto-deployed to the "prototype" project at **https://prototype-omega-self.vercel.app** (production, fully verified E2E: login, devices, 80% confidence, 11-device catalogue).
-- The OLD **https://sanjivanai.vercel.app** STILL WORKS but serves the PREVIOUS build (no medical devices) — and the Vercel API says "you don't have access to sanjivanai.vercel.app" from the current CLI account.
-- Root cause: there are TWO Vercel accounts. The current CLI login (samrat1312004-1117 / samrat1312004-1117s-projects team) owns projects: prototype, lpgenerator-new, lp-generator-v2, v0-tourism-app-prototype. `sanjivanai.vercel.app` lives in a DIFFERENT account (likely the `vercel login github` device-flow from 2026-09-09, code DHLK-VNLG, under the GitHub identity).
-- Impact: the post-commit auto-deploy hook now updates prototype-omega-self.vercel.app. If Samrat wants the new build on the nice short URL sanjivanai.vercel.app, he must log into that other account once (`vercel login`) and deploy — otherwise keep using prototype-omega-self.vercel.app.
+- The OLD short-account URL (a different Vercel account, still under the former project name) STILL WORKS but serves the PREVIOUS build (no medical devices) — and the Vercel API says "you don't have access to it" from the current CLI account.
+- Root cause: there are TWO Vercel accounts. The current CLI login (samrat1312004-1117 / samrat1312004-1117s-projects team) owns projects: prototype, lpgenerator-new, lp-generator-v2, v0-tourism-app-prototype — that is where `prototype-omega-self.vercel.app` lives. The old short URL lives in a DIFFERENT account (likely the `vercel login github` device-flow from 2026-09-09, code DHLK-VNLG, under the GitHub identity).
+- Impact: the post-commit auto-deploy hook now updates prototype-omega-self.vercel.app. If Samrat wants the new build on the old short URL, he must log into that other account once (`vercel login`) and deploy — otherwise keep using prototype-omega-self.vercel.app.
 
 ---
 
@@ -254,7 +272,7 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - **Temperature:** TempTraq patch (FDA Class II, ₹2,000) · AION TempShield (FDA, 90-day)
 - **Glucose (CGM):** FreeStyle Libre 3 (FDA+CDSCO, ₹4,670/sensor) · GlucoRx Vixxa 2 (CDSCO, ₹3,200)
 - **Indian multi-parameter:** H360 Health360 (Medilogy, CDSCO, ₹7,000, IIT-designed) · SanketLife
-- **Key pitch point:** NO single device covers all 5 vitals today — SanjivanAI's value = AI platform that aggregates multiple medical devices into one unified dashboard.
+- **Key pitch point:** NO single device covers all 5 vitals today — ReJivan's value = a Prajñā platform that aggregates multiple medical devices into one unified dashboard.
 
 ### 3) Integration BUILT (per user request)
 - **NEW FILE `prototype/medical-devices.js`:** 11-device catalogue (all medically approved), per-patient device registry (connection, battery, signal, last-seen), medical confidence boost (simulated 57% → medical 80%), simulated BLE heartbeat.

@@ -31,7 +31,7 @@
       "notes": "Add schedule, mark taken, adherence log persisted to disk"
     },
     {
-      "name": "AI danger-score rules engine",
+      "name": "Prajñā danger-score rules engine",
       "status": "real",
       "notes": "Transparent clinical thresholds for heart rate, SpO2, BP, temperature, glucose"
     },
@@ -53,7 +53,7 @@
     {
       "name": "Privacy-first camera zones",
       "status": "real",
-      "notes": "Fall / out-of-bed / low-activity event feed; on-device AI, NO video recorded or stored"
+      "notes": "Fall / out-of-bed / low-activity event feed; on-device Prajñā, NO video recorded or stored"
     },
     {
       "name": "Live camera preview for family",

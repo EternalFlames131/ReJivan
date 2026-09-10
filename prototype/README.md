@@ -1,6 +1,6 @@
-# SanjivanAI — Working Prototype
+# ReJivan — Working Prototype
 
-> A Personal AI Nurse for Every Family — remote health monitoring, on-time medicines, and automatic emergency help, working **at home and in hospital "Virtual Ward" rooms**.
+> A Personal Nurse for Every Family — remote health monitoring, on-time medicines, and automatic emergency help, working **at home and in hospital "Virtual Ward" rooms**.
 
 This is the working prototype for the **Hack for Social Cause 2027** submission. It is a responsive web app with a live REST API and a real-time dashboard.
 
@@ -59,7 +59,7 @@ New families can register via the "Create account" screen. All `/api/*` endpoint
 | SMS / WhatsApp / ambulance delivery | **Simulated** (live-API hooks stubbed) |
 | Billing | **Simulated** (not yet in UI) |
 
-Privacy-first by design: camera zones run AI on-device and **never record or store video** — only events and alerts.
+Privacy-first by design: camera zones run Prajñā on-device and **never record or store video** — only events and alerts.
 
 ## Architecture
 
@@ -114,7 +114,7 @@ All data endpoints require `Authorization: Bearer <token>`.
 
 ## Disclaimer
 
-SanjivanAI is a **prototype**, not a certified medical device. It supports — never replaces — human caregivers and doctors. A human always makes the final decision.
+ReJivan is a **prototype**, not a certified medical device. It supports — never replaces — human caregivers and doctors. A human always makes the final decision.
 
 ## License
 
