@@ -1,0 +1,3 @@
+# AutoSave watcher log (written on every auto-commit — must never be committed
+# or it would trigger an endless loop of autosave commits)
+tools/autosaver.log

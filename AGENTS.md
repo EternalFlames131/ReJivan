@@ -44,6 +44,11 @@ It checks/installs Python + pypdf + Edge + Git (via winget, asks first), sets LO
 - **SAFETY (never cross-repo):** the hook only fires when this folder's git `origin` is exactly the ReJivan repo; otherwise it does nothing. The owner has OTHER GitHub repos and global git/opencode settings are never touched. Commits themselves are still deliberate (git add + git commit).
 - If offline/not logged in, the push is skipped but the commit is safe — run `git push` later.
 
+## Auto-save (AutoSave watcher — commits+pushes+deploys by itself)
+- **`tools\autosaver.ps1`** watches the whole project. When a change-set stays stable for 40 s (and > 120 s since the last auto-commit), it runs `git add -A && git commit`. The post-commit hook then auto-pushes + auto-deploys + refreshes `rejivan.vercel.app` — the user never has to type a command.
+- Started automatically at Windows logon via a Startup-folder shortcut ("ReJivan AutoSave"). Pause it anytime by creating the file `.git\no-autosave`; remove it to resume. Its log is `tools\autosaver.log` (gitignored so it can never cause a loop).
+- Safety: it only ever runs `git` inside THIS folder's repo; other repos/global settings are untouched. Because the repo is PUBLIC, never add passwords/secrets to files (auto-push sends them).
+
 ## Rules
 - Owner is non-technical: plain language, no unexplained jargon.
 - After finishing/substantial work, append a timestamped line to `CHANGELOG.md` (and the master log `C:\Users\samra\OneDrive\Desktop\Opencode task\LOG.md`). Then commit (auto-push takes care of GitHub).

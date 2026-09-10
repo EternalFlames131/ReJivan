@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-09-10 (Day 3 — AutoSave: auto push + auto deploy on ANY change)
+
+### What the user asked
+- "Also setup auto push and auto deployment whenever change is made."
+
+### Current state (before this)
+- Auto-push + auto-deploy ALREADY ran after every `git commit` (the post-commit hook). What was missing: the commit itself was manual (`git add` + `git commit`). User wants hands-free on ANY file change.
+
+### What was done (verified)
+- NEW file `tools/autosaver.ps1` — background watcher: polls `git status --porcelain -z` every 10 s; when a change-set stays IDENTICAL for ~40 s (and >120 s since last auto-commit), it runs `git add -A && git commit -m "Auto-save: ..."`. The existing post-commit hook then auto-pushes + auto-deploys + refreshes `rejivan.vercel.app`. Pause: create `.git\no-autosave`. Log (gitignored): `tools/autosaver.log`.
+- `.gitignore` added with ONLY `tools/autosaver.log` — prevents the watcher log from becoming an endless autosave/commit loop.
+- Auto-start at Windows logon: `Register-ScheduledTask` was blocked (no admin rights on this account), so used the per-user **Startup folder shortcut "ReJivan AutoSave"** (WScript shell, hidden window) — works with no admin.
+- Watcher started right now in the background and confirmed running (log line "AutoSave started for ..."); it will sweep up the current pending changes (new files + PDF refresh) automatically.
+- Live-checked earlier this session: rejivan.vercel.app serves the ReJivan build (health {"ok":true,"service":"ReJivan"}).
+
+### Notes / cautions
+- The repo is PUBLIC (HSC 2027). Since AutoSave pushes everything, only keep safe content in the folder — never passwords/secrets in files.
+- Frequent rapid edits → at most one auto-commit every ~2 min, which comfortably stays inside Vercel's free deployment quota.
+
+---
+
 ## 2026-09-10 (Day 3 — URL renamed to rejivan.vercel.app; second URL removed)
 
 ### What the user asked
