@@ -14,7 +14,10 @@ case "$ROOT" in
 esac
 
 if pwsh -ExecutionPolicy Bypass -File "$ROOT/tools/build_pdf.ps1" >/tmp/rejivan_pdf_build.log 2>&1; then
+  sleep 1
   git add "$ROOT/docs/ReJivan_Concept_Document_v1.1.pdf"
+  sleep 1
+  git add "$ROOT/docs/ReJivan_Concept_Document_v1.1.pdf" >/dev/null 2>&1
   printf '\033[36m[ReJivan] Concept PDF auto-rebuilt before commit (fresh status snapshot).\033[0m\n'
 else
   printf '\033[33m[ReJivan] PDF auto-build FAILED (see /tmp/rejivan_pdf_build.log) - committed anyway, PDF may be stale.\033[0m\n'

@@ -99,6 +99,18 @@ $url = "file:///" + ($tmp -replace '[\\/]+', '/')
 Write-Output "Rendering generated HTML -> PDF"
 & $edge --headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf="$out" $url 2>$null
 if (-not (Test-Path -LiteralPath $out)) { Write-Error "PDF not produced."; exit 1 }
+
+# Edge can return before the last bytes are flushed to disk. Wait until the file
+# size is stable (two identical reads a moment apart) so the pre-commit hook's
+# `git add` never stages a half-written PDF (which caused endless dirty-state
+# flaps + autosave loops).
+$size = -1
+for ($i = 0; $i -lt 20; $i++) {
+    Start-Sleep -Milliseconds 500
+    $cur = (Get-Item -LiteralPath $out).Length
+    if ($cur -eq $size) { break }
+    $size = $cur
+}
 Write-Output "PDF written: $out"
 
 # -- 6) Verify -------------------------------------------------------------------
