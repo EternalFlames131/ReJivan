@@ -5,6 +5,32 @@
 
 ---
 
+## 2026-09-10 (Day 3 — FULL REBRAND executed; repo now EternalFlames131/ReJivan)
+
+### What the user asked (and approved)
+- Stop calling the project SanjivanAI → **ReJivan**. There must be **zero** mentions of the old name (or of "AI") in any stage of the project. The engine/intelligence is named **"Prajñā"** (exact spelling ñ + ā; generic phrasing = "intelligence" / "on-device Prajñā"). Asked explicitly if the GitHub repo should be renamed too → **Yes** (public, keep history).
+
+### What was done (all verified)
+- Bulk ladder script (temp) over 48 tracked files: SanjivanAI→ReJivan (all case/site variants), com.sanjivanai→com.rejivan, EternalFlames131/SanjivanAI→EternalFlames131/ReJivan, plus phrase ladder (taglines, "On-device AI"→"On-device Prajñā", "AI nurse"→"Prajñā nurse", "AI-tools disclosure"→"intelligence-tools disclosure", "camera AI"→"camera intelligence", etc.).
+- Files renamed: docs/source/ReJivan_doc_source.html, docs/ReJivan_Concept_Document_v1.1.pdf (pre-commit hook auto-rebuilds it), Android java dirs com/sanjivanai→com/rejivan in BOTH app-android/ and the prototype/android Capacitor wrapper (MainActivity.java package now matches its path — a mismatch caught and fixed before commit).
+- Careful manual edits after the bulk pass: doc HTML (5 "AI"→intelligence/digital-tools fixes + "an Prajñā nurse"→"a Prajñā nurse"), server.js ("On-device Prajñā"), camerazone.js (2), prototype README, root README, CONTEXT.md (2), CHANGELOG URL, CONVERSATION (4 edits incl. the Vercel two-account block rewritten with old URL removed), hsc_guidelines_summary.md (3), opencode-config/AGENTS.md, capacitor.config.json allowNavigation (prototype + android assets), dist/index.html + android-assets index.html API_BASE, public index.html ("On-device AI" line).
+- lang.json (public): 20 edits — appName/tagline/disclaimer/live_banner/device_banner in HI/BN/TA/TE now ReJivan (रीजीवन/রিজিভন/ரிஜீவன்/రిజీవన్) with no AI phrasing; copied to dist/lang.json + android assets lang.json (key sets verified identical).
+- .githooks/pre-commit + post-commit: rewritten manually (extensionless files, skipped by the ladder) — ReJivan messages, ALLOW/ALLOW_ALT URLs = EternalFlames131/ReJivan.git, REJIVAN_NO_DEPLOY, pre-commit root pattern `*ReJivan|*SanjivanAI`, PDF path docs/ReJivan_Concept_Document_v1.1.pdf, build log /tmp/rejivan_pdf_build.log.
+- GitHub: `gh repo rename ReJivan --repo EternalFlames131/SanjivanAI --yes` → now **EternalFlames131/ReJivan** (PUBLIC, history preserved, old URL redirects). `git remote set-url origin` updated, verified via git ls-remote.
+- Committed **949eb65** (49 files, incl. all renames). Pre-commit auto-rebuilt the PDF; post-commit auto-pushed + auto-deployed production. Live check: https://prototype-omega-self.vercel.app health 200, served HTML shows ReJivan, zero old-name/"AI" matches.
+- Sanity: node --check OK on all 11 JS, JSON parse OK on 8 files, Kotlin package com.rejivan.app consistent; rg shows zero leftover "sanjivanai" (any case) except intentionally kept historical log lines in opencode-config/LOG.md (LP-Generator project) and the opencode.ai schema URL (false positive).
+
+### Notes / decisions
+- Live URL everywhere = **prototype-omega-self.vercel.app** (the old short sanjivanai.vercel.app URL removed from all docs — it belongs to a different account).
+- Local disk folder is still literally "SanjivanAI" — FINE: hooks accept both names; user may rename the folder manually anytime (close opencode first).
+- APK side already com.rejivan.app (native app-android Debug APK earlier at Downloads/ReJivan_v1.0.apk); Capacitor APK would need a rebuild for a fresh package name.
+- The medical-grade model stack recommendations (NEWS2/MEWS now; MediaPipe pose→LSTM falls; COMPOSER/TREWS/DeepMind-AKI as validated-upgrade research) live in the Day-3 research section below.
+
+### Open / next
+- Nothing technical left. Optional later: rename the local disk folder, rebuild APKs under the new name, wire real NEWS2 rules into the engine.
+
+---
+
 ## 2026-09-10 (Day 3 — medical-grade ML research; user called the project "ReJivan")
 
 ### What the user asked
