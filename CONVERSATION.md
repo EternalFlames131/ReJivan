@@ -27,6 +27,10 @@
 ### Follow-up — local verification up (12:35)
 - Started the prototype locally for on-machine checks: `node server.js` → **http://localhost:8080**. Caught + killed a STALE dev server from this morning (PID 16652, pre-rebrand) that still owned port 8080 and served the old SanjivanAI build; started the fresh server (PID 332). Verified: health JSON now {"ok":true,"service":"ReJivan"}, homepage loads, family login → live vitals (HR 86 / SpO2 96), ward login → alerts + escalations + camera zones. Logins: asharma@demo.in / rprakash@demo.in / wardnurse@demo.in (demo123).
 
+### Follow-up — Android APK rebuilt + builds made fast/visible (13:25)
+- The Android application the user asked about: the only APK was from YESTERDAY and was stale — it had "SanjivanAI" (3x) and the now-DELETED sanjivanai.vercel.app baked in. Rebuilt the Capacitor app with current code: new APK verified to contain rejivan.vercel.app + ReJivan branding, zero old-name.
+- Speed/progress: first (cold) build felt stuck because it was invoked with -q (silent). Now: parallel+caching+daemon+plain console in gradle.properties, and a helper `prototype\android\build-apk.ps1` that prints every task live, tries offline-first (avoids the flaky network), and copies the APK to Downloads. Warm rebuild measured at ~3 s.
+
 ### Notes / cautions
 - The repo is PUBLIC (HSC 2027). Since AutoSave pushes everything, only keep safe content in the folder — never passwords/secrets in files.
 - Frequent rapid edits → at most one auto-commit every ~2 min, which comfortably stays inside Vercel's free deployment quota.
