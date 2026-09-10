@@ -398,6 +398,20 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - **Build helper** `build-apk.ps1` now builds offline-first (fully cached deps), ~5 s warm.
 - AutoSave watcher already committed + auto-pushed everything during the session.
 
+## 2026-09-10 (Day 3 — user asked: what AI fits ReJivan, was it deeply researched, can it be integrated?)
+- Answered + re-researched (2025–2026 sources) on top of the earlier 11:30 AI round. The AI that fits ReJivan, in plain terms:
+  1) **Smart early-warning engine** — upgrade the current rule/NEWS-style scoring with a light ML deterioration score. Evidence: NEJM AI study (Epic EDI, 23k high-risk patients) ~18% fewer in-hospital deaths; survival-model EWS ~3-4x precision vs NEWS2 at same recall; wearable RNN predicts deterioration 8–24 h ahead. Rules stay as the guaranteed safety net; ML layers on top to reduce false alarms.
+  2) **Camera fall / out-of-bed / low-activity detection (privacy-first)** — MediaPipe pose (33 body keypoints ONLY, no video) + LSTM; 95–99% accuracy on public UR-Fall/Le2i datasets, runs on-device in ~10–15 ms. Directly matches our existing "privacy-first, no video recorded" camera zones.
+  3) **Vitals anomaly/signal-quality score** — on-device Isolation Forest / LSTM-autoencoder anomaly scoring (+ personalization), shown to work with consumer wearables; adds an "AI score" next to today's confidence %.
+  4) **LLM caregiver assistant** — plain-language daily summary / "explain this reading in simple words" (EN/HI/BN/TA), with hard guardrails (never a diagnosis — always "ask a doctor"). Research systems use LLMs exactly like this for post-hoc interpretation.
+  - On-device AI runtimes: LiteRT (TensorFlow Lite ~1 MB) + MediaPipe Tasks — ready for our native Android app; matches the offline-first design. Server can host the small scorers; the LLM would be an API call (needs a key / paid).
+  - Verdict: integration is completely feasible for the hackathon deadline (15 Oct). Two high-value demo options: (A) REAL on-device fall detection with the phone camera; (B) AI anomaly score + LLM plain-language summary. Everything else stays an honest "roadmap" item (real sensors feed the same pipeline later).
+
+## 2026-09-10 (Day 3 — app icon created)
+- User noticed the APK still had the default Capacitor icon → made a real ReJivan launcher icon: dark-navy rounded square, teal border, white "R", teal ECG heartbeat line.
+- Generated with new reusable script `prototype/android/make-icon.ps1` (System.Drawing) into every mipmap density (legacy 48–192 px, adaptive foreground 108–432 px); adaptive background color now `#0E1420`.
+- Verified icon pixels (navy bg / white R / teal line) and confirmed the new PNGs are inside the rebuilt APK: `C:\Users\samra\Downloads\ReJivan-Android-20260910-1401.apk`.
+
 ---
 
 ## Standing auto-save rules (do this every session)
