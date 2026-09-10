@@ -135,16 +135,20 @@ class Repository(ctx: Context) {
                     sbp = parseInt(optOrNull(v, "sbp")), dbp = parseInt(optOrNull(v, "dbp")),
                     temp = parseDouble(optOrNull(v, "temp")), glucose = parseInt(optOrNull(v, "glucose")),
                 )
-                val status = mapOf(
-                    "hr" to st(r.optJSONObject("hr"), "status"), "spo2" to st(r.optJSONObject("spo2"), "status"),
-                    "sbp" to st(r.optJSONObject("sbp"), "status"), "dbp" to st(r.optJSONObject("dbp"), "status"),
-                    "temp" to st(r.optJSONObject("temp"), "status"), "glucose" to st(r.optJSONObject("glucose"), "status"),
-                )
-                val report = Report(vitals, status, r.optString("bp", "normal"))
+                val status = mutableMapOf<String, String>()
+                status["hr"] = st(r.optJSONObject("hr"), "status")
+                status["spo2"] = st(r.optJSONObject("spo2"), "status")
+                status["sbp"] = st(r.optJSONObject("sbp"), "status")
+                status["dbp"] = st(r.optJSONObject("dbp"), "status")
+                status["temp"] = st(r.optJSONObject("temp"), "status")
+                status["glucose"] = st(r.optJSONObject("glucose"), "status")
+                val bpStatus = r.optString("bp", "normal")
+                status["bp"] = bpStatus
+                val report = Report(vitals, status, bpStatus)
                 val perMetric = mutableMapOf<String, Int>()
                 rel.optJSONObject("perMetricConfidence")?.let { pm -> val keys = pm.keys(); while (keys.hasNext()) { val k = keys.next(); perMetric[k] = pm.optInt(k) } }
                 val missing = mutableListOf<String>()
-                rel.optJSONObject("degradation")?.optJSONArray("missing")?.let { m -> for (x in 0 until m.length()) { val o2 = m.optJSONObject(x); missing.add(o2?.optString("name") ?: "?") } }
+                rel.optJSONObject("degradation")?.optJSONArray("missing")?.let { m -> for (x in 0 until m.length()) { val o2 = m.optJSONObject(x); missing.add(o2?.optString("name")?.takeIf { it.isNotEmpty() } ?: m.optString(x)) } }
                 val episode = o.optJSONObject("episode")?.let { Episode(it.optString("type"), it.optLong("from"), it.optLong("until")) }
                 val devices = parseDevices(o.optJSONArray("devices") ?: org.json.JSONArray())
                 out.add(PatientSnapshot(
