@@ -368,7 +368,7 @@ private fun PatientDetail(snapshot: AppSnapshot, ps: PatientSnapshot, isOnline: 
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Metric2("Glucose", ps.vitals.glucose?.let { "$it mg/dL" } ?: "—", r.metricStatus["glucose"], Modifier.weight(1f))
-            Metric2("Device tier", ps.deviceTier.cap(), if (ps.deviceTier == "medical") Good else Warn, Modifier.weight(1f))
+            Metric2("Device tier", ps.deviceTier.cap(), if (ps.deviceTier == "medical") "normal" else "caution", Modifier.weight(1f))
         }
 
         Spacer(Modifier.height(16.dp))
@@ -508,4 +508,4 @@ private fun fmtTime(ts: Long): String = SimpleDateFormat("HH:mm", Locale.ENGLISH
 private fun fmtClock(ts: Long): String = SimpleDateFormat("EEEE, dd MMM yyyy · HH:mm", Locale.ENGLISH).format(Date(ts))
 
 private fun Double.round1(): Double = Math.round(this * 10) / 10.0
-private fun Double.roundToIntPct(): Int = Math.round(this * 100)
+private fun Double.roundToIntPct(): Int = Math.round(this * 100).toInt()

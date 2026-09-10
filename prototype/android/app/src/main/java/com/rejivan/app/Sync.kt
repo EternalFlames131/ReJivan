@@ -49,7 +49,7 @@ class Sync(private val base: String = "https://rejivan.vercel.app") {
             .put("times", JSONArray().apply { for (t in med.times) put(t) })
             .put("notes", med.notes)
         val raw = request("/api/medications", "POST", body.toString(), token) ?: return null
-        return try { JSONObject(raw).optString("id", null) } catch (_: Exception) { null }
+        return try { JSONObject(raw).optString("id").takeIf { it.isNotEmpty() } } catch (_: Exception) { null }
     }
 
     /** Full dashboard payloads (same endpoints the website uses). */
