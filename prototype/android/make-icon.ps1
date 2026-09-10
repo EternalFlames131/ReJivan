@@ -16,7 +16,7 @@ function Draw-Logo([System.Drawing.Graphics]$g, [float]$size, [float]$ox, [float
     $fc = New-Object System.Drawing.Text.PrivateFontCollection
     $fc.AddFontFile($fontPath)
     $font = [System.Drawing.Font]::new($fc.Families[0], $fs, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
-    $sf = [System.Drawing.StringFormat]::new(
+    $sf = [System.Drawing.StringFormat]::new()
     $sf.Alignment = [System.Drawing.StringAlignment]::Center
     $sf.LineAlignment = [System.Drawing.StringAlignment]::Center
     $rect = [System.Drawing.RectangleF]::new($ox, ($oy + $size * 0.18), $size, $size * 0.40)
@@ -52,7 +52,7 @@ function New-Icon([int]$px, [string]$out, [bool]$round, [bool]$transparentBg) {
     $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
     $g.Clear([System.Drawing.Color]::Transparent)
 
-    $clip = [System.Drawing.Drawing2D.GraphicsPath]::new(
+    $clip = [System.Drawing.Drawing2D.GraphicsPath]::new()
     if ($round) { $clip.AddEllipse(1, 1, $px - 2, $px - 2) }
     else {
         $rad = $px * 0.22
