@@ -69,3 +69,9 @@
   - Tabular-numeral font feature on vital + stat readouts; slightly larger body text (14.5px/1.55); 100% token-scan: ZERO dark-theme colors left.
 - Verified end-to-end: local server + edge headless DOM post-login — login hidden, nav icons (7), statsrow, statcard (20), device chips, clearview animation, whoami, translations, light bg all present. No JS errors.
 - Android v2.4 keeps its dark theme (dark is standard on Android; consistency is by brand color #0D9488 = teal on both).
+
+### v3 (IN PROGRESS — paused) — 2026-09-12 — full clinical product UI rebuild
+- Started the large "senior frontend team" redesign per the user's full brief (clinical SaaS / EHR look): light clinical surfaces, thin 1px borders, 6–8px radii, left sidebar nav with subtle active indicator, compact app header (logo, context, lang, notifications, profile), vitals as a clinical TABLE (devices/values/units/trend/status/updated, trend arrows + rolling history), recent-alerts + medication-schedule right rail, red/amber/teal used ONLY semantically, "SIMULATION" visually separated, responsive (desktop/tablet/mobile).
+- Assembled as part files in `...\Temp\opencode\rejivan-v3\` (v3_style.css, v3_body.html, v3_nav/vitals/med/cam/ward/dev/alerts.js, v3_poll.js, v3_splice.py). lang.json gained 56 new `en` fallback keys (160 total).
+- CAUGHT + fixed a silent-splice bug: one JS block (NAV/render) failed to splice (blank-line mismatch in pattern) → app compiled but threw `fmtClock is not defined` → stuck on login. NOTE: the autosaver had auto-committed intermediate broken files (4d58397→fd459cd), suspected reflected on live.
+- SAFEGUARD: reverted index.html to last-known-good commit `b630283` (v2.5 light) so live is safe; paused autosaver (`.git\no-autosave`); full resume runbook + the one remaining splice-input fix written to `...\Temp\opencode\rejivan-v3\RESUME.md`. v3 work continues in the next session.

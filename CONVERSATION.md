@@ -563,5 +563,14 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - Verified E2E locally (edge headless DOM post-login): all structure intact (nav icons, statsrow/statcards, device chips, clearview, whoami, translations, light bg).
 - Android unchanged this turn (still dark theme — standard on Android; same teal brand on both platforms).
 
+### Paused (2026-09-12 ~01:20) — full clinical redesign "v3" long task
+- User gave a big, detailed brief: web/app must look like a REAL healthcare product built by a senior team, not an AI dashboard (clinical layout, 1px borders, 6–8px radii, sidebar nav, vitals table instead of cards, right-rail panels, semantic-only colors, simulation clearly separated, responsive).
+- Built the whole new design as isolated part files, then spliced into index.html. Hit a bug: one splice silently failed → `fmtClock is not defined` → app stuck on login. Diagnosed via edge headless + stderr console. The autosaver had auto-committed broken intermediates (4d58397..fd459cd).
+- Stopped at user request mid-way (SAVE AND CONTINUE LATER). Put everything back to safe state:
+  - index.html restored from last-known-good commit b630283 (v2.5 light), to be committed → live safe again.
+  - Autosaver paused via .git\no-autosave.
+  - Full resume notes + the ONE remaining fix (splice script reads a stale backup; change it to read index.html) written to `...\Temp\opencode\rejivan-v3\RESUME.md`.
+- NEXT SESSION: read RESUME.md, fix input line in v3_splice.py, run it, node --check, verify with `index.html?demo` headless dump, remove the demo branch + __autologin.html, resume autosaver, log, commit.
+
 ### Status
 - Waiting for autosaver to commit+push+deploy → rejivan.vercel.app will serve the light clinical design. Next: verify live site markers, then done.
