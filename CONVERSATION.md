@@ -469,3 +469,8 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - Offline mode uses the app's built-in engine — rule/patient changes reflect only when online.
 
 ### 19:49 Session save - all 5 tasks recorded in Session_Notes_2026-09-11.txt. Open fix: /api/calls determinism bug patched server-side (server.js alertsFor + rules.js confirmedDangerLabels) - verify on live site next session.
+
+## 2026-09-11 (Day 4 — session resume: verified the /api/calls fix on the live site)
+- Loaded project memory (CONVERSATION + CONTEXT), tree is clean, autosaver marker present.
+- **Open fix VERIFIED on live site:** login on https://rejivan.vercel.app works (demo account), `/api/calls` now returns emergency calls (1 call for the demo account) and is **DETERMINISTIC** — identical JSON responses 2 seconds apart. The server-side patch (server.js alertsFor + rules.js confirmedDangerLabels) holds in production. Live health OK: {"ok":true,"service":"ReJivan"}.
+- No other pending work this session; everything is committed/autosaved.
