@@ -3,139 +3,380 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0b1220" />
 <title>ReJivan</title>
 <link rel="manifest" href="/manifest.json" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%230e1730'/%3E%3Cpath%20d='M14%2036h10l5-13%207%2028%206-15h8'%20fill='none'%20stroke='%2334d0ac'%20stroke-width='5'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E" />
 <style>
+  /* ============ ReJivan Design System ============ */
   :root{
-    --bg:#0e1420; --panel:#171f2e; --panel2:#1c2738; --line:#2a3648;
-    --txt:#e8eef7; --muted:#93a3b8; --accent:#2fbf8f; --accent2:#35a7ff;
-    --warn:#f5b14c; --danger:#f2576b; --ok:#2fbf8f;
+    --bg:#0b1220; --panel:#101b2e; --panel2:#16233a; --panel3:#1b2b47;
+    --line:#22324e; --line-soft:rgba(120,150,200,.12);
+    --txt:#e8effa; --muted:#8fa5c4; --faint:#6b83a8;
+    --brand:#34d0ac; --brand-2:#2bb78f; --brand-ink:#06281f;
+    --accent:#4aa8ff;
+    --ok:#34d0ac; --ok-soft:rgba(52,208,172,.14);
+    --warn:#f4b456; --warn-soft:rgba(244,180,86,.14);
+    --danger:#f2617b; --danger-soft:rgba(242,97,123,.14);
+    --radius:14px; --radius-s:10px;
+    --shadow:0 10px 30px -12px rgba(2,6,16,.55);
+    --shadow-sm:0 4px 14px -8px rgba(2,6,16,.45);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt)}
-  a{color:var(--accent2);cursor:pointer}
-  header{background:linear-gradient(90deg,#123, #0e1420);padding:14px 22px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-  header .logo{font-size:22px;font-weight:800;color:var(--accent)}
-  header .tag{color:var(--muted);font-size:13px}
-  header .spacer{flex:1}
-  .lang-select{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:6px 10px;border-radius:8px}
-  .userchip{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:12px}
+  html{scrollbar-color:#2a3c5e #0d1526}
+  body{
+    margin:0;background:var(--bg);color:var(--txt);
+    font-family:'Segoe UI','Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5;
+  }
+  a{color:var(--accent);cursor:pointer;text-decoration:none}
+  a:hover{text-decoration:underline}
+  ::selection{background:rgba(52,208,172,.28)}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    background:linear-gradient(180deg,rgba(13,22,38,.96),rgba(11,18,32,.92));
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line-soft);
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:12px 24px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .brandmark{
+    width:40px;height:40px;flex:none;border-radius:11px;
+    background:linear-gradient(135deg,#1c3350,#101c30);
+    border:1px solid var(--line);
+    display:grid;place-items:center;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .brandmark svg{width:22px;height:22px;display:block}
+  .brandtext{min-width:0}
+  .logo{font-size:19px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .logo .teal{color:var(--brand)}
+  .tag{color:var(--muted);font-size:12px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38vw}
+  .spacer{flex:1}
+  .headright{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+  .pill::before{content:"";width:7px;height:7px;border-radius:50%}
+  .pill.live{background:var(--ok-soft);color:#6fe9c6}
+  .pill.live::before{background:var(--ok);box-shadow:0 0 0 0 rgba(52,208,172,.5);animation:livepulse 2s infinite}
+  .pill.sim{background:var(--warn-soft);color:#ffd38a}
+  .pill.sim::before{background:var(--warn)}
+  @keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(52,208,172,.45)}70%{box-shadow:0 0 0 6px rgba(52,208,172,0)}100%{box-shadow:0 0 0 0 rgba(52,208,172,0)}}
+
+  .userchip{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:12px;max-width:240px}
   .userchip .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
-  nav{display:flex;gap:4px;padding:8px 22px;border-bottom:1px solid var(--line);background:#111927;flex-wrap:wrap}
-  nav button{background:none;border:none;color:var(--muted);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:14px}
+  .userchip #whoami{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .lang-select{
+    background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+    padding:7px 12px;border-radius:9px;font-size:13px;cursor:pointer;
+  }
+  .lang-select:hover{border-color:#2f4468}
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:sticky;top:65px;z-index:30;
+    display:flex;gap:6px;flex-wrap:wrap;
+    padding:10px 24px;
+    background:rgba(11,18,32,.72);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  nav button{
+    display:inline-flex;align-items:center;gap:8px;
+    background:transparent;border:1px solid transparent;color:var(--muted);
+    padding:8px 15px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:600;
+    transition:color .15s ease,background .15s ease,border-color .15s ease;
+  }
+  nav button::before{
+    content:"";width:17px;height:17px;flex:none;
+    background-color:currentColor;
+    -webkit-mask:var(--ic,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3C/svg%3E")) center/contain no-repeat;
+    mask:var(--ic,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3C/svg%3E")) center/contain no-repeat;
+  }
   nav button:hover{background:var(--panel2);color:var(--txt)}
-  nav button.active{background:var(--accent);color:#06231b;font-weight:700}
-  main{padding:20px 22px;max-width:1300px;margin:0 auto}
-  .banner{background:#14303a;border:1px solid #1f4a57;color:#bfe9f5;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:18px}
-  .banner.region{background:#3a3106;border-color:#5a4d0a;color:#ffeeb0;margin-top:-8px;font-size:12px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
-  .card h3{margin:0 0 4px;font-size:16px}
+  nav button.active{background:linear-gradient(135deg,rgba(52,208,172,.16),rgba(52,208,172,.07));border-color:rgba(52,208,172,.35);color:#6fe9c6}
+  .navitem[data-view="dashboard"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22/%3E%3Crect%20x%3D%2214%22%20y%3D%223%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22/%3E%3Crect%20x%3D%223%22%20y%3D%2214%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22/%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%227%22%20height%3D%227%22%20rx%3D%221.5%22/%3E%3C/svg%3E")}
+  .navitem[data-view="medications"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m10.5%2020.5%2010-10a4.95%204.95%200%201%200-7-7l-10%2010a4.95%204.95%200%201%200%207%207Z%22/%3E%3Cpath%20d%3D%22m8.5%208.5%207%207%22/%3E%3C/svg%3E")}
+  .navitem[data-view="cameras"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%208a2%202%200%200%201%202-2h9a2%202%200%200%201%202%202v8a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2Z%22/%3E%3Cpath%20d%3D%22m16%2010%205-3v10l-5-3%22/%3E%3C/svg%3E")}
+  .navitem[data-view="ward"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%2021V8.5L12%203l9%205.5V21%22/%3E%3Cpath%20d%3D%22M9.5%2021v-6h5v6%22/%3E%3Cpath%20d%3D%22M12%209.5v4.5%22/%3E%3Cpath%20d%3D%22M9.7%2011.8h4.6%22/%3E%3C/svg%3E")}
+  .navitem[data-view="alerts"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M18%208a6%206%200%200%200-12%200c0%207-2%209-2%209h16s-2-2-2-9%22/%3E%3Cpath%20d%3D%22M10.3%2021a1.94%201.94%200%200%200%203.4%200%22/%3E%3C/svg%3E")}
+  .navitem[data-view="devices"]{--ic:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%222%22%20y%3D%224%22%20width%3D%2220%22%20height%3D%2213%22%20rx%3D%222%22/%3E%3Cpath%20d%3D%22M8%2021h8%22/%3E%3Cpath%20d%3D%22M12%2017v4%22/%3E%3Cpath%20d%3D%22m5%2011%202%202%203-4%202.5%203L15%209.5l2%202%22/%3E%3C/svg%3E")}
+
+  /* ---------- Main / layout ---------- */
+  main{padding:20px 24px 60px;max-width:1280px;margin:0 auto}
+  h2{font-size:17px;font-weight:750;letter-spacing:-.01em;margin:0 0 14px;display:flex;align-items:center;gap:9px}
+  h2::before{content:"";width:4px;height:17px;border-radius:2px;background:linear-gradient(180deg,var(--brand),var(--accent))}
+  h3{font-size:15px;margin:0 0 3px}
+  .banner{
+    background:linear-gradient(135deg,rgba(52,208,172,.09),rgba(74,168,255,.05));
+    border:1px solid rgba(52,208,172,.25);
+    color:#a9ecd8;padding:11px 15px;border-radius:12px;font-size:13px;margin-bottom:16px;
+    display:flex;gap:10px;align-items:flex-start;
+  }
+  .banner::before{content:"ℹ";flex:none}
+  .banner.region{
+    background:linear-gradient(135deg,rgba(244,180,86,.08),rgba(244,180,86,.03));
+    border-color:rgba(244,180,86,.22);color:#ffd98d;font-size:12px;margin-top:-6px;
+  }
+  .banner.region::before{content:"📍"}
+  .banner[data-i18n="device_banner"]{background:linear-gradient(135deg,rgba(74,168,255,.1),rgba(74,168,255,.03));border-color:rgba(74,168,255,.28);color:#b6d6ff}
+  .banner[data-i18n="device_banner"]::before{content:"🛡️"}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--panel));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px;min-width:0;
+    box-shadow:var(--shadow-sm);
+    transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+  }
+  .card:hover{transform:translateY(-2px);border-color:#2c3f64;box-shadow:var(--shadow)}
   .card .sub{color:var(--muted);font-size:12px;margin-bottom:12px}
-  .vitals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
-  .vital{background:var(--panel2);border-radius:10px;padding:10px;min-width:0;overflow:hidden}
-  .vital .top{display:flex;justify-content:space-between;align-items:center;gap:6px;min-width:0}
-  .vital .label{font-size:11px;color:var(--muted)}
-  .vital .value{font-size:20px;font-weight:700;margin-top:6px;white-space:nowrap}
-  .vital .unit{font-size:11px;color:var(--muted);font-weight:400}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
-  .badge.normal{background:#123528;color:#4ee0a8}
-  .badge.caution{background:#3a2d16;color:var(--warn)}
-  .badge.danger{background:#3a1821;color:var(--danger)}
-  .pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
-  .pill.live{background:#123528;color:#4ee0a8}
-  .pill.sim{background:#3a2d16;color:var(--warn)}
-  .alert{background:var(--panel2);border-left:4px solid var(--danger);border-radius:8px;padding:10px 12px;margin-bottom:8px}
-  .alert.caution{border-left-color:var(--warn)}
-  .alert .time{font-size:11px;color:var(--muted)}
-  .alert .sev{float:right}
-  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  .btn{background:var(--accent);border:none;color:#06231b;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer}
-  .btn.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
-  .btn.small{padding:5px 10px;font-size:12px}
-  input,select{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:8px;border-radius:8px;width:100%;margin:4px 0}
-  label{font-size:12px;color:var(--muted);display:block;margin-top:6px}
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:50}
-  .modal.show{display:flex}
-  .modal-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;width:min(460px,92vw)}
-  .table{width:100%;border-collapse:collapse}
-  .table th,.table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
-  .table th{color:var(--muted);font-weight:600}
-  .muted{color:var(--muted)}
-  .confidence{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
-  .confidence.high{background:#123528;color:#4ee0a8}
-  .confidence.medium{background:#3a2d16;color:var(--warn)}
-  .confidence.low{background:#3a1821;color:var(--danger)}
-  .reliability-bar{height:3px;border-radius:2px;margin-top:4px}
-  .reliability-bar.high{background:var(--ok)}
-  .reliability-bar.medium{background:var(--warn)}
-  .reliability-bar.low{background:var(--danger)}
-  .sensor-badge{display:inline-block;padding:1px 6px;border-radius:10px;font-size:9px;font-weight:700;margin-left:4px}
-  .sensor-badge.ok{background:#123528;color:#4ee0a8}
-  .sensor-badge.off{background:#3a1821;color:var(--danger)}
-  .stat{font-size:12px;color:var(--muted)}
-  .wardbed{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;border-left:4px solid var(--ok)}
-  .wardbed.danger{border-left-color:var(--danger)}
-  .wardbed.caution{border-left-color:var(--warn)}
-  .flow{display:flex;gap:20px;flex-wrap:wrap}
-  .flow .col{flex:1;min-width:300px}
-  .empty{color:var(--muted);text-align:center;padding:22px}
-  .foot{margin-top:30px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
   .flex-between{display:flex;justify-content:space-between;align-items:center;gap:8px}
+
+  .clearview{animation:fadeUp .3s ease}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* ---------- Stats row (dashboard) ---------- */
+  .statsrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+  .statcard{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;box-shadow:var(--shadow-sm);
+    display:flex;flex-direction:column;gap:2px;min-width:0;
+  }
+  .statcard .k{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .statcard .n{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .statcard .d{font-size:12px;color:var(--muted)}
+  .statcard.ok .k,.statcard.ok .n{color:var(--ok)}
+  .statcard.warn .k,.statcard.warn .n{color:var(--warn)}
+  .statcard.danger .k,.statcard.danger .n{color:var(--danger)}
+  .statcard.tot .k,.statcard.tot .n{color:var(--accent)}
+
+  /* ---------- Vital tiles ---------- */
+  .vitals{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+  .vital{
+    background:var(--panel2);border:1px solid var(--line-soft);border-radius:11px;
+    padding:10px 12px;min-width:0;position:relative;
+  }
+  .vital .top{display:flex;justify-content:space-between;align-items:center;gap:6px;min-width:0}
+  .vital .label{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .vital .value{font-size:21px;font-weight:800;margin-top:3px;white-space:nowrap;letter-spacing:-.01em}
+  .vital .unit{font-size:11px;color:var(--faint);font-weight:500;margin-left:2px}
+
+  /* ---------- Badges ---------- */
+  .badge{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:800;
+    letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;border:1px solid transparent;
+  }
+  .badge::before{content:"";width:6px;height:6px;border-radius:50%}
+  .badge.normal{background:var(--ok-soft);color:#6fe9c6;border-color:rgba(52,208,172,.3)}
+  .badge.normal::before{background:var(--ok)}
+  .badge.caution{background:var(--warn-soft);color:#ffd38a;border-color:rgba(244,180,86,.3)}
+  .badge.caution::before{background:var(--warn)}
+  .badge.danger{background:var(--danger-soft);color:#ffa0b1;border-color:rgba(242,97,123,.32)}
+  .badge.danger::before{background:var(--danger);animation:blink 1.1s infinite}
+  @keyframes blink{50%{opacity:.35}}
+
+  .confidence{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 9px;border-radius:999px;font-weight:700}
+  .confidence::before{content:"";width:6px;height:6px;border-radius:50%}
+  .confidence.high{background:var(--ok-soft);color:#6fe9c6}
+  .confidence.high::before{background:var(--ok)}
+  .confidence.medium{background:var(--warn-soft);color:#ffd38a}
+  .confidence.medium::before{background:var(--warn)}
+  .confidence.low{background:var(--danger-soft);color:#ffa0b1}
+  .confidence.low::before{background:var(--danger)}
+
+  .reliability-bar{height:3px;border-radius:2px;margin-top:6px;overflow:hidden;background:var(--panel3)}
+  .reliability-bar.high{background:linear-gradient(90deg,var(--brand-2),var(--brand))}
+  .reliability-bar.medium{background:linear-gradient(90deg,#c98a2e,var(--warn))}
+  .reliability-bar.low{background:linear-gradient(90deg,#c14a5f,var(--danger))}
+  .sensor-badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:9.5px;font-weight:800;margin-left:4px}
+  .sensor-badge.ok{background:var(--ok-soft);color:#6fe9c6}
+  .sensor-badge.off{background:var(--danger-soft);color:#ffa0b1}
+
+  .device-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    background:#12233f;border:1px solid #24406b;padding:2px 8px;border-radius:7px;
+    font-size:10px;color:#a8cbff;font-weight:600;
+  }
+
+  /* ---------- Buttons / forms ---------- */
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;justify-content:center;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));border:none;
+    color:var(--brand-ink);padding:9px 16px;border-radius:10px;
+    font-weight:800;font-size:13.5px;cursor:pointer;
+    box-shadow:0 4px 14px -6px rgba(52,208,172,.5);
+    transition:filter .15s ease,transform .15s ease;
+  }
+  .btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .btn:active{transform:none}
+  .btn.ghost{
+    background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+    box-shadow:none;font-weight:650;
+  }
+  .btn.ghost:hover{border-color:#2f4468;background:var(--panel3)}
+  .btn.small{padding:6px 12px;font-size:12px;border-radius:8px}
+  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  input[type=text],input[type=email],input[type=password],select{
+    background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+    padding:9px 12px;border-radius:10px;width:100%;font-size:13.5px;margin:5px 0;
+    transition:border-color .15s ease,box-shadow .15s ease;
+  }
+  input:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(52,208,172,.15)}
+  input::placeholder{color:var(--faint)}
+  label{font-size:12px;color:var(--muted);display:block;margin-top:8px;font-weight:600;letter-spacing:.02em}
   .err{color:var(--danger);font-size:13px;min-height:18px;margin:6px 0}
   .okmsg{color:var(--ok);font-size:13px;min-height:18px;margin:6px 0}
 
-  /* Medical devices */
-  .device-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  /* ---------- Alerts / calls ---------- */
+  .alert{
+    background:var(--panel2);border:1px solid var(--line-soft);border-left:4px solid var(--danger);
+    border-radius:12px;padding:11px 13px;margin-bottom:9px;position:relative;
+    transition:transform .15s ease,border-color .15s ease;
+  }
+  .alert:hover{transform:translateX(2px);border-color:var(--line)}
+  .alert.caution{border-left-color:var(--warn)}
+  .alert .time{font-size:11px;color:var(--faint);margin-top:3px}
+  .alert .sev{float:right;margin-left:8px}
+
+  .callcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:10px}
+  .callstep{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line);color:var(--txt)}
+  .callstep:last-child{border-bottom:none}
+  .callstep .dot{width:9px;height:9px;border-radius:50%;background:#3d5278;flex:none;box-shadow:0 0 0 3px rgba(61,82,120,.2)}
+  .callstep.pending .dot{background:#5b739c}
+  .callstep.dialing .dot{background:var(--warn);animation:pulse 1s infinite;box-shadow:0 0 0 3px rgba(244,180,86,.2)}
+  .callstep.answered .dot{background:var(--ok);box-shadow:0 0 0 3px rgba(52,208,172,.2)}
+  .callstep.unanswered .dot{background:var(--danger);box-shadow:0 0 0 3px rgba(242,97,123,.2)}
+  @keyframes pulse{50%{opacity:.4}}
+
+  .flow{display:flex;gap:20px;flex-wrap:wrap}
+  .flow .col{flex:1;min-width:300px}
+  .empty{color:var(--muted);text-align:center;padding:22px}
+  .muted{color:var(--muted)}
+
+  /* ---------- Tables ---------- */
+  .table{width:100%;border-collapse:collapse}
+  .table th,.table td{padding:11px 12px;border-bottom:1px solid var(--line-soft);text-align:left;font-size:13px;vertical-align:middle}
+  .table th{color:var(--muted);font-weight:700;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase}
+  .table tr:hover td{background:rgba(120,150,200,.04)}
+  .table tr:last-child td{border-bottom:none}
+
+  .foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line-soft);color:var(--faint);font-size:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .foot::before{content:"ReJivan";font-weight:800;color:var(--brand);letter-spacing:.03em}
+
+  /* ---------- Ward ---------- */
+  .wardbed{
+    display:flex;align-items:center;gap:12px;
+    background:var(--panel2);border:1px solid var(--line-soft);border-left:4px solid var(--ok);
+    border-radius:12px;padding:13px 14px;margin-bottom:10px;
+    transition:transform .15s ease;
+  }
+  .wardbed:hover{transform:translateX(2px)}
+  .wardbed.danger{border-left-color:var(--danger)}
+  .wardbed.caution{border-left-color:var(--warn)}
+  .prio{font-size:11px;font-weight:800;letter-spacing:.05em;padding:3px 9px;border-radius:7px}
+  .prio.high{background:var(--danger-soft);color:#ffa0b1}
+  .prio.medium{background:var(--warn-soft);color:#ffd38a}
+  .prio.normal{background:var(--ok-soft);color:#6fe9c6}
+
+  /* ---------- Devices ---------- */
+  .device-row{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--line-soft)}
   .device-row:last-child{border-bottom:none}
   .device-dot{width:10px;height:10px;border-radius:50%;flex:none}
-  .device-dot.on{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+  .device-dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
   .device-dot.off{background:var(--danger)}
-  .device-name{font-weight:700;font-size:13px}
-  .device-meta{font-size:11px;color:var(--muted)}
-  .device-badge{font-size:9px;padding:2px 6px;border-radius:8px;font-weight:700;flex:none}
-  .device-badge.connected{background:#123528;color:#4ee0a8}
-  .device-badge.disconnected{background:#3a1821;color:var(--danger)}
-  .device-badge.indian{background:#1a2540;color:var(--accent2)}
-  .battery-bar{width:40px;height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;flex:none}
+  .device-name{font-weight:700;font-size:13.5px}
+  .device-meta{font-size:11px;color:var(--muted);margin-top:1px}
+  .device-badge{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:800;flex:none}
+  .device-badge.connected{background:var(--ok-soft);color:#6fe9c6}
+  .device-badge.disconnected{background:var(--danger-soft);color:#ffa0b1}
+  .device-badge.indian{background:#122d55;color:#a8cbff}
+  .battery-bar{width:44px;height:6px;background:var(--panel3);border-radius:3px;overflow:hidden;flex:none}
   .battery-fill{height:100%;border-radius:3px}
   .battery-fill.high{background:var(--ok)}
   .battery-fill.mid{background:var(--warn)}
   .battery-fill.low{background:var(--danger)}
-  .signal-bars{display:flex;align-items:flex-end;gap:1px;height:12px;flex:none}
-  .signal-bars span{width:3px;background:var(--muted);border-radius:1px}
+  .signal-bars{display:flex;align-items:flex-end;gap:1.5px;height:12px;flex:none}
+  .signal-bars span{width:3.5px;background:var(--faint);border-radius:1px}
   .signal-bars span.on{background:var(--ok)}
-  .catalogue-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+  .catalogue-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px;min-width:0;box-shadow:var(--shadow-sm);transition:transform .18s ease,border-color .18s ease}
+  .catalogue-card:hover{transform:translateY(-2px);border-color:#2c3f64}
   .catalogue-card h4{margin:0 0 2px;font-size:14px}
   .catalogue-card .sub{font-size:11px;color:var(--muted)}
-  .catalogue-card .price{font-size:13px;font-weight:700;color:var(--accent);margin-top:6px}
-  .catalogue-card .measures{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
-  .catalogue-card .measures span{background:var(--panel2);border:1px solid var(--line);padding:2px 6px;border-radius:6px;font-size:10px}
+  .catalogue-card .price{font-size:15px;font-weight:800;color:var(--brand);margin-top:7px}
+  .catalogue-card .measures{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
+  .catalogue-card .measures span{background:var(--panel2);border:1px solid var(--line);padding:2px 7px;border-radius:6px;font-size:10px;color:var(--muted)}
 
-  /* Login screen */
-  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
-    background:radial-gradient(1200px 500px at 50% -10%, #123b33, var(--bg))}
-  .login-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px;width:min(400px,94vw)}
-  .login-card h1{margin:0 0 2px;color:var(--accent);font-size:26px}
-  .login-card .sub{color:var(--muted);font-size:13px;margin-bottom:16px}
-  .login-card .demo{background:#111927;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted);margin-top:14px}
-  .login-card .demo b{color:var(--txt)}
-  .link{margin-top:10px;font-size:13px}
-
-  /* Live camera */
-  .cam-stage{position:relative;background:#0a0f18;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  /* ---------- Live camera ---------- */
+  .cam-stage{position:relative;background:#080d17;border:1px solid var(--line);border-radius:13px;overflow:hidden}
   .cam-stage canvas{width:100%;height:auto;display:block}
-  .cam-hud{position:absolute;top:10px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;font-size:12px;pointer-events:none}
-  .cam-banner{margin-top:10px;background:#14303a;border:1px solid #1f4a57;color:#bfe9f5;padding:8px 12px;border-radius:8px;font-size:12px}
-  .callcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
-  .callstep{display:flex;align-items:center;gap:8px;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--line)}
-  .callstep:last-child{border-bottom:none}
-  .callstep .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
-  .callstep.pending .dot{background:#4a5a70}
-  .callstep.dialing .dot{background:var(--warn);animation:pulse 1s infinite}
-  .callstep.answered .dot{background:var(--ok)}
-  .callstep.unanswered .dot{background:var(--danger)}
-  @keyframes pulse{50%{opacity:.35}}
+  .cam-hud{position:absolute;top:11px;left:13px;right:13px;display:flex;justify-content:space-between;align-items:center;font-size:12px;pointer-events:none}
+  .cam-banner{margin-top:10px;background:linear-gradient(135deg,rgba(52,208,172,.08),rgba(74,168,255,.04));border:1px solid rgba(52,208,172,.22);color:#a9ecd8;padding:9px 13px;border-radius:10px;font-size:12px}
+
+  /* ---------- Modals ---------- */
+  .modal{
+    position:fixed;inset:0;background:rgba(4,8,18,.72);backdrop-filter:blur(5px);
+    display:none;align-items:center;justify-content:center;z-index:60;padding:18px;
+  }
+  .modal.show{display:flex;animation:fade .18s ease}
+  @keyframes fade{from{opacity:0}}
+  .modal-card{
+    background:linear-gradient(180deg,var(--panel),#0e1830);
+    border:1px solid var(--line);border-radius:16px;padding:24px;width:min(460px,94vw);
+    box-shadow:var(--shadow);animation:pop .22s ease;
+  }
+  @keyframes pop{from{transform:scale(.96) translateY(8px);opacity:0}}
+
+  /* ---------- Login ---------- */
+  .login-wrap{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px;
+    background:
+      radial-gradient(1000px 500px at 50% -12%,rgba(52,208,172,.12),transparent 60%),
+      radial-gradient(900px 500px at 85% 110%,rgba(74,168,255,.08),transparent 60%),
+      var(--bg);
+  }
+  .login-card{
+    width:min(410px,94vw);
+    background:linear-gradient(180deg,var(--panel),#0e1830);
+    border:1px solid var(--line);border-radius:20px;padding:34px 32px;box-shadow:var(--shadow);
+  }
+  .login-head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;margin-bottom:20px}
+  .login-head .brandmark{width:56px;height:56px;border-radius:16px;margin-bottom:6px;box-shadow:0 10px 30px -12px rgba(52,208,172,.45)}
+  .login-head .brandmark svg{width:30px;height:30px}
+  .login-card h1{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .login-card h1 .teal{color:var(--brand)}
+  .login-card .sub{color:var(--muted);font-size:13px}
+  .login-card .demo{
+    margin-top:18px;border-top:1px solid var(--line-soft);padding-top:14px;
+    font-size:12px;color:var(--muted);
+  }
+  .demo .dlabel{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:9px}
+  .demo .dimport{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+    padding:9px 12px;margin-bottom:8px;color:var(--txt);cursor:pointer;font-size:12.5px;
+    transition:border-color .15s ease,background .15s ease;
+  }
+  .dimport:hover{background:var(--panel3);border-color:#2f4468}
+  .dimport .demo-mail{font-weight:700;color:var(--accent);margin-right:6px}
+  .dimport .demo-role{margin-left:auto;color:var(--muted);font-size:11px;white-space:nowrap}
+  .link{margin-top:12px;font-size:13px;text-align:center}
+
+  @media (max-width:720px){
+    header{padding:10px 14px}
+    nav{padding:8px 14px;top:auto}
+    nav button{padding:8px 12px}
+    main{padding:16px 14px 50px}
+    .grid{grid-template-columns:1fr}
+    .tag{max-width:26vw}
+  }
 </style>
 </head>
 <body>
@@ -143,11 +384,16 @@
 <!-- LOGIN / REGISTER SCREEN -->
 <div id="loginScreen" class="login-wrap" style="display:none">
   <div class="login-card">
-    <h1>ReJivan</h1>
-    <div class="sub" data-i18n="login_sub"></div>
-    <input id="liName" type="text" style="display:none" data-i18n-ph="login_name" />
-    <input id="liEmail" type="email" autocomplete="email" data-i18n-ph="login_email" />
-    <input id="liPass" type="password" autocomplete="current-password" data-i18n-ph="login_password" />
+    <div class="login-head">
+      <div class="brandmark">
+        <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#101b2e"/><path d="M14 36h10l5-13 7 28 6-15h8" stroke="#34d0ac" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1>Re<span class="teal">Jivan</span></h1>
+      <div class="sub" data-i18n="login_sub"></div>
+    </div>
+    <input id="liName" type="text" style="display:none" data-i18n-ph="login_name" placeholder="Name" />
+    <input id="liEmail" type="email" autocomplete="email" data-i18n-ph="login_email" placeholder="Email" />
+    <input id="liPass" type="password" autocomplete="current-password" data-i18n-ph="login_password" placeholder="Password" />
     <select id="liRole" style="display:none">
       <option value="family" data-i18n="family_role"></option>
       <option value="ward" data-i18n="ward_role"></option>
@@ -156,10 +402,11 @@
     <div class="okmsg" id="liOk"></div>
     <button class="btn" id="liSubmit" style="width:100%;margin-top:6px" data-i18n="login_btn"></button>
     <div class="link" id="liSwitch"></div>
-    <div class="demo"><b data-i18n="demo_accounts"></b><br>
-      <a onclick="fillDemo('asharma@demo.in','demo123')">asharma@demo.in · demo123</a> <span class="muted">(Anita — home)</span><br>
-      <a onclick="fillDemo('rprakash@demo.in','demo123')">rprakash@demo.in · demo123</a> <span class="muted">(Ram — home)</span><br>
-      <a onclick="fillDemo('wardnurse@demo.in','demo123')">wardnurse@demo.in · demo123</a> <span class="muted">(Virtual Ward)</span>
+    <div class="demo">
+      <div class="dlabel" data-i18n="demo_accounts"></div>
+      <button type="button" class="dimport" onclick="fillDemo('asharma@demo.in','demo123')"><span class="demo-mail">asharma@demo.in</span>· demo123<span class="demo-role" data-i18n="demo_anita">Anita · home</span></button>
+      <button type="button" class="dimport" onclick="fillDemo('rprakash@demo.in','demo123')"><span class="demo-mail">rprakash@demo.in</span>· demo123<span class="demo-role" data-i18n="demo_ram">Ram · home</span></button>
+      <button type="button" class="dimport" onclick="fillDemo('wardnurse@demo.in','demo123')"><span class="demo-mail">wardnurse@demo.in</span>· demo123<span class="demo-role" data-i18n="demo_ward">Virtual Ward</span></button>
     </div>
   </div>
 </div>
@@ -167,23 +414,32 @@
 <!-- APP -->
 <div id="app" style="display:none">
 <header>
-  <div class="logo">&#x2714; ReJivan</div>
-  <div class="tag" data-i18n="tagline"></div>
+  <div class="brand">
+    <div class="brandmark">
+      <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M14 36h10l5-13 7 28 6-15h8" stroke="#34d0ac" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="brandtext">
+      <div class="logo">Re<span class="teal">Jivan</span></div>
+      <div class="tag" data-i18n="tagline"></div>
+    </div>
+  </div>
   <div class="spacer"></div>
-  <span class="pill live" data-i18n="live"></span>
-  <span class="pill sim" data-i18n="simulated"></span>
-  <span class="userchip"><span class="dot"></span><span id="whoami"></span></span>
-  <button class="btn ghost small" onclick="doLogout()" data-i18n="nav_logout"></button>
-  <select id="langSel" class="lang-select">
-    <option value="en">English</option>
-    <option value="hi">हिंदी</option>
-    <option value="bn">বাংলা</option>
-    <option value="ta">தமிழ்</option>
-    <option value="te">తెలుగు</option>
-  </select>
+  <div class="headright">
+    <span class="pill live" data-i18n="live"></span>
+    <span class="pill sim" data-i18n="simulated"></span>
+    <span class="userchip"><span class="dot"></span><span id="whoami"></span></span>
+    <button class="btn ghost small" onclick="doLogout()" data-i18n="nav_logout"></button>
+    <select id="langSel" class="lang-select" aria-label="Language">
+      <option value="en">English</option>
+      <option value="hi">हिंदी</option>
+      <option value="bn">বাংলা</option>
+      <option value="ta">தமிழ்</option>
+      <option value="te">తెలుగు</option>
+    </select>
+  </div>
 </header>
 
-<nav id="nav"></nav>
+<nav id="nav" aria-label="Primary"></nav>
 
 <main>
   <div class="banner" data-i18n="sim_banner"></div>
@@ -206,7 +462,7 @@
     <label data-i18n="times"></label>
     <input id="mTimes" value="08:00, 20:00" />
     <select id="mPatient" style="margin-top:8px"></select>
-    <div style="margin-top:12px" class="row">
+    <div style="margin-top:14px" class="row">
       <button class="btn" id="mSave" data-i18n="add_med"></button>
       <button class="btn ghost" onclick="closeModal()">Close</button>
     </div>
@@ -231,7 +487,6 @@
     </div>
   </div>
 </div>
-
 <script>
 const LANG = {};
 let curLang = localStorage.getItem('rejivan_lang') || 'en';
@@ -361,7 +616,7 @@ const NAV = [
 ];
 function buildNav(){
   const nav = document.getElementById('nav');
-  nav.innerHTML = NAV.map(([v,k])=>`<button data-view="${v}" class="${v===state.view?'active':''}" data-i18n="${k}"></button>`).join('');
+  nav.innerHTML = NAV.map(([v,k])=>`<button data-view="${v}" class="navitem ${v===state.view?'active':''}" data-i18n="${k}"></button>`).join('');
   nav.querySelectorAll('button').forEach(b=>{
     b.addEventListener('click', ()=>{
       nav.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
@@ -377,7 +632,10 @@ function buildNav(){
 function render(){
   buildNav();
   const viewsEl = document.getElementById('views');
+  viewsEl.classList.remove('clearview');
+  void viewsEl.offsetWidth;
   viewsEl.innerHTML = VIEWS[state.view]();
+  viewsEl.classList.add('clearview');
   walk(viewsEl);
 }
 
@@ -407,7 +665,7 @@ function patientCard(p){
   const degraded = rel.degradation && rel.degradation.missing && rel.degradation.missing.length > 0;
   const devices = p.devices || [];
   const medDevices = devices.filter(d => d.connected && d.productionTier === 'medical');
-  const deviceBadges = medDevices.map(d => `<span style="background:#1a2540;border:1px solid #2a4570;padding:1px 5px;border-radius:4px;font-size:9px;color:var(--accent2)">● ${d.name.split(' ').slice(0,2).join(' ')}</span>`).join(' ');
+  const deviceBadges = medDevices.map(d => `<span class="device-chip">${d.name.split(' ').slice(0,2).join(' ')}</span>`).join(' ');
   return `<div class="card">
     <div class="flex-between">
       <div><h3>${pname(p.id, p.name)}</h3><div class="sub">${p.age} · ${loc}${p.addr ? ' · ' + p.addr : ''}</div></div>
@@ -430,14 +688,16 @@ function patientCard(p){
 }
 
 function dashboardView(){
+  const total = state.patients.length;
   const healthy = state.patients.filter(p=>overall(p)==='normal').length;
   const caution = state.patients.filter(p=>overall(p)==='caution').length;
   const danger = state.patients.filter(p=>overall(p)==='danger').length;
   return `
-    <div class="row" style="margin-bottom:18px;gap:24px">
-      <div class="stat"><span style="font-size:26px;font-weight:800;color:var(--ok)">${healthy}</span> ${t('normal')}</div>
-      <div class="stat"><span style="font-size:26px;font-weight:800;color:var(--warn)">${caution}</span> ${t('caution')}</div>
-      <div class="stat"><span style="font-size:26px;font-weight:800;color:var(--danger)">${danger}</span> ${t('danger')}</div>
+    <div class="statsrow">
+      <div class="statcard tot"><span class="k">Patients</span><span class="n">${total}</span><span class="d">${me?.role==='ward'?'Virtual Ward':'Monitored'}</span></div>
+      <div class="statcard ok"><span class="k">${t('normal')}</span><span class="n">${healthy}</span><span class="d">Stable</span></div>
+      <div class="statcard warn"><span class="k">${t('caution')}</span><span class="n">${caution}</span><span class="d">Review soon</span></div>
+      <div class="statcard danger"><span class="k">${t('danger')}</span><span class="n">${danger}</span><span class="d">Action needed</span></div>
     </div>
     <div class="grid">${state.patients.map(patientCard).join('')}</div>`;
 }
@@ -494,7 +754,7 @@ function wardView(){
           <div class="stat">${t('hr')}: ${p.vitals.hr} · ${t('spo2')}: ${p.vitals.spo2}% · ${t('bp')}: ${p.vitals.sbp}/${p.vitals.dbp}</div>
         </div>
         <div><span class="badge ${overall(p)}">${t(overall(p))}</span></div>
-        <div class="stat" style="font-weight:700;color:var(--accent2)">${prio}</div>
+        <div class="prio ${overall(p)}">${prio}</div>
       </div>`;
     }).join('') || `<div class="empty">—</div>`}
   </div>`;

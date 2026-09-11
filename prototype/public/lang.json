@@ -2,7 +2,12 @@
   "en": {
     "appName": "ReJivan",
     "tagline": "A Personal Nurse for Every Family",
-    "patientNames": { "P1": "Anita Sharma", "P2": "Ram Prakash", "P3": "Meera Nair", "P4": "Kavitha Rao" },
+    "patientNames": {
+      "P1": "Anita Sharma",
+      "P2": "Ram Prakash",
+      "P3": "Meera Nair",
+      "P4": "Kavitha Rao"
+    },
     "nav_dashboard": "Dashboard",
     "nav_medications": "Medicines",
     "nav_cameras": "Camera Zones",
@@ -100,12 +105,20 @@
     "device_banner": "ReJivan integrates with FDA/CDSCO-approved medical-grade wearables. Each device is validated for clinical accuracy. When medical devices are connected, confidence scores increase and data is more reliable.",
     "device_catalogue_title": "Supported Medical Devices",
     "device_catalogue_sub": "All devices are medically approved (FDA 510(k) / CDSCO / CE). Prices in INR. Indian-made devices marked with 🇮🇳.",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "demo_anita": "Anita - Home",
+    "demo_ram": "Ram - Home",
+    "demo_ward": "Virtual Ward"
   },
   "hi": {
     "appName": "रीजीवन",
     "tagline": "हर परिवार के लिए एक व्यक्तिगत नर्स",
-    "patientNames": { "P1": "अनीता शर्मा", "P2": "राम प्रकाश", "P3": "मीरा नायर", "P4": "कविता राव" },
+    "patientNames": {
+      "P1": "अनीता शर्मा",
+      "P2": "राम प्रकाश",
+      "P3": "मीरा नायर",
+      "P4": "कविता राव"
+    },
     "nav_dashboard": "डैशबोर्ड",
     "nav_medications": "दवाइयाँ",
     "nav_cameras": "कैमरा क्षेत्र",
@@ -203,12 +216,20 @@
     "device_banner": "रीजीवन FDA/CDSCO-अनुमोदित मेडिकल-ग्रेड वेयरेबल्स के साथ जुड़ता है। प्रत्येक डिवाइस क्लिनिकल सटीकता के लिए मान्य है। जब मेडिकल डिवाइस जुड़े होते हैं, तो विश्वसनीयता स्कोर बढ़ता है।",
     "device_catalogue_title": "समर्थित मेडिकल डिवाइस",
     "device_catalogue_sub": "सभी डिवाइस चिकित्सा अनुमोदित हैं (FDA 510(k) / CDSCO / CE)। कीमतें INR में। 🇮🇳 भारत में बने।",
-    "loading": "लोड हो रहा है…"
+    "loading": "लोड हो रहा है…",
+    "demo_anita": "अनिता - घर",
+    "demo_ram": "राम - घर",
+    "demo_ward": "वर्चुअल वार्ड"
   },
   "bn": {
     "appName": "রিজিভন",
     "tagline": "প্রতিটি পরিবারের জন্য একটি ব্যক্তিগত নার্স",
-    "patientNames": { "P1": "অনিতা শর্মা", "P2": "রাম প্রকাশ", "P3": "মীরা নায়ার", "P4": "কবিতা রাও" },
+    "patientNames": {
+      "P1": "অনিতা শর্মা",
+      "P2": "রাম প্রকাশ",
+      "P3": "মীরা নায়ার",
+      "P4": "কবিতা রাও"
+    },
     "nav_dashboard": "ড্যাশবোর্ড",
     "nav_medications": "ওষুধ",
     "nav_cameras": "ক্যামেরা অঞ্চল",
@@ -306,12 +327,20 @@
     "device_banner": "রিজিভন FDA/CDSCO-অনুমোদিত মেডিকেল-গ্রেড পরিধানযোগ্য ডিভাইসের সাথে সংযুক্ত। প্রতিটি ডিভাইস ক্লিনিকাল নির্ভুলতার জন্য যাচাইকৃত।",
     "device_catalogue_title": "সমর্থিত মেডিকেল ডিভাইস",
     "device_catalogue_sub": "সমস্ত ডিভাইস চিকিৎসা অনুমোদিত (FDA 510(k) / CDSCO / CE)। মূল্য INR তে। 🇮🇳 ভারতে তৈরি।",
-    "loading": "লোড হচ্ছে…"
+    "loading": "লোড হচ্ছে…",
+    "demo_anita": "অনিতা - বাড়ি",
+    "demo_ram": "রাম - বাড়ি",
+    "demo_ward": "ভার্চুয়াল ওয়ার্ড"
   },
   "ta": {
     "appName": "ரிஜீவன்",
     "tagline": "ஒவ்வொரு குடும்பத்திற்கும் ஒரு தனிப்பட்ட செவிலியர்",
-    "patientNames": { "P1": "அனிதா ஷர்மா", "P2": "ராம் பிரகாஷ்", "P3": "மீரா நாயர்", "P4": "கவிதா ராவ்" },
+    "patientNames": {
+      "P1": "அனிதா ஷர்மா",
+      "P2": "ராம் பிரகாஷ்",
+      "P3": "மீரா நாயர்",
+      "P4": "கவிதா ராவ்"
+    },
     "nav_dashboard": "டாஷ்போர்டு",
     "nav_medications": "மருந்துகள்",
     "nav_cameras": "கேமரா மண்டலங்கள்",
@@ -409,12 +438,20 @@
     "device_banner": "ரிஜீவன் FDA/CDSCO-ங்கீகரிக்கப்பட்ட மருத்துவ-தர அணியக்கூடிய சாதனங்களுடன் இணைக்கப்படுகிறது. ஒவ்வொரு சாதனமும் மருத்துவ துல்லியத்திற்கு சரிபார்க்கப்படுகிறது.",
     "device_catalogue_title": "ஆதரிக்கப்படும் மருத்துவ சாதனங்கள்",
     "device_catalogue_sub": "அனைத்து சாதனங்களும் மருத்துவ அங்கீகாரம் பெற்றவை (FDA 510(k) / CDSCO / CE). விலை INR இல். 🇮🇳 இந்தியாவில் தயாரிக்கப்பட்டது.",
-    "loading": "ஏற்றுகிறது…"
+    "loading": "ஏற்றுகிறது…",
+    "demo_anita": "அனிதா - வீடு",
+    "demo_ram": "ராம் - வீடு",
+    "demo_ward": "மெய்நிகர் வார்டு"
   },
   "te": {
     "appName": "రిజీవన్",
     "tagline": "ప్రతి కుటుంబానికి వ్యక్తిగత నర్సు",
-    "patientNames": { "P1": "అనితా శర్మ", "P2": "రామ్ ప్రకాష్", "P3": "మీరా నాయర్", "P4": "కవితా రావు" },
+    "patientNames": {
+      "P1": "అనితా శర్మ",
+      "P2": "రామ్ ప్రకాష్",
+      "P3": "మీరా నాయర్",
+      "P4": "కవితా రావు"
+    },
     "nav_dashboard": "డాష్‌బోర్డ్",
     "nav_medications": "మందులు",
     "nav_cameras": "కెమెరా జోన్లు",
@@ -512,6 +549,9 @@
     "device_banner": "రిజీవన్ FDA/CDSCO-ఆమోదించబడిన వైద్య-గ్రేడ్ వేరబుల్స్‌తో కనెక్ట్ అవుతుంది. ప్రతి పరికరం క్లినికల్ ఖచ్చితత్వం కోసం ధృవీకరించబడుతుంది.",
     "device_catalogue_title": "మద్దతు ఉన్న వైద్య పరికరాలు",
     "device_catalogue_sub": "అన్ని పరికరాలు వైద్య ఆమోదించబడినవి (FDA 510(k) / CDSCO / CE). ధరలు INR లో. 🇮🇳 భారతదేశంలో తయారైనది.",
-    "loading": "లోడ్ అవుతోంది…"
+    "loading": "లోడ్ అవుతోంది…",
+    "demo_anita": "అనితా - ఇంటి",
+    "demo_ram": "రామ్ - ఇంటి",
+    "demo_ward": "వర్చువల్ వార్డ్"
   }
 }
