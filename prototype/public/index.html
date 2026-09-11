@@ -1212,6 +1212,11 @@ async function init(){
   showLogin();
 }
 init();
+
+window.__errs = [];
+window.addEventListener('error', e => __errs.push('E:' + (e.message||'') + '@' + (e.lineno||0)));
+window.addEventListener('unhandledrejection', e => __errs.push('U:' + ((e.reason && e.reason.message) || 'rejection')));
+var __tf = setInterval(function(){ try { document.title = 'ERRPROBE:' + __errs.join(' | ') + ' | v:' + document.getElementById('views').innerHTML.length; } catch(_){} }, 600);
 </script>
 </body>
 </html>
