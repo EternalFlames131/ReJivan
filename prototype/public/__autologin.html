@@ -1,0 +1,8 @@
+<script>
+fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'asharma@demo.in',password:'demo123'})})
+.then(r=>r.json()).then(d=>{
+  localStorage.setItem('rejivan_token', d.token);
+  localStorage.setItem('rejivan_lang', 'en');
+  location.href = '/';
+});
+</script>
