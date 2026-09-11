@@ -540,3 +540,28 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 ### Notes / follow-up
 - IMPORTANT for Samrat: install the LATEST APK (v2.4) — each version overwrites the previous during install; v2.4 contains everything (demo one-tap, remember-login, bottom nav, devices panel, sync).
 - Web already redesigned & deployed (rejivan.vercel.app). If still not "professional enough", next candidates: further login/branding polish on web, or a deeper Alerts/Camera card redesign.
+
+## 2026-09-12 (later) — "Still looks AI-made" → real web research + light clinical redesign (web v2.5)
+
+### What the user asked
+- "Still looks very AI made — did you research web for better website design?"
+
+### Honest answer
+- The FIRST attempt at web research actually FAILED (the Exa search service was rate-limited that moment) and the assistant improvised from general knowledge instead — the dark navy + neon teal theme was exactly the "AI default" look. This time research succeeded.
+
+### Research (real, quoted references)
+- Orbix Studio – "Healthcare Analytics Dashboard | Patient Monitoring UI": vital signals grouped in focused blocks, balanced data with breathing space, highlights changes without visual noise, clarity/rhythm/quick decisions.
+- Arounda Case – "Medical Dashboard Design for High-Pressure Workflows" (Cinex): current patient state must be the CLEAREST thing on screen; one dominant clinical anchor + subtle secondary data; one role per card; scan-friendly tables; gentle pops of color, rounded cards, soft spacing, "medical-feeling but not sterile".
+- HealthNexus case study: clean/sociable software palette, accessibility-focused contrast, calm visual language, trust-focused design, status tags (Critical/Recovered/Under Treatment), KPI cards.
+- FusionCharts real-time patient monitoring: EMR table, live monitor button, alert thresholds — dense-but-scannable, status-first.
+- CONSENSUS applied: professional medical dashboards are LIGHT/clinical — dark neon reads as AI-generated.
+
+### What was done (web v2.5 – light clinical theme)
+- Programmatic theme transform of `prototype/public/index.html` (53.8 KB). New palette: page #f4f7fb, white panels, deep-navy text #10244a, brand teal #0d9488, accent blue #2563eb, ok #16a34a, warn #d97706, danger #dc2626, soft shadows, white header + nav.
+- All components re-tuned: pills/badges/confidence/prio/device chips, banners, inputs, call ladder, camera stage, modals, login card (white + soft radial gradients + teal "R" brandmark), tabular-numeral vital/stat readouts, 14.5px body text.
+- Automated 100% token scan: zero old dark colors left. Backup of dark version at `...\Temp\opencode\rejivan_index_dark_backup.html`.
+- Verified E2E locally (edge headless DOM post-login): all structure intact (nav icons, statsrow/statcards, device chips, clearview, whoami, translations, light bg).
+- Android unchanged this turn (still dark theme — standard on Android; same teal brand on both platforms).
+
+### Status
+- Waiting for autosaver to commit+push+deploy → rejivan.vercel.app will serve the light clinical design. Next: verify live site markers, then done.

@@ -60,3 +60,12 @@
   - Ward view upgraded: priority pill (DANGER/CAUTION/NORMAL color-coded), ward name, and metric chips (HR / SpO2 / BP) — mirrors web ward beds.
   - Stat tiles + metric chips get matching line borders for a consistent designed look.
 - versionCode 3, versionName 2.4. BUILD SUCCESSFUL (`assembleDebug --offline`). APK v2.4 → `Downloads\ReJivan-Android-v2.4.apk` (17.4 MB, hash AE1CAEAB...).
+
+### v2.5 – 2026-09-12 — WEBSITE light clinical redesign (research-driven)
+- WEB RESEARCH (real, after earlier attempt failed): healthcare dashboard references (Orbix Studio patient-monitoring UI, Arounda/Cinex case study, HealthNexus dashboard case study, FusionCharts real-time patient monitoring). Shared verdict: professional medical dashboards are LIGHT and clinical (white/soft-blue, calm palette, restrained color), status-first hierarchy, one-role cards, breathing space — the dark navy + neon teal scheme reads as "AI default".
+- Converted `prototype/public/index.html` (53.8 KB) from dark-neon to a **light clinical theme** via automated token transform (backup of the dark version: `...\Temp\opencode\rejivan_index_dark_backup.html`):
+  - New palette — page `#f4f7fb`, panels white/#f4f8fd, text deep navy `#10244a`, brand teal `#0d9488`, accent blue `#2563eb`, ok green `#16a34a`, warn amber `#d97706`, danger red `#dc2626`; soft shadows, white header/nav.
+  - All status colors (badges, pills, confidence, prio, device chips/badges, sensor badges) re-tuned to light-mode values; inputs, banners, call ladder, camera stage, modals, login (white card + soft radial gradients + teal brandmark) converted.
+  - Tabular-numeral font feature on vital + stat readouts; slightly larger body text (14.5px/1.55); 100% token-scan: ZERO dark-theme colors left.
+- Verified end-to-end: local server + edge headless DOM post-login — login hidden, nav icons (7), statsrow, statcard (20), device chips, clearview animation, whoami, translations, light bg all present. No JS errors.
+- Android v2.4 keeps its dark theme (dark is standard on Android; consistency is by brand color #0D9488 = teal on both).
