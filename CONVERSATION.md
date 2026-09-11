@@ -444,3 +444,26 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 ### Honest notes
 - Server returns vitals/alerts/reports the SAME as the deterministic engine — so SERVER vs OFFLINE numbers are identical (that's the offline-parity story, by design).
 - Medications still read from the phone's local store (server meds fetched but local is source for the meds tab). Vitals/alerts/calls fully live from the site when online.
+
+## 2026-09-11 (Day 4 — "make changes register in the app automatically" + missing Medical Devices tab)
+
+### User questions/requests
+1. "Make sure whenever I ask to make changes it automatically registers in the android application without problem since it fetches everything straight from the website."
+2. "Where did the tab which shows various medical wearables/devices (listed as connected, working, and various other devices that can be used)?"
+
+### What was done
+- **Medications are now truly two-way + live**: meds() in the app now shows the LIVE list from the website when online (was local-only), and Add / Delete / Take push to the server (POST /api/medications, DELETE, take). Server list is mirrored down to phone storage so offline mode keeps the latest list.
+- **Camera zones now live from server**: server zones (with room names) fetched from /api/camera-zones; new zones added on the website appear in the app automatically.
+- **Auto-recover**: the 2s poll now always runs when logged in (not only after first server success), so if internet drops then returns, the app silently switches back to SERVER without re-login.
+- **Login now supports website-registered accounts** (non-demo) — user metadata comes from the server login response.
+- **MEDICAL DEVICES TAB RESTORED (was missing from Android app)**: new "Devices" tab mirrors the website's devices view — per-patient connected devices (green/red dot, Connected/Disconnected badge, battery %, time since last seen, Made-in-India) + the full 11-device catalogue (name, manufacturer, approval, ₹price, measures chips, description). Live from /api/devices + /api/devices/catalogue when online; offline fallback from a local seed of the same 11 devices.
+- Sync.kt additions: fetchDevices, fetchCatalogue (+ ServerDevice/PatientDevices models). DemoData: LOCAL_DEVICE_CATALOGUE + per-patient device assignments.
+
+### Verified
+- BUILD SUCCESSFUL (19s warm). APK = **C:\Users\samra\Downloads\ReJivan-Android-v2.2.apk** (16.6 MB) — dex scan: Sync/Repository/ServerDevice/okhttp3 present.
+- Committed 0ffd327 → autopush + autodeploy OK (rejivan.vercel.app refreshed). Related commits: 70d7dcd (networking layer) + 8e9d492/10f225f/e93c43f (AutoSave intermediate commits).
+
+### How the "automatic register" promise works now
+- Website content/data change (patients, meds, alerts, devices, vitals, rules on the server) → auto-deploy to rejivan.vercel.app → the app polls every 2 s → changes appear automatically. NO APK reinstall needed for server-side changes.
+- ONLY changes to the app's OWN code/screens need a new APK.
+- Offline mode uses the app's built-in engine — rule/patient changes reflect only when online.
