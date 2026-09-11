@@ -103,8 +103,6 @@ class AppState(private val ctx: Context) {
         }
     }
 
-    fun logoUerr() {}
-
     fun logout() {
         currentUser = null
         Repository.setToken(null)
@@ -116,6 +114,8 @@ class AppState(private val ctx: Context) {
         serverCalls = emptyList()
         serverMeds = emptyList()
         serverZones = emptyList()
+        serverDeviceGroups = emptyList()
+        serverCatalogue = emptyList()
         serverUser = null
     }
 
@@ -132,6 +132,8 @@ class AppState(private val ctx: Context) {
             serverCalls = state.calls
             serverMeds = state.meds
             serverZones = state.zones
+            serverDeviceGroups = state.deviceGroups
+            serverCatalogue = state.catalogue
             serverUser = state.serverUser
             isRefreshing = false
         }

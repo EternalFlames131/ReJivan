@@ -105,7 +105,7 @@ private fun fieldColors() = OutlinedTextFieldDefaults.colors(
 @Composable
 fun MainShell(state: AppState) {
     var tab by remember { mutableStateOf("Dashboard") }
-    val tabs = listOf("Dashboard", "Medicines", "Alerts", "Ward", "Camera")
+    val tabs = listOf("Dashboard", "Medicines", "Alerts", "Devices", "Ward", "Camera")
     Scaffold(
         containerColor = AppColors.bg,
         topBar = {
@@ -149,6 +149,7 @@ fun MainShell(state: AppState) {
                 "Dashboard" -> Dashboard(state)
                 "Medicines" -> Medicines(state)
                 "Alerts" -> Alerts(state)
+                "Devices" -> Devices(state)
                 "Ward" -> Ward(state)
                 "Camera" -> Camera(state)
             }
@@ -459,6 +460,125 @@ private fun CameraCard(state: AppState, zone: CameraZone) {
                     Text("On-device metadata only — no video", color = AppColors.muted, fontSize = 9.sp)
                 }
             }
+        }
+    }
+}
+
+private fun metricLabel(m: String): String = when (m) {
+    "hr" -> "HR"
+    "spo2" -> "SpO2"
+    "sbp" -> "SYS BP"
+    "dbp" -> "DIA BP"
+    "temp" -> "Temp"
+    "glucose" -> "Glucose"
+    else -> m
+}
+
+@Composable
+fun Devices(state: AppState) {
+    val groups = state.deviceGroups()
+    val catalogue = state.deviceCatalogue()
+    LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        item {
+            Section("Medical Devices")
+            val srcNote = if (state.dataSource == Repository.Source.SERVER)
+                "Live from rejivan.vercel.app" else "OFFLINE: local catalogue (FDA/CDSCO approved)"
+            Text(srcNote, color = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.muted, fontSize = 11.sp)
+            Text("SIMULATED connectivity • REAL device profiles & approvals", color = AppColors.muted, fontSize = 11.sp)
+        }
+        if (groups.isNotEmpty()) {
+            items(groups) { g ->
+                Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel),
+                    shape = RoundedCornerShape(14.dp), modifier = Modifier.fillMaxWidth()) {
+                    Column(Modifier.padding(12.dp)) {
+                        Text("${g.patientName} — Connected Devices", color = AppColors.txt, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        val online = g.devices.count { it.connected }
+                        Text("${g.devices.size} devices · $online online", color = AppColors.muted, fontSize = 11.sp)
+                        Spacer(Modifier.height(6.dp))
+                        g.devices.forEach { d -> DeviceRow(d) }
+                        if (g.devices.isEmpty()) {
+                            Text("No devices connected.", color = AppColors.muted, fontSize = 12.sp)
+                        }
+                    }
+                }
+            }
+        } else {
+            item { Text("No devices for this account.", color = AppColors.muted) }
+        }
+        item {
+            Spacer(Modifier.height(4.dp))
+            Section("Supported Device Catalogue", AppColors.accent2)
+            Text("${catalogue.size} medical-grade devices (all FDA/CDSCO/CE approved)", color = AppColors.muted, fontSize = 11.sp)
+        }
+        items(catalogue) { c ->
+            Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel2),
+                shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(12.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(c.name, color = AppColors.txt, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Spacer(Modifier.weight(1f))
+                        if (c.madeInIndia) {
+                            Card(colors = CardDefaults.cardColors(containerColor = AppColors.ok.copy(alpha = 0.15f)),
+                                shape = RoundedCornerShape(20.dp)) {
+                                Text("IN", color = AppColors.ok, fontSize = 9.sp, fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp))
+                            }
+                        }
+                    }
+                    Text("${c.manufacturer} · ${c.approval}", color = AppColors.muted, fontSize = 11.sp)
+                    if (c.priceINR.isNotBlank() && c.priceINR != "0") {
+                        Text("\u20B9${c.priceINR.toIntOrNull()?.let { it } ?: c.priceINR}",
+                            color = AppColors.accent2, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    }
+                    if (c.measures.isNotEmpty()) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(5.dp), modifier = Modifier.padding(top = 5.dp)) {
+                            c.measures.take(4).forEach { m ->
+                                Text(metricLabel(m), color = AppColors.accent2, fontSize = 9.sp,
+                                    modifier = Modifier.background(AppColors.line, RoundedCornerShape(4.dp))
+                                        .padding(horizontal = 6.dp, vertical = 2.dp))
+                            }
+                        }
+                    }
+                    if (c.description.isNotBlank()) {
+                        Text(c.description, color = AppColors.muted, fontSize = 11.sp, modifier = Modifier.padding(top = 5.dp))
+                    }
+                }
+            }
+        }
+        item {
+            Text("In production these connect via BLE/WiFi to real hardware — here connectivity is SIMULATED.",
+                color = AppColors.warn, fontSize = 10.sp)
+        }
+    }
+}
+
+@Composable
+private fun DeviceRow(d: com.rejivan.app.network.Sync.ServerDevice) {
+    val dot = if (d.connected) AppColors.ok else AppColors.danger
+    val badgeTxt = if (d.connected) "CONNECTED" else "DISCONNECTED"
+    val badgeColor = if (d.connected) AppColors.ok else AppColors.danger
+    Column(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(10.dp).background(dot, RoundedCornerShape(20.dp)))
+            Spacer(Modifier.width(8.dp))
+            Text(d.name, color = AppColors.txt, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.weight(1f))
+            Card(colors = CardDefaults.cardColors(containerColor = badgeColor.copy(alpha = 0.12f)),
+                shape = RoundedCornerShape(20.dp)) {
+                Text(badgeTxt, color = badgeColor, fontSize = 9.sp, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp))
+            }
+        }
+        Text("${d.manufacturer} · ${d.approval}", color = AppColors.muted, fontSize = 10.sp)
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 3.dp)) {
+            Box(Modifier.width(60.dp).height(6.dp).background(AppColors.line, RoundedCornerShape(3.dp))) {
+                Box(Modifier.width((d.battery.coerceIn(0, 100) * 0.60).dp).height(6.dp)
+                    .background(if (d.battery > 20) AppColors.ok else AppColors.danger, RoundedCornerShape(3.dp)))
+            }
+            Spacer(Modifier.width(6.dp))
+            Text("${d.battery}%", color = AppColors.muted, fontSize = 10.sp)
+            Spacer(Modifier.width(10.dp))
+            Text("${d.secondsSinceLastSeen}s ago", color = AppColors.muted, fontSize = 10.sp)
         }
     }
 }
