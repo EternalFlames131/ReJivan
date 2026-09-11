@@ -136,8 +136,12 @@ private fun fieldColors() = OutlinedTextFieldDefaults.colors(
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
+private data class NavItem(val label: String, val icon: ImageVector, val selectedIcon: ImageVector)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainShell(state: AppState) {
+    var tab by remember { mutableStateOf("Dashboard") }
     val tabs = listOf(
         NavItem("Dashboard", Icons.Outlined.Home, Icons.Filled.Home),
         NavItem("Medicines", Icons.Outlined.Medication, Icons.Filled.Medication),
@@ -257,7 +261,8 @@ fun Dashboard(state: AppState) {
         items(state.patients) { p ->
             val r = state.reportOf(p)
             Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel),
-                shape = RoundedCornerShape(14.dp), modifier = Modifier.fillMaxWidth()) {
+                shape = RoundedCornerShape(14.dp), modifier = Modifier.fillMaxWidth()
+                    .border(1.dp, AppColors.line, RoundedCornerShape(14.dp))) {
                 Column(Modifier.padding(14.dp)) {
                     val bp = r["bp"] as? String ?: "normal"
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -307,12 +312,20 @@ fun Dashboard(state: AppState) {
 @Composable
 private fun StatTile(label: String, value: Int, color: Color, weight: @Composable () -> Modifier) {
     Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel2),
-        shape = RoundedCornerShape(12.dp), modifier = weight()) {
+        shape = RoundedCornerShape(12.dp), modifier = weight().border(1.dp, AppColors.line, RoundedCornerShape(12.dp))) {
         Column(Modifier.padding(vertical = 10.dp, horizontal = 8.dp)) {
             Text(label.uppercase(), color = AppColors.muted, fontSize = 9.sp, fontWeight = FontWeight.Bold)
             Text(value.toString(), color = color, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
     }
+}
+
+@Composable
+private fun MetricChip(label: String, value: String) {
+    Text("$label $value", color = AppColors.txt, fontSize = 10.sp, fontWeight = FontWeight.Medium,
+        modifier = Modifier.background(AppColors.panel2, RoundedCornerShape(6.dp))
+            .border(1.dp, AppColors.line, RoundedCornerShape(6.dp))
+            .padding(horizontal = 6.dp, vertical = 2.dp))
 }
 
 @Composable
@@ -459,18 +472,37 @@ fun Ward(state: AppState) {
         items(wardPatients) { p ->
             val r = state.reportOf(p)
             val status = worstStatus(r)
-            val (bar, barColor) = when (status) {
-                "danger" -> "DANGER — act now!" to AppColors.danger
-                "caution" -> "CAUTION — monitor" to AppColors.warn
-                else -> "NORMAL — stable" to AppColors.ok
+            val barColor = when (status) {
+                "danger" -> AppColors.danger
+                "caution" -> AppColors.warn
+                else -> AppColors.ok
             }
+            val hrMap = r["hr"] as? Map<*, *> ?: mapOf("value" to "--")
+            val spo2Map = r["spo2"] as? Map<*, *> ?: mapOf("value" to "--")
+            val sbpMap = r["sbp"] as? Map<*, *> ?: mapOf("value" to "--")
+            val dbpMap = r["dbp"] as? Map<*, *> ?: mapOf("value" to "--")
             Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel),
                 shape = RoundedCornerShape(12.dp), modifier = Modifier.fillMaxWidth()
                     .border(2.dp, barColor, RoundedCornerShape(12.dp))) {
                 Column(Modifier.padding(14.dp)) {
-                    Text(bar, color = barColor, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Card(colors = CardDefaults.cardColors(containerColor = barColor.copy(alpha = 0.18f)),
+                            shape = RoundedCornerShape(20.dp)) {
+                            Text(status.uppercase(), color = barColor, fontSize = 10.sp, fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))
+                        }
+                        Spacer(Modifier.weight(1f))
+                        Text(p.ward ?: "", color = AppColors.accent2, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    }
+                    Spacer(Modifier.height(4.dp))
                     Text(p.name, color = AppColors.txt, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    Text("${p.ward} • ${p.condition}", color = AppColors.muted, fontSize = 12.sp)
+                    Text("${p.condition} • ${p.age} yrs • ${p.location ?: ""}", color = AppColors.muted, fontSize = 11.sp)
+                    Spacer(Modifier.height(6.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        MetricChip("HR", hrMap["value"]?.toString() ?: "--")
+                        MetricChip("SpO2", spo2Map["value"]?.toString()?.plus("%") ?: "--")
+                        MetricChip("BP", "${sbpMap["value"] ?: "--"}/${dbpMap["value"] ?: "--"}")
+                    }
                 }
             }
         }
