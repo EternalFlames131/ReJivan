@@ -494,3 +494,30 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 ### Notes
 - No code change needed — the site and the Android app are unaffected.
 - If Samrat ever WANTS git auto-builds again (e.g. for another team member's branch), it can be re-enabled in one API call (`{"gitProviderOptions":{"createDeployments":"enabled"}}`).
+
+## 2026-09-12 — Professional UI redesign + UX improvements
+
+### What the user asked
+- Make the project look more professional / not obviously AI-made (inspired by web search of healthcare dashboard best practices).
+- Android: make demo accounts one-tap clickable (no need to type credentials manually).
+- Android: remember previous login credentials so the app prefills them.
+
+### What was done (verified)
+- **Web UI redesign:** Full `prototype/public/index.html` rewrite (53 KB). New design-system CSS: brandmark header with SVG pulse glyph, icon nav (inline SVG mask `--ic`), LIVE/SIMULATED pills, stat cards (`statsrow`/`statcard`), device chips, animated modals (`fade`/`pop`), improved login screen with 3 one-tap demo-account buttons (`fillDemo()` onclick) + tagline. Backup at `Temp\opencode\rejivan_index_backup.html`; new head fragment at `Temp\opencode\rejivan_index_new_head.html`. Icons generated via `Temp\opencode\gen_icons.py` → `icons_css.txt`.
+- **i18n:** Added `demo_anita`/`demo_ram`/`demo_ward` keys in all 5 languages (104 keys per lang in `lang.json`).
+- **Web verification:** Ran local server + Edge headless DOM dump post-login → nav icons render (7 navitem matches), statsrow present, statcard danger present, 5 patient cards, 6 vital tiles, 14 confidence references, 6 reliability bars, login hidden, whoami filled, `clearview` animation class present, `Monitored` label translated. No JS errors.
+- **Android AppColors.kt:** brand color updated `#2FBF8F` → `#34D0AC` (accent + ok) to match web.
+- **Android App.kt — top bar:** added branded 30dp "R" box mark + tagline "A Personal Nurse for Every Family" + `LIVE · SIMULATED` amber pill; removed redundant role text.
+- **Android App.kt — Dashboard:** added stats row: Patients/Stable/Caution/Danger stat tiles (new `StatTile` composable, Row-weighted, matching web statsrow).
+- **Android App.kt — Login:** `LocalContext.current` + SharedPreferences (`rejivan_prefs`). Email/password prefilled from last successful login. `Checkbox` "Remember login" (on by default). Demo buttons (`DemoShortcut`) now call `doLogin()` directly — one tap = logged in, saving credentials to prefs if remember checked.
+- **Android build:** `versionCode` 1→2, `versionName` "1.0"→"2.3". `gradlew assembleDebug --offline` → BUILD SUCCESSFUL (35 tasks, 1m 23s). APK → `Downloads\ReJivan-Android-v2.3.apk` (17,396,362 bytes, 12-09-2026 00:03).
+
+### Key decisions
+- Web redesign uses pure CSS (no JS framework changes) — safe, no build step.
+- Android changes confined to `AppColors.kt` + `App.kt` only — no new files, no Manifest/network changes, zero risk to existing Sync/Repository.
+- APK kept as debug (no signing key) — matches competition upload expectations.
+
+### Follow-up
+- v2.2 APK still in Downloads for fallback; v2.3 is the active demo.
+- Web live at rejivan.vercel.app; Android fetches from it (Sync.kt, Repository.kt verified earlier).
+- Possible next polish: deeper web/Android parity on ward/camera/alerts visuals (cosmetic only).
