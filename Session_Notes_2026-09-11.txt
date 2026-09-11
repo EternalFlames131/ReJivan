@@ -1,0 +1,73 @@
+ReJivan - SESSION NOTES (all tasks you asked me, in order)
+Saved: 11 Sep 2026
+To continue later, just say: "continue from the session notes".
+(Project memory also auto-saves to CONVERSATION.md + CONTEXT.md.)
+
+============================================================
+TASK 1 - Make the Android app work
+You asked: "Check if the Android app is perfect, fix issues, and give an APK that fetches data from the site (https://rejivan.vercel.app)"
+WHAT I FOUND / DID:
+- The app (app-android/) had NO internet connection code at all.
+- I added OkHttp (internet library) + created the connection layer
+  (network/Sync.kt), data layer (data/Repository.kt), and wired the screen
+  (ui/AppState.kt, ui/App.kt) to show a SERVER / OFFLINE status badge.
+- Fixed 2 small build errors, built the app.
+DONE: APK saved as  C:\Users\samra\Downloads\ReJivan-Android-v2.1.apk
+
+============================================================
+TASK 2 - Website changes must appear in the app automatically
+You asked: "Make sure changes on the website automatically register in the app"
+WHAT I DID:
+- The app now downloads everything from the live site every 2 seconds, so any
+  change you make on the website WILL appear in the app - no reinstall needed.
+- Medicines: now synced both ways (add/delete/take pill on the app or the site
+  - both stay in step).
+- Camera zones and alerts now also come from the site.
+- Login now also works for accounts you register on the website (not only demo).
+
+============================================================
+TASK 3 - Missing "Medical Devices" tab
+You asked: "Where is the tab showing wearables/devices listed as connected or used?"
+WHAT I DID:
+- Restored the DEVICES tab (found a bug that had removed it).
+- It lists each family member's devices (e.g. SanketLife 12-Lead ECG, connected,
+  battery level), and a catalogue of 11 available devices (2 made in India).
+- Works online (from the site's server) and offline (built-in list).
+DONE: APK saved as  C:\Users\samra\Downloads\ReJivan-Android-v2.2.apk
+
+============================================================
+TASK 4 - "logs updated?"
+You asked if the log files were updated.
+DONE: Yes - updated CHANGELOG.md, CONVERSATION.md and the master log
+  (C:\Users\samra\OneDrive\Desktop\Opencode task\LOG.md). Committed+published.
+
+============================================================
+TASK 5 - Is the Android app properly linked? (STILL OPEN)
+You asked: "android app linked properly?"
+WHAT I CHECKED against the LIVE site:
+- Login: OK   Vitals: OK (1 patient)   Alerts: OK (5)   Camera zones: OK (1)
+- Meds: OK   Devices: OK (1 group, SanketLife ECG connected)   Catalogue: OK (11)
+- Emergency CALLS: FAILED - the site returned an empty list even though alerts
+  existed. This would break automatic emergency call-chains from the site.
+ROOT CAUSE FOUND & FIXED (this is the current work):
+- The website server used "memory" between requests to decide rate limits.
+  On live hosting that memory is lost per request, so /api/alerts and /api/calls
+  saw different data -> calls always came back empty.
+- I REWROTE the alert/call engine to be deterministic (pure time-based, no
+  memory) in prototype/server.js + prototype/rules.js.
+- Verified: syntax OK, local server starts fine. STILL TO DO: confirm the live
+  site now returns calls too.
+NEXT STEPS (where we left off):
+1) Check the "/api/calls" fix on the live site (alerts & calls must agree).
+2) Tell you the app is fully linked = YES.
+3) If needed, rebuild APK (only if app code changes - not needed for this fix).
+
+============================================================
+QUICK RECAP FOR NEXT TIME
+- Project folder: C:\Users\samra\OneDrive\Desktop\SanjivanAI
+- Website: https://rejivan.vercel.app  (auto-deploys on save)
+- App APK: C:\Users\samra\Downloads\ReJivan-Android-v2.2.apk
+- Demo login: asharma@demo.in / demo123 (family)  -  wardnurse@demo.in / demo123 (ward)
+- Rule: a change you ask for = do it BOTH on the website AND in the Android app.
+- Log files: CHANGELOG.md + CONVERSATION.md (project) and
+  C:\Users\samra\OneDrive\Desktop\Opencode task\LOG.md (master log).

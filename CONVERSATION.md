@@ -467,3 +467,5 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - Website content/data change (patients, meds, alerts, devices, vitals, rules on the server) → auto-deploy to rejivan.vercel.app → the app polls every 2 s → changes appear automatically. NO APK reinstall needed for server-side changes.
 - ONLY changes to the app's OWN code/screens need a new APK.
 - Offline mode uses the app's built-in engine — rule/patient changes reflect only when online.
+
+### 19:49 Session save - all 5 tasks recorded in Session_Notes_2026-09-11.txt. Open fix: /api/calls determinism bug patched server-side (server.js alertsFor + rules.js confirmedDangerLabels) - verify on live site next session.
