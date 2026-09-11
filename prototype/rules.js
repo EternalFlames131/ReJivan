@@ -77,31 +77,33 @@ function dangerLabels(report) {
 }
 
 /**
- * Enhanced danger labels with consecutive-reading confirmation.
- * Uses the reliability layer to only report danger after
- * MIN_CONSECUTIVE consecutive danger readings for the same metric.
- * Returns { confirmed, suspect } where:
- *   confirmed = danger labels that persisted enough readings to trust
+ * Pure (deterministic) consecutive-reading confirmation.
+ * A danger label is "confirmed" only when the SAME metric was at danger in
+ * BOTH this reading and the previous reading slot. No shared memory — the
+ * result is identical on every server instance and every request, which is
+ * what keeps /api/alerts == /api/calls on serverless.
+ * Returns { confirmed, suspect }:
+ *   confirmed = danger labels persisting across 2 consecutive readings
  *   suspect   = danger labels from a single reading (may be noise)
  */
-function confirmedDangerLabels(report, patientId, currentSlot) {
-  const { checkConsecutive } = require("./reliability");
+function confirmedDangerLabels(report, prevReport) {
+  const dangerSet = (r) => {
+    const set = new Set();
+    if (!r) return set;
+    for (const m of ["hr", "spo2", "bp", "temp", "glucose"]) {
+      const s = r[m];
+      const status = typeof s === "object" ? s.status : s;
+      if (status === "danger") set.add(m === "bp" ? "Blood Pressure" : m.toUpperCase());
+    }
+    return set;
+  };
+  const cur = dangerSet(report);
+  const prev = dangerSet(prevReport);
   const confirmed = [];
   const suspect = [];
-  for (const m of ["hr", "spo2", "bp", "temp", "glucose"]) {
-    const s = report[m];
-    const status = typeof s === "object" ? s.status : s;
-    if (status === "danger") {
-      const isConfirmed = checkConsecutive(patientId, m, true, currentSlot);
-      const label = m === "bp" ? "Blood Pressure" : m.toUpperCase();
-      if (isConfirmed) {
-        confirmed.push(label);
-      } else {
-        suspect.push(label);
-      }
-    } else {
-      checkConsecutive(patientId, m, false, currentSlot); // reset counter
-    }
+  for (const label of cur) {
+    if (prev.has(label)) confirmed.push(label);
+    else suspect.push(label);
   }
   return { confirmed, suspect };
 }

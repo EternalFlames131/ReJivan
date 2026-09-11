@@ -26,13 +26,18 @@ const { MedicationStore } = require("./medications");
 const { cameraZones, deriveCameraEvents, liveFrame } = require("./camerazone");
 const {
   validateVitals, overallConfidence, recordHeartbeat,
-  checkSensorHealth, rateLimitCheck, auditEvent, getAuditLog,
+  checkSensorHealth, auditEvent, getAuditLog,
   degradationStatus,
 } = require("./reliability");
 const {
   DEVICE_CATALOGUE, getPatientDevices, deviceConfidenceForVitals,
   getCatalogue, getCatalogueItem,
 } = require("./medical-devices");
+
+// Alert-rate cap (matches reliability layer constants) — applied DETERMINISTICALLY
+// by alertsFor → same feed for /api/alerts and /api/calls on every server instance.
+const MAX_ALERTS_PER_WINDOW = 5;
+const RATE_WINDOW_MS = 300000; // 5 minutes
 
 const DATA_DIR = path.join(__dirname, "data");
 try {
@@ -145,52 +150,26 @@ const CONTACTS = {
 // ---- Deterministic state derivation (whole engine, computed on request) ----
 const SPAN_ALERTS = 30; // look back ~30 slots (~100 min) for the alerts feed
 
+/**
+ * Deterministic alert + escalation derivation (serverless-safe).
+ * Every alert, escalation and call is a PURE function of (patient, time):
+ * no shared in-memory state, so /api/alerts and /api/calls always agree on
+ * every instance — same output for the same wall-clock time.
+ */
 function alertsFor(user, now) {
   const ids = ownPatientIds(user);
   const slot = Math.floor(now / SLOT_MS);
-  const alerts = [];
-  const escalations = [];
-  const pushDanger = (alert) => {
-    // Rate-limit check: prevent alert storms
-    const rl = rateLimitCheck(alert.patientId, now);
-    if (rl.allowed) {
-      alerts.push(alert);
-      escalations.push({
-        id: "ESC-" + alert.id,
-        alertId: alert.id,
-        patientId: alert.patientId,
-        patientName: alert.patientName,
-        severity: "danger",
-        channels: ["SMS + Emergency alert"],
-        to: alert.ward ? "Nurse station + on-duty nurse" : "Family caregiver",
-        dispatchedAt: (alert.createdAt || now) + 2000,
-        delivered: true,
-        simulationNotice:
-          "Simulated delivery. In production: caregiver SMS/WhatsApp, email, and emergency-services dispatch via live APIs.",
-      });
-      auditEvent("escalation", {
-        patientId: alert.patientId,
-        alertId: alert.id,
-        reason: alert.message,
-      });
-    } else {
-      // Log suppressed alert (for audit trail) but don't escalate
-      auditEvent("rate_limited", {
-        patientId: alert.patientId,
-        alertId: alert.id,
-        reason: rl.reason,
-        nextAllowedAt: rl.nextAllowedAt,
-      });
-    }
-  };
+  const collected = [];
 
+  // Pass 1 — every confirmed danger alert across recent slots (oldest first so
+  // the 2-reading consecutive check compares each slot with its predecessor).
+  const prevReport = new Map(); // patientId -> report of previous slot
   for (let k = SPAN_ALERTS; k >= 0; k--) {
     const s = slot - k;
     const center = (s + 0.5) * SLOT_MS;
     for (const p of patients) {
       if (!ids.has(p.id)) continue;
       const g = generateVitals(p, center);
-      // Validate readings first — reject impossible values
       const validation = validateVitals(g.vitals);
       if (!validation.valid) {
         auditEvent("data_rejected", {
@@ -200,10 +179,11 @@ function alertsFor(user, now) {
         });
       }
       const report = vitalsReport(p, validation.cleanVitals);
-      // Use consecutive-reading verification: only confirmed danger triggers escalation
-      const { confirmed, suspect } = confirmedDangerLabels(report, p.id, s);
+      const prev = prevReport.get(p.id) || null;
+      const { confirmed, suspect } = confirmedDangerLabels(report, prev);
+      prevReport.set(p.id, report);
       if (confirmed.length) {
-        pushDanger({
+        collected.push({
           id: "ALT-" + p.id + "-" + s,
           patientId: p.id,
           patientName: p.name,
@@ -217,7 +197,6 @@ function alertsFor(user, now) {
           }. Automated check.`,
           vitals: report,
           confirmed: true,
-          suspect: suspect,
           createdAt: s * SLOT_MS,
         });
       } else if (suspect.length) {
@@ -232,10 +211,11 @@ function alertsFor(user, now) {
     }
   }
 
+  // Camera danger events are raised to alerts too.
   for (const e of deriveCameraEvents(now).filter((ev) => ids.has(ev.patientId))) {
     if (e.severity === "danger") {
       const z = cameraZones.find((x) => x.id === e.zoneId);
-      pushDanger({
+      collected.push({
         id: "EVT-" + e.id,
         patientId: e.patientId,
         patientName: patientName(e.patientId),
@@ -246,6 +226,47 @@ function alertsFor(user, now) {
         createdAt: e.at,
       });
     }
+  }
+
+  collected.sort((a, b) => a.createdAt - b.createdAt); // ascending
+
+  // Pass 2 — deterministic alert-rate cap (max 5 escalated per patient per 5 min).
+  const escalatedCreated = new Map(); // patientId -> ascending createdAt list
+  const alerts = [];
+  const escalations = [];
+  for (const alert of collected) {
+    const list = escalatedCreated.get(alert.patientId) || [];
+    const recent = list.filter((t) => alert.createdAt - t < RATE_WINDOW_MS);
+    if (recent.length >= MAX_ALERTS_PER_WINDOW) {
+      auditEvent("rate_limited", {
+        patientId: alert.patientId,
+        alertId: alert.id,
+        reason: `Rate limit: ${recent.length} alerts for this patient in the last ${RATE_WINDOW_MS / 1000}s. Further alerts are logged but not escalated to prevent alert fatigue.`,
+        nextAllowedAt: recent[0] + RATE_WINDOW_MS,
+      });
+      continue;
+    }
+    list.push(alert.createdAt);
+    escalatedCreated.set(alert.patientId, list);
+    alerts.push(alert);
+    escalations.push({
+      id: "ESC-" + alert.id,
+      alertId: alert.id,
+      patientId: alert.patientId,
+      patientName: alert.patientName,
+      severity: "danger",
+      channels: ["SMS + Emergency alert"],
+      to: alert.ward ? "Nurse station + on-duty nurse" : "Family caregiver",
+      dispatchedAt: alert.createdAt + 2000,
+      delivered: true,
+      simulationNotice:
+        "Simulated delivery. In production: caregiver SMS/WhatsApp, email, and emergency-services dispatch via live APIs.",
+    });
+    auditEvent("escalation", {
+      patientId: alert.patientId,
+      alertId: alert.id,
+      reason: alert.message,
+    });
   }
 
   alerts.sort((a, b) => b.createdAt - a.createdAt);
