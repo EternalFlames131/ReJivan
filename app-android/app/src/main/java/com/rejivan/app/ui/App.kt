@@ -12,11 +12,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -134,53 +138,63 @@ private fun fieldColors() = OutlinedTextFieldDefaults.colors(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainShell(state: AppState) {
-    var tab by remember { mutableStateOf("Dashboard") }
-    val tabs = listOf("Dashboard", "Medicines", "Alerts", "Devices", "Ward", "Camera")
+    val tabs = listOf(
+        NavItem("Dashboard", Icons.Outlined.Home, Icons.Filled.Home),
+        NavItem("Medicines", Icons.Outlined.Medication, Icons.Filled.Medication),
+        NavItem("Alerts", Icons.Outlined.Notifications, Icons.Filled.Notifications),
+        NavItem("Devices", Icons.Outlined.Devices, Icons.Filled.Devices),
+        NavItem("Ward", Icons.Outlined.LocalHospital, Icons.Filled.LocalHospital),
+        NavItem("Camera", Icons.Outlined.Videocam, Icons.Filled.Videocam),
+    )
     Scaffold(
         containerColor = AppColors.bg,
         topBar = {
-            Column {
-                Row(Modifier.fillMaxWidth().padding(start = 14.dp, end = 14.dp, top = 14.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(30.dp).background(AppColors.accent, RoundedCornerShape(9.dp)), contentAlignment = Alignment.Center) {
-                        Text("R", color = AppColors.bg, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(Modifier.width(9.dp))
-                    Column {
-                        Text("ReJivan", color = AppColors.accent, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                        Text("A Personal Nurse for Every Family", color = AppColors.muted, fontSize = 10.sp)
-                    }
-                    val srcLabel = if (state.dataSource == Repository.Source.SERVER) "SERVER" else "OFFLINE"
-                    val srcColor = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.warn
-                    Spacer(Modifier.weight(1f))
-                    Card(colors = CardDefaults.cardColors(containerColor = srcColor.copy(alpha = 0.15f)),
-                        shape = RoundedCornerShape(20.dp)) {
-                        Text(srcLabel, color = srcColor, fontSize = 9.sp, fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
-                    }
-                    Spacer(Modifier.width(6.dp))
-                    Card(colors = CardDefaults.cardColors(containerColor = AppColors.warn.copy(alpha = 0.15f)),
-                        shape = RoundedCornerShape(20.dp)) {
-                        Text("LIVE · SIMULATED", color = AppColors.warn, fontSize = 8.sp, fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
-                    }
-                    Spacer(Modifier.width(6.dp))
-                    TextButton(onClick = { state.logout() }) {
-                        Text("Logout", color = AppColors.accent2)
-                    }
+            Row(Modifier.fillMaxWidth().padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(32.dp).background(AppColors.accent, RoundedCornerShape(9.dp)), contentAlignment = Alignment.Center) {
+                    Text("R", color = AppColors.bg, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
-                Surface(color = AppColors.panel2) {
-                    Row(Modifier.horizontalScroll(androidx.compose.foundation.rememberScrollState()).padding(horizontal = 8.dp)) {
-                        tabs.forEach { t ->
-                            val active = tab == t
-                            TextButton(onClick = { tab = t }) {
-                                Text(t, color = if (active) AppColors.bg else AppColors.muted,
-                                    fontWeight = if (active) FontWeight.Bold else FontWeight.Normal,
-                                    modifier = if (active) Modifier.background(AppColors.accent, RoundedCornerShape(8.dp))
-                                        .padding(horizontal = 10.dp, vertical = 4.dp)
-                                    else Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
-                            }
-                        }
-                    }
+                Spacer(Modifier.width(10.dp))
+                Column {
+                    Text("ReJivan", color = AppColors.txt, fontSize = 19.sp, fontWeight = FontWeight.Bold, lineHeight = 20.sp)
+                    Text("A Personal Nurse for Every Family", color = AppColors.muted, fontSize = 9.5.sp, lineHeight = 11.sp)
+                }
+                Spacer(Modifier.weight(1f))
+                val srcLabel = if (state.dataSource == Repository.Source.SERVER) "SERVER" else "OFFLINE"
+                val srcColor = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.warn
+                Card(colors = CardDefaults.cardColors(containerColor = srcColor.copy(alpha = 0.15f)),
+                    shape = RoundedCornerShape(20.dp)) {
+                    Text(srcLabel, color = srcColor, fontSize = 9.sp, fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                }
+                Spacer(Modifier.width(6.dp))
+                Card(colors = CardDefaults.cardColors(containerColor = AppColors.warn.copy(alpha = 0.15f)),
+                    shape = RoundedCornerShape(20.dp)) {
+                    Text("LIVE · SIM", color = AppColors.warn, fontSize = 8.sp, fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                }
+                Spacer(Modifier.width(4.dp))
+                TextButton(onClick = { state.logout() }) {
+                    Text("Logout", color = AppColors.accent2, fontSize = 12.sp)
+                }
+            }
+        },
+        bottomBar = {
+            NavigationBar(containerColor = AppColors.panel2, tonalElevation = 0.dp) {
+                tabs.forEach { itm ->
+                    val active = tab == itm.label
+                    NavigationBarItem(
+                        selected = active,
+                        onClick = { tab = itm.label },
+                        icon = { Icon(if (active) itm.selectedIcon else itm.icon, contentDescription = itm.label) },
+                        label = { Text(itm.label, fontSize = 10.sp) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = AppColors.bg,
+                            selectedTextColor = AppColors.accent,
+                            indicatorColor = AppColors.accent,
+                            unselectedIconColor = AppColors.muted,
+                            unselectedTextColor = AppColors.muted
+                        )
+                    )
                 }
             }
         }
