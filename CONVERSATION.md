@@ -521,3 +521,22 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - v2.2 APK still in Downloads for fallback; v2.3 is the active demo.
 - Web live at rejivan.vercel.app; Android fetches from it (Sync.kt, Repository.kt verified earlier).
 - Possible next polish: deeper web/Android parity on ward/camera/alerts visuals (cosmetic only).
+
+## 2026-09-12 (later) — "Still looks AI-made/unpolished" → v2.4 professional pass
+
+### What the user asked
+- Confirm the installed app fetches from the website and syncs (YES — verified: Sync.kt BASE = https://rejivan.vercel.app, Repository server-first + local fallback).
+- Confirm the Medical Devices panel is back (YES — Devices screen + device groups + catalogue + battery/signal rows verified in source).
+- Make the project look professional / made by professional developers, not AI-made.
+
+### What was done (Android v2.4)
+- Real Material3 **bottom NavigationBar** with icons (filled when selected) — replaced the plain top tab strip. Tabs: Dashboard/Medicines/Alerts/Devices/Ward/Camera (Home, Medication, Notifications, Devices, LocalHospital, Videocam icons).
+- Header-style top bar (slimmer): "R" brand mark, ReJivan + tagline, SERVER/OFFLINE pill, LIVE·SIM pill, Logout.
+- Dashboard patient cards + stat tiles now have subtle 1dp line borders (designed, cohesive look).
+- Ward view upgraded to match web: color-coded priority pill, ward name, metric chips (HR/SpO2/BP).
+- versionCode 3, versionName 2.4 → BUILD SUCCESSFUL → `Downloads\ReJivan-Android-v2.4.apk` (17,412,746 bytes, hash AE1CAEAB...).
+- Logs (CONVERSATION/CHANGELOG/LOG.md) updated; autosaver commits+pushes automatically.
+
+### Notes / follow-up
+- IMPORTANT for Samrat: install the LATEST APK (v2.4) — each version overwrites the previous during install; v2.4 contains everything (demo one-tap, remember-login, bottom nav, devices panel, sync).
+- Web already redesigned & deployed (rejivan.vercel.app). If still not "professional enough", next candidates: further login/branding polish on web, or a deeper Alerts/Camera card redesign.

@@ -50,3 +50,13 @@
 - i18n: added `demo_anita`/`demo_ram`/`demo_ward` keys in all 5 languages (now 104 keys per lang).
 - Web: verified via local server + headless DOM dump: nav icons render, statsrow/statcard populated, login hidden, whoami filled, clearview animation present, no untranslated keys.
 - Android: brand color aligned to web `#34D0AC` (AppColors.accent + ok). Top bar: branded "R" mark + tagline + LIVE · SIMULATED pill. Dashboard: stats row (Patients/Stable/Caution/Danger). Login: remembered credentials via SharedPreferences, one-tap demo-account buttons, checkbox "Remember login". Bumped version to `2.3` (versionCode 2). APK v2.3 → `Downloads\ReJivan-Android-v2.3.apk` (17.4 MB).
+
+### v2.4 – 2026-09-12 — Professional mobile layout (bottom nav + polished cards)
+- Confirmed once more (source): app fetches from rejivan.vercel.app (Sync.kt BASE) + server-first Repository w/ local fallback; Medical Devices panel present (Devices tab, device groups, catalogue, battery/signal rows).
+- Android UI professionalization pass:
+  - Replaced the top tab strip with a real Material3 **bottom NavigationBar** with icons (filled when active) for Dashboard / Medicines / Alerts / Devices / Ward / Camera using material-icons-extended (Home, Medication, Notifications, Devices, LocalHospital, Videocam).
+  - Slimmer, header-style top bar: "R" brand mark + ReJivan + tagline, SERVER/OFFLINE pill, LIVE · SIM pill, Logout.
+  - Dashboard patient cards: subtle 1dp line border.
+  - Ward view upgraded: priority pill (DANGER/CAUTION/NORMAL color-coded), ward name, and metric chips (HR / SpO2 / BP) — mirrors web ward beds.
+  - Stat tiles + metric chips get matching line borders for a consistent designed look.
+- versionCode 3, versionName 2.4. BUILD SUCCESSFUL (`assembleDebug --offline`). APK v2.4 → `Downloads\ReJivan-Android-v2.4.apk` (17.4 MB, hash AE1CAEAB...).
