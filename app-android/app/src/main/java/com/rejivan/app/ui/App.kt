@@ -44,9 +44,20 @@ fun App(state: AppState) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LoginScreen(state: AppState) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val ctx = LocalContext.current
+    val prefs = ctx.getSharedPreferences("rejivan_prefs", Context.MODE_PRIVATE)
+    var email by remember { mutableStateOf(prefs.getString("last_email", "") ?: "") }
+    var password by remember { mutableStateOf(prefs.getString("last_pass", "") ?: "") }
+    var rememberLogin by remember { mutableStateOf(true) }
     var err by remember { mutableStateOf("") }
+
+    fun doLogin(em: String, pw: String) {
+        val e = state.login(em.trim(), pw)
+        if (e != null) { err = e; return }
+        err = ""
+        if (rememberLogin) prefs.edit()
+            .putString("last_email", em.trim()).putString("last_pass", pw).apply()
+    }
 
     Box(Modifier.fillMaxSize().background(AppColors.bg), contentAlignment = Alignment.Center) {
         Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel),
@@ -57,21 +68,23 @@ private fun LoginScreen(state: AppState) {
                 Text("A Personal Nurse for Every Family", color = AppColors.muted, fontSize = 13.sp)
                 Spacer(Modifier.height(14.dp))
                 OutlinedTextField(value = email, onValueChange = { email = it },
-                    label = { Text("Email") }, singleLine = true,
+                    label = { Text("Email") }, singleLine = true, isError = err.isNotEmpty(),
                     colors = fieldColors(), modifier = Modifier.fillMaxWidth())
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(value = password, onValueChange = { password = it },
-                    label = { Text("Password") }, singleLine = true,
+                    label = { Text("Password") }, singleLine = true, isError = err.isNotEmpty(),
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     colors = fieldColors(), modifier = Modifier.fillMaxWidth())
                 Spacer(Modifier.height(6.dp))
-                Text(err, color = AppColors.danger, fontSize = 13.sp)
-                Spacer(Modifier.height(8.dp))
-                Button(onClick = {
-                    val e = state.login(email.trim(), password)
-                    if (e != null) err = e else err = ""
-                }, colors = ButtonDefaults.buttonColors(containerColor = AppColors.accent),
+                Text(err, color = AppColors.danger, fontSize = 13.sp, minLines = 1)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = rememberLogin, onCheckedChange = { rememberLogin = it })
+                    Text("Remember login", color = AppColors.muted, fontSize = 12.sp)
+                }
+                Spacer(Modifier.height(2.dp))
+                Button(onClick = { doLogin(email, password) },
+                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.accent),
                     modifier = Modifier.fillMaxWidth()) {
                     Text("Login", color = AppColors.bg, fontWeight = FontWeight.Bold)
                 }
@@ -79,10 +92,10 @@ private fun LoginScreen(state: AppState) {
                 Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel2),
                     shape = RoundedCornerShape(10.dp)) {
                     Column(Modifier.padding(10.dp)) {
-                        Text("Demo accounts (password: demo123)", color = AppColors.txt, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                        DemoShortcut("asharma@demo.in", "home patient", AppColors.ok) { email = "asharma@demo.in"; password = "demo123"; err = "" }
-                        DemoShortcut("rprakash@demo.in", "home patient", AppColors.ok) { email = "rprakash@demo.in"; password = "demo123"; err = "" }
-                        DemoShortcut("wardnurse@demo.in", "Virtual Ward", AppColors.accent2) { email = "wardnurse@demo.in"; password = "demo123"; err = "" }
+                        Text("Tap an account to log in instantly (password: demo123)", color = AppColors.txt, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        DemoShortcut("asharma@demo.in", "home patient", AppColors.ok) { doLogin("asharma@demo.in", "demo123") }
+                        DemoShortcut("rprakash@demo.in", "home patient", AppColors.ok) { doLogin("rprakash@demo.in", "demo123") }
+                        DemoShortcut("wardnurse@demo.in", "Virtual Ward", AppColors.accent2) { doLogin("wardnurse@demo.in", "demo123") }
                     }
                 }
                 Spacer(Modifier.height(10.dp))
@@ -216,10 +229,10 @@ fun Dashboard(state: AppState) {
             val nCaution = state.patients.count { worstStatus(state.reportOf(it)) == "caution" }
             val nDanger = state.patients.count { worstStatus(state.reportOf(it)) == "danger" }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                StatTile("Patients", state.patients.size, AppColors.accent2)
-                StatTile("Stable", nNormal, AppColors.ok)
-                StatTile("Caution", nCaution, AppColors.warn)
-                StatTile("Danger", nDanger, AppColors.danger)
+                StatTile("Patients", state.patients.size, AppColors.accent2) { Modifier.weight(1f) }
+                StatTile("Stable", nNormal, AppColors.ok) { Modifier.weight(1f) }
+                StatTile("Caution", nCaution, AppColors.warn) { Modifier.weight(1f) }
+                StatTile("Danger", nDanger, AppColors.danger) { Modifier.weight(1f) }
             }
         }
         if (state.patients.isEmpty()) {
@@ -276,9 +289,9 @@ fun Dashboard(state: AppState) {
 }
 
 @Composable
-private fun StatTile(label: String, value: Int, color: Color) {
+private fun StatTile(label: String, value: Int, color: Color, weight: @Composable () -> Modifier) {
     Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel2),
-        shape = RoundedCornerShape(12.dp), modifier = Modifier.weight(1f)) {
+        shape = RoundedCornerShape(12.dp), modifier = weight()) {
         Column(Modifier.padding(vertical = 10.dp, horizontal = 8.dp)) {
             Text(label.uppercase(), color = AppColors.muted, fontSize = 9.sp, fontWeight = FontWeight.Bold)
             Text(value.toString(), color = color, fontSize = 22.sp, fontWeight = FontWeight.Bold)
