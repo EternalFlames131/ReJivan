@@ -474,3 +474,23 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - Loaded project memory (CONVERSATION + CONTEXT), tree is clean, autosaver marker present.
 - **Open fix VERIFIED on live site:** login on https://rejivan.vercel.app works (demo account), `/api/calls` now returns emergency calls (1 call for the demo account) and is **DETERMINISTIC** — identical JSON responses 2 seconds apart. The server-side patch (server.js alertsFor + rules.js confirmedDangerLabels) holds in production. Live health OK: {"ok":true,"service":"ReJivan"}.
 - No other pending work this session; everything is committed/autosaved.
+
+## 2026-09-11 (Day 4 — "Vercel deployment failed" emails: root cause found + FIXED)
+### What the user reported
+- "In my email it is said that the vercel deployment failed. Check it, make it fixed."
+
+### Root cause (verified via Vercel API)
+- Every git push was triggering **TWO** production deploys for the prototype project:
+  1. **CLI deploy** (from our post-commit hook, `vercel deploy --prod`) → always **READY** (good).
+  2. **GitHub-integration auto-deploy** (Vercel's own "deploy on push", `source:"git"`) → always **ERROR** with the known transient error `type_error: Cannot read properties of undefined (reading 'fsPath')`.
+- The ERROR git deploy is what Vercel e-mails the user about. It errored on EVERY single commit (43a186e, 8acb1b5, 13bbef5, 4f7a562, 0ffd327, bac714e, 70d7dcd, 8e9d492, fbf7cd2... all `fsPath`), but the parallel CLI deploy of the SAME commit always succeeded, so the live site was never actually down. Same transient seen all of Day 3.
+- Also confirmed: `rejivan.vercel.app` correctly points at the latest READY CLI deployment (prototype-gwtv39d18 → dpl_E3FXTY, sha 43a186e); live health OK, homepage title ReJivan.
+
+### The fix (applied + verified)
+- **Disabled Vercel's GitHub auto-deploy** for the prototype project via the Vercel API: `PATCH /v9/projects/prj_26QbwEMnqgU7Bur4MlF03g24ZwMF` with `{"gitProviderOptions":{"createDeployments":"disabled"}}` → confirmed `createDeployments = disabled`.
+- Result: no more duplicate failing git deploys → **no more failure emails**. Every push still gets ONE deploy — the CLI one from the post-commit hook — which reliably goes READY, and the hook already re-assigns `rejivan.vercel.app` to the fresh URL.
+- Verified after the change: rejivan.vercel.app/api/health 200 {"ok":true,"service":"ReJivan"}, homepage `<title>ReJivan</title>`, alias → READY deployment (prototype-gwtv39d18).
+
+### Notes
+- No code change needed — the site and the Android app are unaffected.
+- If Samrat ever WANTS git auto-builds again (e.g. for another team member's branch), it can be re-enabled in one API call (`{"gitProviderOptions":{"createDeployments":"enabled"}}`).
