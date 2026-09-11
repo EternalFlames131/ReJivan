@@ -2,6 +2,7 @@ package com.rejivan.app.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -78,15 +80,28 @@ private fun LoginScreen(state: AppState) {
                     shape = RoundedCornerShape(10.dp)) {
                     Column(Modifier.padding(10.dp)) {
                         Text("Demo accounts (password: demo123)", color = AppColors.txt, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                        Text("asharma@demo.in  (home patient)", color = AppColors.muted, fontSize = 12.sp)
-                        Text("rprakash@demo.in  (home patient)", color = AppColors.muted, fontSize = 12.sp)
-                        Text("wardnurse@demo.in  (Virtual Ward)", color = AppColors.muted, fontSize = 12.sp)
+                        DemoShortcut("asharma@demo.in", "home patient", AppColors.ok) { email = "asharma@demo.in"; password = "demo123"; err = "" }
+                        DemoShortcut("rprakash@demo.in", "home patient", AppColors.ok) { email = "rprakash@demo.in"; password = "demo123"; err = "" }
+                        DemoShortcut("wardnurse@demo.in", "Virtual Ward", AppColors.accent2) { email = "wardnurse@demo.in"; password = "demo123"; err = "" }
                     }
                 }
                 Spacer(Modifier.height(10.dp))
                 Text("Region: ${DemoData.REGION}", color = AppColors.warn, fontSize = 12.sp)
             }
         }
+    }
+}
+
+@Composable
+private fun DemoShortcut(mail: String, roleLabel: String, roleColor: Color, onTap: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
+        .clip(RoundedCornerShape(8.dp))
+        .clickable(onClick = onTap)
+        .background(AppColors.panel)
+        .padding(horizontal = 10.dp, vertical = 8.dp)) {
+        Text(mail, color = AppColors.accent2, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.weight(1f))
+        Text(roleLabel, color = roleColor, fontSize = 11.sp)
     }
 }
 
@@ -110,19 +125,30 @@ fun MainShell(state: AppState) {
         containerColor = AppColors.bg,
         topBar = {
             Column {
-                Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("ReJivan", color = AppColors.accent, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.width(8.dp))
+                Row(Modifier.fillMaxWidth().padding(start = 14.dp, end = 14.dp, top = 14.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.size(30.dp).background(AppColors.accent, RoundedCornerShape(9.dp)), contentAlignment = Alignment.Center) {
+                        Text("R", color = AppColors.bg, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    }
+                    Spacer(Modifier.width(9.dp))
+                    Column {
+                        Text("ReJivan", color = AppColors.accent, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Text("A Personal Nurse for Every Family", color = AppColors.muted, fontSize = 10.sp)
+                    }
                     val srcLabel = if (state.dataSource == Repository.Source.SERVER) "SERVER" else "OFFLINE"
                     val srcColor = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.warn
+                    Spacer(Modifier.weight(1f))
                     Card(colors = CardDefaults.cardColors(containerColor = srcColor.copy(alpha = 0.15f)),
                         shape = RoundedCornerShape(20.dp)) {
                         Text(srcLabel, color = srcColor, fontSize = 9.sp, fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
                     }
-                    Spacer(Modifier.weight(1f))
-                    Text("${state.currentUser?.role ?: ""}", color = AppColors.muted, fontSize = 12.sp)
-                    Spacer(Modifier.width(10.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Card(colors = CardDefaults.cardColors(containerColor = AppColors.warn.copy(alpha = 0.15f)),
+                        shape = RoundedCornerShape(20.dp)) {
+                        Text("LIVE · SIMULATED", color = AppColors.warn, fontSize = 8.sp, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                    }
+                    Spacer(Modifier.width(6.dp))
                     TextButton(onClick = { state.logout() }) {
                         Text("Logout", color = AppColors.accent2)
                     }
@@ -185,6 +211,17 @@ fun Dashboard(state: AppState) {
             Text(srcNote, color = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.muted, fontSize = 11.sp)
             Text("SIMULATED vital data • REAL monitoring logic", color = AppColors.muted, fontSize = 11.sp)
         }
+        item {
+            val nNormal = state.patients.count { worstStatus(state.reportOf(it)) == "normal" }
+            val nCaution = state.patients.count { worstStatus(state.reportOf(it)) == "caution" }
+            val nDanger = state.patients.count { worstStatus(state.reportOf(it)) == "danger" }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                StatTile("Patients", state.patients.size, AppColors.accent2)
+                StatTile("Stable", nNormal, AppColors.ok)
+                StatTile("Caution", nCaution, AppColors.warn)
+                StatTile("Danger", nDanger, AppColors.danger)
+            }
+        }
         if (state.patients.isEmpty()) {
             item { Text("No patients registered for this account.", color = AppColors.muted) }
         }
@@ -235,6 +272,17 @@ fun Dashboard(state: AppState) {
             }
         }
         item { Text("Updated: $tick", color = AppColors.muted, fontSize = 10.sp) }
+    }
+}
+
+@Composable
+private fun StatTile(label: String, value: Int, color: Color) {
+    Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel2),
+        shape = RoundedCornerShape(12.dp), modifier = Modifier.weight(1f)) {
+        Column(Modifier.padding(vertical = 10.dp, horizontal = 8.dp)) {
+            Text(label.uppercase(), color = AppColors.muted, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+            Text(value.toString(), color = color, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        }
     }
 }
 
