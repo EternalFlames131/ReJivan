@@ -420,3 +420,27 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 3. Also append one line to `CHANGELOG.md` and the master log for real work changes (not for pure planning).
 
 2026-09-10 14:16 | User asked to list the SPECIFIC named AI models (not AI types) in the concept PDF. Added Section 6.1 table: NEWS2/MEWS engine, Isolation Forest, LSTM autoencoder, ROCKET/MiniRocket, UniTS, BlazePose + UR-Fall/Le2i BiLSTM, YOLOv8, rPPG, Gemma/Gemini LLM optional, LiteRT+MediaPipe runtime; each marked Real-in-prototype vs Roadmap; honesty note kept. PDF rebuilt (11 pages) + verified all keywords present. Autosave will commit/push.
+
+## 2026-09-11 (Day 4 — Android app FIXED: now fetches data from the live website)
+
+### What the user asked
+- "The android application is perfect right? If there is any issue then fix it and give me the apk file to install on my phone. Let me check it — it should fetch data from the site."
+
+### Found problem (verified on disk)
+- The native Android app (app-android/) had **zero networking code** — it was a fully offline app (hardcoded demo data + on-device simulator only). The CONVERSATION log from 2026-09-10 claimed Sync.kt, Repository.kt, Store.kt, Models.kt, Engine.kt were built, but those files **do not exist on disk** — only DemoData/VitalSimulator/RulesEngine/AlertEngine/CameraZoneEngine/MedStore. The app could never fetch data from rejivan.vercel.app.
+
+### What was built (real, compiled, verified)
+- **gradle**: added com.squareup.okhttp3:okhttp:4.12.0 + parallel/caching/daemon flags; created pp-android/local.properties → SDK path.
+- **network/Sync.kt** (NEW): blocking REST client for https://rejivan.vercel.app. Endpoints: POST /api/auth/login, GET /api/vitals (with server reports), GET /api/alerts + /api/escalations, GET /api/calls (live call-chain ladder+log), GET /api/camera-zones, GET /api/medications, POST /api/medications/{id}/take. Auth via Bearer token.
+- **data/Repository.kt** (NEW): server-first data layer. Login tries server → falls back to local demo accounts when offline. etchAll() pulls all endpoints on a background thread under OkHttp timeouts; if anything fails → seamless LOCAL fallback (on-device engine) so the app never breaks without internet. markTaken() pushes to server + updates local.
+- **ui/AppState.kt**: rewired through Repository. New observable state: dataSource (SERVER/LOCAL), serverPatients, serverVitals, serverAlerts/Escalations/Calls, serverUser. 2s tick + server poll every 5s. reportOf() uses server reports when online.
+- **ui/App.kt**: top-bar badge shows **SERVER** (green) or **OFFLINE** (amber); dashboard subtitle + camera tab note reflect live vs on-device data; SafeCasts so UI never crashes mid-load.
+
+### Built + verified
+- Two compiler errors caught+fixed (bp scoping, MedStore.update signature). Build SUCCESSFUL (warm with cached deps).
+- **APK: C:\Users\samra\Downloads\ReJivan-Android-v2.1.apk (16.5 MB)** — install on phone, login with asharma@demo.in / demo123, watch the SERVER badge appear + vitals pulled from rejivan.vercel.app.
+- Sideload note: phone needs "install from unknown sources" enabled for APK.
+
+### Honest notes
+- Server returns vitals/alerts/reports the SAME as the deterministic engine — so SERVER vs OFFLINE numbers are identical (that's the offline-parity story, by design).
+- Medications still read from the phone's local store (server meds fetched but local is source for the meds tab). Vitals/alerts/calls fully live from the site when online.
