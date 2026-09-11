@@ -95,4 +95,35 @@ object DemoData {
         val patientIds = patientsForUser(userId).map { it.id }
         return CAMERA_ZONES.filter { it.patientId in patientIds }
     }
+
+    // Local device catalogue (for offline fallback — mirrors server medical-devices.js)
+    data class LocalDevice(
+        val id: String, val name: String, val manufacturer: String,
+        val approval: String, val price: String, val madeInIndia: Boolean,
+        val measures: List<String>, val description: String
+    )
+
+    val LOCAL_DEVICE_CATALOGUE = listOf(
+        LocalDevice("SANKETLIFE_12", "SanketLife 12-Lead ECG", "Agatsa (Pune, India)", "CDSCO Class B, CE certified", "5000", true, listOf("hr"), "World's smallest 12-lead ECG device. Pocket-sized, Bluetooth-connected."),
+        LocalDevice("HEXOSKIN_MEDICAL", "Hexoskin Medical System", "Hexoskin (Canada)", "FDA 510(k) cleared", "45000", false, listOf("hr"), "Smart vest: 3-lead ECG, heart rate, respiration rate."),
+        LocalDevice("CHOICEMMED_MD300", "ChoiceMMed MD300C228", "Beijing Choice", "FDA 510(k) cleared", "4000", false, listOf("spo2"), "Fingertip medical pulse oximeter with Bluetooth."),
+        LocalDevice("LEPU_AP10", "Lepu AP-10 Wrist Oximeter", "Lepu Medical", "FDA cleared, CE certified", "10000", false, listOf("spo2"), "Wrist-worn continuous oximeter. 160-hour data storage."),
+        LocalDevice("OMRON_BP", "Omron HEM-7156T", "Omron (Japan)", "FDA, CE, CDSCO", "4500", false, listOf("sbp", "dbp"), "Medical-grade automatic blood pressure monitor with Bluetooth."),
+        LocalDevice("BIOBEAT_CHEST", "Biobeat BB-613 Chest Patch", "Biobeat (Israel)", "FDA 510(k) cleared, CE", "25000", false, listOf("hr", "sbp", "dbp", "spo2", "temp"), "Gold-standard chest patch: 13 vitals from one wearable."),
+        LocalDevice("TEMPTRAQ_PATCH", "TempTraq Continuous Temp Patch", "Blue Spark Technologies (USA)", "FDA Class II cleared", "2000", false, listOf("temp"), "Disposable axillary temperature patch. 72-hour continuous monitoring."),
+        LocalDevice("AION_TEMPSHIELD", "AION TempShield", "AION Biosystems (USA)", "FDA 510(k) cleared", "15000", false, listOf("temp"), "90-day continuous skin temperature sensor."),
+        LocalDevice("FREESTYLE_LIBRE3", "FreeStyle Libre 3", "Abbott", "FDA cleared, CDSCO approved", "4670", false, listOf("glucose"), "Real-time continuous glucose monitor. 14-day wear."),
+        LocalDevice("GLUCORX_VIXXA2", "GlucoRx Vixxa 2", "MicroTech Medical / GlucoRx India", "CE, CDSCO Class B certified", "3200", false, listOf("glucose"), "Cheapest CDSCO-certified CGM in India. 15-day wear."),
+        LocalDevice("H360_HEALTH360", "H360 Health360", "Medilogy Inc (India)", "CDSCO (Made in India)", "7000", true, listOf("hr", "spo2"), "World's smallest multi-parameter device. IIT-designed.")
+    )
+
+    private val LOCAL_DEVICE_IDS = mapOf(
+        "P1" to listOf("SANKETLIFE_12", "OMRON_BP", "TEMPTRAQ_PATCH"),
+        "P2" to listOf("FREESTYLE_LIBRE3", "CHOICEMMED_MD300", "OMRON_BP"),
+        "P3" to listOf("BIOBEAT_CHEST", "FREESTYLE_LIBRE3"),
+        "P4" to listOf("BIOBEAT_CHEST", "SANKETLIFE_12", "TEMPTRAQ_PATCH")
+    )
+
+    fun devicesForPatient(patientId: String): List<LocalDevice> =
+        LOCAL_DEVICE_IDS[patientId].orEmpty().mapNotNull { id -> LOCAL_DEVICE_CATALOGUE.find { it.id == id } }
 }

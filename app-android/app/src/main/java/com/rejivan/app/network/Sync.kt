@@ -218,6 +218,59 @@ object Sync {
         } catch (e: Exception) { false }
     }
 
+    // ── Medical devices (per-patient registry + catalogue) ─────────────────
+
+    data class ServerDevice(
+        val deviceId: String, val name: String, val manufacturer: String,
+        val category: String, val approval: String, val connectivity: String,
+        val accuracy: String, val measures: List<String>, val priceINR: String,
+        val madeInIndia: Boolean, val description: String, val productionTier: String,
+        val connected: Boolean, val battery: Int, val signalStrength: Int,
+        val secondsSinceLastSeen: Int
+    )
+
+    data class PatientDevices(
+        val patientId: String, val patientName: String, val devices: List<ServerDevice>
+    )
+
+    fun fetchDevices(token: String): List<PatientDevices>? {
+        val obj = get("/api/devices", token) ?: return null
+        val arr = obj.optJSONArray("patients") ?: return emptyList()
+        return (0 until arr.length()).mapNotNull { i ->
+            val o = arr.getJSONObject(i)
+            try {
+                val devArr = o.optJSONArray("devices") ?: JSONArray()
+                val devs = (0 until devArr.length()).mapNotNull { j ->
+                    parseDevice(devArr.getJSONObject(j))
+                }
+                PatientDevices(o.getString("patientId"), o.getString("patientName"), devs)
+            } catch (e: Exception) { null }
+        }
+    }
+
+    fun fetchCatalogue(token: String): List<ServerDevice>? {
+        val obj = get("/api/devices/catalogue", token) ?: return null
+        val arr = obj.optJSONArray("catalogue") ?: return emptyList()
+        return (0 until arr.length()).mapNotNull { i -> parseDevice(arr.getJSONObject(i)) }
+    }
+
+    private fun parseDevice(d: JSONObject): ServerDevice? {
+        return try {
+            val mea = d.optJSONArray("measures") ?: JSONArray()
+            val measures = (0 until mea.length()).map { mea.getString(it) }
+            ServerDevice(
+                d.getString("deviceId"), d.getString("name"), d.optString("manufacturer", ""),
+                d.optString("category", ""), d.optString("approval", ""),
+                d.optString("connectivity", ""), d.optString("accuracy", ""),
+                measures, d.optString("priceINR", ""),
+                d.optBoolean("madeInIndia", false), d.optString("description", ""),
+                d.optString("productionTier", ""),
+                d.optBoolean("connected", false), d.optInt("battery", 0),
+                d.optInt("signalStrength", 0), d.optInt("secondsSinceLastSeen", 0)
+            )
+        } catch (e: Exception) { null }
+    }
+
     // ── HTTP helpers ──────────────────────────────────────────────────────
 
     private fun get(path: String, token: String): JSONObject? {

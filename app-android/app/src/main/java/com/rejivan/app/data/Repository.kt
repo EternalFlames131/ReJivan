@@ -25,6 +25,8 @@ object Repository {
         val calls: List<Sync.ServerCall>,
         val zones: List<CameraZone>,
         val meds: List<Medication>,
+        val deviceGroups: List<Sync.PatientDevices>,
+        val catalogue: List<Sync.ServerDevice>,
         val serverUser: Sync.LoginResult?
     )
 
@@ -75,6 +77,8 @@ object Repository {
             val calls = try { Sync.fetchCalls(t!!) } catch (e: Exception) { null }
             val zones = try { Sync.fetchCameraZones(t!!) } catch (e: Exception) { null }
             val meds = try { Sync.fetchMedications(t!!) } catch (e: Exception) { null }
+            val devGroups = try { Sync.fetchDevices(t!!) } catch (e: Exception) { null }
+            val cat = try { Sync.fetchCatalogue(t!!) } catch (e: Exception) { null }
 
             if (vitals != null && alertsPair != null) {
                 // Map server patients to local Patient model
@@ -89,7 +93,7 @@ object Repository {
                 } ?: emptyList()
                 // Map server zones to local CameraZone model
                 val zoneList = zones?.map { sz ->
-                    CameraZone(sz.id, sz.patientId, sz.name, "", sz.ward)
+                    CameraZone(sz.id, sz.patientId, sz.name, sz.room, sz.ward)
                 } ?: emptyList()
                 // Map server vitals to map
                 val vitalsMap = vitals.associateBy { it.id }
@@ -101,7 +105,8 @@ object Repository {
                 return ServerState(
                     Source.SERVER, patients, vitalsMap,
                     alertsPair.first, alertsPair.second,
-                    calls ?: emptyList(), zoneList, medList, cachedUser
+                    calls ?: emptyList(), zoneList, medList,
+                    devGroups ?: emptyList(), cat ?: emptyList(), cachedUser
                 )
             }
         }
@@ -110,8 +115,22 @@ object Repository {
         val patients = DemoData.patientsForUser(userId)
         val zones = DemoData.zonesForUser(userId)
         val meds = MedStore.load(ctx).filter { it.patientId in patients.map { p -> p.id } }
+        val localDevGroups = patients.map { p ->
+            Sync.PatientDevices(p.id, p.name,
+                DemoData.devicesForPatient(p.id).map { d ->
+                    Sync.ServerDevice(d.id, d.name, d.manufacturer, "", d.approval, "BLE",
+                        "", d.measures, d.price, d.madeInIndia, d.description, "medical",
+                        true, 80 + (d.id.hashCode() % 20), 85, 0)
+                })
+        }
+        val localCatalogue = DemoData.LOCAL_DEVICE_CATALOGUE.map { d ->
+            Sync.ServerDevice(d.id, d.name, d.manufacturer, "", d.approval, "", "",
+                d.measures, d.price, d.madeInIndia, d.description, "medical",
+                false, 0, 0, 0)
+        }
         return ServerState(Source.LOCAL, patients, emptyMap(),
-            emptyList(), emptyList(), emptyList(), zones, meds, null)
+            emptyList(), emptyList(), emptyList(), zones, meds,
+            localDevGroups, localCatalogue, null)
     }
 
     /**

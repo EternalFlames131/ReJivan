@@ -39,8 +39,9 @@ class AppState(private val ctx: Context) {
         override fun run() {
             tick = System.currentTimeMillis()
             handler.postDelayed(this, 2000)
-            // Poll server every 5 seconds for fresh data
-            if (currentUser != null && dataSource == Repository.Source.SERVER) {
+            // Poll the website continuously so changes appear automatically.
+            // If offline, this retries silently and recovers when online.
+            if (currentUser != null) {
                 refreshFromServer()
             }
         }
@@ -53,10 +54,16 @@ class AppState(private val ctx: Context) {
         get() = if (serverPatients.isNotEmpty()) serverPatients
                 else DemoData.patientsForUser(currentUser?.id ?: "")
 
+    var serverZones by mutableStateOf<List<CameraZone>>(emptyList())
+        private set
+    var serverDeviceGroups by mutableStateOf<List<Sync.PatientDevices>>(emptyList())
+        private set
+    var serverCatalogue by mutableStateOf<List<Sync.ServerDevice>>(emptyList())
+        private set
+
     val zones: List<CameraZone>
-        get() = if (dataSource == Repository.Source.SERVER && serverPatients.isNotEmpty()) {
-            DemoData.zonesForUser(currentUser?.id ?: "")
-        } else DemoData.zonesForUser(currentUser?.id ?: "")
+        get() = if (serverZones.isNotEmpty()) serverZones
+                else DemoData.zonesForUser(currentUser?.id ?: "")
 
     fun login(email: String, password: String): String? {
         val err = Repository.login(email, password.trim())
@@ -73,6 +80,31 @@ class AppState(private val ctx: Context) {
         return null
     }
 
+    fun deviceGroups(): List<Sync.PatientDevices> {
+        if (serverDeviceGroups.isNotEmpty()) return serverDeviceGroups
+        // Offline fallback from local data
+        val uid = currentUser?.id ?: return emptyList()
+        return DemoData.patientsForUser(uid).map { p ->
+            Sync.PatientDevices(p.id, p.name,
+                DemoData.devicesForPatient(p.id).map { d ->
+                    Sync.ServerDevice(d.id, d.name, d.manufacturer, "", d.approval, "BLE",
+                        "", d.measures, d.price, d.madeInIndia, d.description, "medical",
+                        true, 80 + (d.id.hashCode() % 20), 85, 0)
+                })
+        }
+    }
+
+    fun deviceCatalogue(): List<Sync.ServerDevice> {
+        if (serverCatalogue.isNotEmpty()) return serverCatalogue
+        return DemoData.LOCAL_DEVICE_CATALOGUE.map { d ->
+            Sync.ServerDevice(d.id, d.name, d.manufacturer, "", d.approval, "", "",
+                d.measures, d.price, d.madeInIndia, d.description, "medical",
+                false, 0, 0, 0)
+        }
+    }
+
+    fun logoUerr() {}
+
     fun logout() {
         currentUser = null
         Repository.setToken(null)
@@ -83,6 +115,7 @@ class AppState(private val ctx: Context) {
         serverEscalations = emptyList()
         serverCalls = emptyList()
         serverMeds = emptyList()
+        serverZones = emptyList()
         serverUser = null
     }
 
@@ -98,6 +131,7 @@ class AppState(private val ctx: Context) {
             serverEscalations = state.escalations
             serverCalls = state.calls
             serverMeds = state.meds
+            serverZones = state.zones
             serverUser = state.serverUser
             isRefreshing = false
         }

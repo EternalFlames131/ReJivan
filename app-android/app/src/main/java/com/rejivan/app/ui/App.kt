@@ -262,7 +262,10 @@ fun Medicines(state: AppState) {
                 Spacer(Modifier.weight(1f))
                 TextButton(onClick = { showAdd = true }) { Text("+ Add", color = AppColors.accent) }
             }
-            Text("Offline saved on this device", color = AppColors.muted, fontSize = 11.sp)
+            val medNote = if (state.dataSource == Repository.Source.SERVER)
+                "Live from rejivan.vercel.app • changes sync two ways"
+            else "Offline: saved on this device only"
+            Text(medNote, color = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.muted, fontSize = 11.sp)
         }
         items(state.meds()) { m ->
             Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel),
