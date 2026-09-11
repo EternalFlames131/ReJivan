@@ -421,7 +421,12 @@ fun Camera(state: AppState) {
         zones.forEach { z ->
             item { CameraCard(state, z) }
         }
-        item { Text("OFFLINE: this app works fully without internet.", color = AppColors.ok, fontSize = 11.sp) }
+        item {
+            val note = if (state.dataSource == Repository.Source.SERVER)
+                "Live data from rejivan.vercel.app — falls back to on-device engine when offline."
+            else "OFFLINE: local on-device engine (no internet needed)."
+            Text(note, color = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.warn, fontSize = 11.sp)
+        }
     }
 }
 
