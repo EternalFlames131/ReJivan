@@ -29,7 +29,8 @@ object Repository {
     )
 
     private var token: String? = null
-    private var cachedUser: Sync.LoginResult? = null
+    var cachedUser: Sync.LoginResult? = null
+        private set
 
     fun setToken(t: String?) { token = t }
     fun getToken(): String? = token
@@ -92,6 +93,11 @@ object Repository {
                 } ?: emptyList()
                 // Map server vitals to map
                 val vitalsMap = vitals.associateBy { it.id }
+                // Two-way sync DOWN: mirror server meds into local store so
+                // offline mode keeps the latest list even without internet.
+                if (medList.isNotEmpty()) {
+                    symportMedications(ctx, medList)
+                }
                 return ServerState(
                     Source.SERVER, patients, vitalsMap,
                     alertsPair.first, alertsPair.second,
@@ -118,5 +124,44 @@ object Repository {
         if (t != null) {
             thread { try { Sync.postMedTake(t!!, medId) } catch (_: Exception) {} }
         }
+    }
+
+    /**
+     * Add a medication — write locally immediately, push to server in background.
+     * Returns the med with the server-issued id when online (best effort).
+     */
+    fun addMed(ctx: Context, med: Medication) {
+        MedStore.add(ctx, med)
+        val t = token
+        if (t != null) {
+            thread {
+                try {
+                    val newId = Sync.postMedCreate(t!!, med.patientId, med.name, med.dose,
+                        med.frequency, med.times, med.notes)
+                    if (newId != null && newId != med.id) {
+                        val updated = med.copy(id = newId)
+                        MedStore.update(ctx, updated)
+                    }
+                } catch (_: Exception) {}
+            }
+        }
+    }
+
+    /**
+     * Remove a medication — delete locally now, delete on server in background.
+     */
+    fun removeMed(ctx: Context, medId: String) {
+        MedStore.remove(ctx, medId)
+        val t = token
+        if (t != null) {
+            thread { try { Sync.deleteMed(t!!, medId) } catch (_: Exception) {} }
+        }
+    }
+
+    private fun symportMedications(ctx: Context, serverList: List<Medication>) {
+        val local = MedStore.load(ctx)
+        val serverIds = serverList.map { it.id }.toSet()
+        val merged = serverList + local.filter { it.id !in serverIds }
+        MedStore.save(ctx, merged)
     }
 }

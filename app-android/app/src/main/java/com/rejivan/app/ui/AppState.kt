@@ -27,6 +27,8 @@ class AppState(private val ctx: Context) {
         private set
     var serverCalls by mutableStateOf<List<Sync.ServerCall>>(emptyList())
         private set
+    var serverMeds by mutableStateOf<List<Medication>>(emptyList())
+        private set
     var isRefreshing by mutableStateOf(false)
         private set
     var serverUser by mutableStateOf<Sync.LoginResult?>(null)
@@ -59,8 +61,12 @@ class AppState(private val ctx: Context) {
     fun login(email: String, password: String): String? {
         val err = Repository.login(email, password.trim())
         if (err != null) return err
-        // Determine user locally
-        val u = DemoData.findUserByEmail(email)
+        // Determine user — use server account if this is a website-registered
+        // account, otherwise fall back to the local demo user.
+        val u = Repository.cachedUser?.let { cu ->
+            User(cu.userId, cu.name, cu.email, cu.role)
+        } ?: DemoData.findUserByEmail(email)
+        if (u == null) return "Unknown account"
         currentUser = u
         // Immediately fetch from server in background
         refreshFromServer()
@@ -76,6 +82,7 @@ class AppState(private val ctx: Context) {
         serverAlerts = emptyList()
         serverEscalations = emptyList()
         serverCalls = emptyList()
+        serverMeds = emptyList()
         serverUser = null
     }
 
@@ -90,6 +97,7 @@ class AppState(private val ctx: Context) {
             serverAlerts = state.alerts
             serverEscalations = state.escalations
             serverCalls = state.calls
+            serverMeds = state.meds
             serverUser = state.serverUser
             isRefreshing = false
         }
@@ -152,10 +160,16 @@ class AppState(private val ctx: Context) {
         return AlertEngine.buildCallChain(alert, System.currentTimeMillis())
     }
 
-    fun meds(): List<Medication> = MedStore.load(ctx).filter {
-        it.patientId in patients.map { p -> p.id }
+    fun meds(): List<Medication> {
+        // When online, show the live list straight from the website.
+        if (dataSource == Repository.Source.SERVER && serverMeds.isNotEmpty()) {
+            return serverMeds.filter { it.patientId in patients.map { p -> p.id } }
+        }
+        return MedStore.load(ctx).filter {
+            it.patientId in patients.map { p -> p.id }
+        }
     }
 
-    fun addMed(med: Medication) = MedStore.add(ctx, med)
-    fun removeMed(id: String) = MedStore.remove(ctx, id)
+    fun addMed(med: Medication) = Repository.addMed(ctx, med)
+    fun removeMed(id: String) = Repository.removeMed(ctx, id)
 }

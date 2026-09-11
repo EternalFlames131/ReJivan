@@ -152,7 +152,7 @@ object Sync {
 
     // ── Camera zones ──────────────────────────────────────────────────────
 
-    data class ServerZone(val id: String, val name: String, val patientId: String, val ward: Boolean)
+    data class ServerZone(val id: String, val name: String, val room: String, val patientId: String, val ward: Boolean)
 
     fun fetchCameraZones(token: String): List<ServerZone>? {
         val obj = get("/api/camera-zones", token) ?: return null
@@ -161,7 +161,7 @@ object Sync {
             val o = arr.getJSONObject(i)
             try {
                 ServerZone(o.getString("id"), o.getString("name"),
-                    o.getString("patientId"), o.optBoolean("ward", false))
+                    o.optString("room", ""), o.getString("patientId"), o.optBoolean("ward", false))
             } catch (e: Exception) { null }
         }
     }
@@ -189,6 +189,33 @@ object Sync {
 
     fun postMedTake(token: String, medId: String): Boolean {
         return post("/api/medications/$medId/take", "{}", token) != null
+    }
+
+    fun postMedCreate(token: String, patientId: String, name: String, dose: String,
+                      frequency: String, times: List<String>, notes: String): String? {
+        val timesArr = JSONArray()
+        times.forEach { timesArr.put(it) }
+        val body = JSONObject()
+            .put("patientId", patientId)
+            .put("name", name)
+            .put("dose", dose)
+            .put("frequency", frequency)
+            .put("times", timesArr)
+            .put("notes", notes)
+        val resp = post("/api/medications", body.toString(), token) ?: return null
+        return try { resp.getString("id") } catch (e: Exception) { null }
+    }
+
+    fun deleteMed(token: String, medId: String): Boolean {
+        val req = Request.Builder()
+            .url("$BASE/api/medications/$medId")
+            .delete()
+            .addHeader("Authorization", "Bearer $token")
+            .build()
+        return try {
+            val resp = client.newCall(req).execute()
+            resp.isSuccessful
+        } catch (e: Exception) { false }
     }
 
     // ── HTTP helpers ──────────────────────────────────────────────────────
