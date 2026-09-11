@@ -1202,7 +1202,9 @@ async function init(){
   await loadLang();
   applyI18n();
   if (new URLSearchParams(location.search).has('demo')){
-    token='demo'; me={id:'Ua7ac85b2', name:'Anita Sharma', role:'family'}; await enterApp(); return;
+    const lg = await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'asharma@demo.in',password:'demo123'})}).then(r=>r.json());
+    token = lg.token || ''; localStorage.setItem('rejivan_token', token || '');
+    me = lg.user; if (me) await enterApp(); return;
   }
   // restore session
   if (token){
