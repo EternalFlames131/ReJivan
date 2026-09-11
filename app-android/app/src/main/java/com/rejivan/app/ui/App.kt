@@ -192,10 +192,10 @@ fun Dashboard(state: AppState) {
             Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel),
                 shape = RoundedCornerShape(14.dp), modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(14.dp)) {
+                    val bp = r["bp"] as? String ?: "normal"
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(p.name, color = AppColors.txt, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.weight(1f))
-                        val bp = r["bp"] as? String ?: "normal"
                         StatusBadge(bp)
                     }
                     Text("${p.age} yrs • ${p.sex} • ${p.condition} • ${p.location}", color = AppColors.muted, fontSize = 12.sp)

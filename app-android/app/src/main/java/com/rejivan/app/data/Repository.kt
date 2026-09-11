@@ -112,9 +112,8 @@ object Repository {
      * Mark a medication as taken — push to server if online, always update local.
      */
     fun markTaken(ctx: Context, medId: String) {
-        MedStore.update(ctx, MedStore.load(ctx).map {
-            if (it.id == medId) it.copy(active = false) else it
-        })
+        val target = MedStore.load(ctx).firstOrNull { it.id == medId }
+        if (target != null) MedStore.update(ctx, target.copy(active = false))
         val t = token
         if (t != null) {
             thread { try { Sync.postMedTake(t!!, medId) } catch (_: Exception) {} }
