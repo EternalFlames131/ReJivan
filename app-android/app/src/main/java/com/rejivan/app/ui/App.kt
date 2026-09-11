@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rejivan.app.core.*
+import com.rejivan.app.data.Repository
 
 @Composable
 fun App(state: AppState) {
@@ -111,6 +112,14 @@ fun MainShell(state: AppState) {
             Column {
                 Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                     Text("ReJivan", color = AppColors.accent, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.width(8.dp))
+                    val srcLabel = if (state.dataSource == Repository.Source.SERVER) "SERVER" else "OFFLINE"
+                    val srcColor = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.warn
+                    Card(colors = CardDefaults.cardColors(containerColor = srcColor.copy(alpha = 0.15f)),
+                        shape = RoundedCornerShape(20.dp)) {
+                        Text(srcLabel, color = srcColor, fontSize = 9.sp, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                    }
                     Spacer(Modifier.weight(1f))
                     Text("${state.currentUser?.role ?: ""}", color = AppColors.muted, fontSize = 12.sp)
                     Spacer(Modifier.width(10.dp))
@@ -170,6 +179,9 @@ fun Dashboard(state: AppState) {
         item {
             Text("Live Vitals Dashboard", color = AppColors.txt, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Text("Region: ${DemoData.REGION}", color = AppColors.warn, fontSize = 12.sp)
+            val srcNote = if (state.dataSource == Repository.Source.SERVER)
+                "Data fetched from rejivan.vercel.app" else "OFFLINE: local engine"
+            Text(srcNote, color = if (state.dataSource == Repository.Source.SERVER) AppColors.ok else AppColors.muted, fontSize = 11.sp)
             Text("SIMULATED vital data • REAL monitoring logic", color = AppColors.muted, fontSize = 11.sp)
         }
         if (state.patients.isEmpty()) {
@@ -183,28 +195,30 @@ fun Dashboard(state: AppState) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(p.name, color = AppColors.txt, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.weight(1f))
-                        val bp = r["bp"] as String
+                        val bp = r["bp"] as? String ?: "normal"
                         StatusBadge(bp)
                     }
                     Text("${p.age} yrs • ${p.sex} • ${p.condition} • ${p.location}", color = AppColors.muted, fontSize = 12.sp)
                     if (p.ward != null) Text("${p.ward}", color = AppColors.accent2, fontSize = 12.sp)
                     Spacer(Modifier.height(10.dp))
+                    val hrMap = r["hr"] as? Map<*, *> ?: mapOf("value" to "--", "status" to "normal")
+                    val spo2Map = r["spo2"] as? Map<*, *> ?: mapOf("value" to "--", "status" to "normal")
+                    val sbpMap = r["sbp"] as? Map<*, *> ?: mapOf("value" to "--", "status" to "normal")
+                    val dbpMap = r["dbp"] as? Map<*, *> ?: mapOf("value" to "--", "status" to "normal")
+                    val tempMap = r["temp"] as? Map<*, *> ?: mapOf("value" to "--", "status" to "normal")
+                    val glucoseMap = r["glucose"] as? Map<*, *> ?: mapOf("value" to "--", "status" to "normal")
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        VitalCard("HR", (r["hr"] as Map<*, *>)["value"].toString(),
-                            (r["hr"] as Map<*, *>)["status"] as String) { Modifier.weight(1f) }
-                        VitalCard("SpO2", (r["spo2"] as Map<*, *>)["value"].toString() + "%",
-                            (r["spo2"] as Map<*, *>)["status"] as String) { Modifier.weight(1f) }
+                        VitalCard("HR", hrMap["value"].toString(), hrMap["status"] as? String ?: "normal") { Modifier.weight(1f) }
+                        VitalCard("SpO2", spo2Map["value"].toString() + "%", spo2Map["status"] as? String ?: "normal") { Modifier.weight(1f) }
                     }
                     Spacer(Modifier.height(8.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        VitalCard("BP", "${(r["sbp"] as Map<*, *>)["value"]} / ${(r["dbp"] as Map<*, *>)["value"]}", r["bp"] as String) { Modifier.weight(1f) }
-                        VitalCard("Temp", (r["temp"] as Map<*, *>)["value"].toString() + "°C",
-                            (r["temp"] as Map<*, *>)["status"] as String) { Modifier.weight(1f) }
+                        VitalCard("BP", "${sbpMap["value"]} / ${dbpMap["value"]}", bp) { Modifier.weight(1f) }
+                        VitalCard("Temp", tempMap["value"].toString() + "\u00B0C", tempMap["status"] as? String ?: "normal") { Modifier.weight(1f) }
                     }
                     Spacer(Modifier.height(8.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        VitalCard("Glucose", (r["glucose"] as Map<*, *>)["value"].toString(),
-                            (r["glucose"] as Map<*, *>)["status"] as String) { Modifier.weight(1f) }
+                        VitalCard("Glucose", glucoseMap["value"].toString(), glucoseMap["status"] as? String ?: "normal") { Modifier.weight(1f) }
                         val danger = RulesEngine.dangerLabels(r).joinToString(", ")
                         Card(colors = CardDefaults.cardColors(containerColor = AppColors.panel2),
                             shape = RoundedCornerShape(10.dp), modifier = Modifier.weight(1f)) {
