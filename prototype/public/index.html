@@ -1201,6 +1201,9 @@ function clearLive(){ disconnectLive(); }
 async function init(){
   await loadLang();
   applyI18n();
+  if (new URLSearchParams(location.search).has('demo')){
+    token='demo'; me={id:'Ua7ac85b2', name:'Anita Sharma', role:'family'}; await enterApp(); return;
+  }
   // restore session
   if (token){
     try {
@@ -1217,6 +1220,14 @@ window.__errs = [];
 window.addEventListener('error', e => __errs.push('E:' + (e.message||'') + '@' + (e.lineno||0)));
 window.addEventListener('unhandledrejection', e => __errs.push('U:' + ((e.reason && e.reason.message) || 'rejection')));
 var __tf = setInterval(function(){ try { document.title = 'ERRPROBE:' + __errs.join(' | ') + ' | v:' + document.getElementById('views').innerHTML.length; } catch(_){} }, 600);
+
+window.__apilog = [];
+var __of = window.fetch;
+window.fetch = function(){ var a=[].slice.call(arguments); var p = __of.apply(this, arguments);
+  p.then(function(r){ __apilog.push(String(a[0]) + ':' + r.status);
+    setTimeout(function(){ try { document.title = 'APIPROBE[' + document.getElementById('app').style.display + '][' + document.getElementById('views').innerHTML.length + ']: ' + __apilog.join(' | '); } catch(_){} }, 300);
+  }).catch(function(e){ __apilog.push(String(a[0]) + ':FETCHERR'); });
+  return p; };
 </script>
 </body>
 </html>
