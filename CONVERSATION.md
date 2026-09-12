@@ -574,3 +574,21 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 
 ### Status
 - Waiting for autosaver to commit+push+deploy → rejivan.vercel.app will serve the light clinical design. Next: verify live site markers, then done.
+
+## 2026-09-12 (Day 5 — v3 clinical redesign FINISHED + verified)
+
+### Resumed from
+- Runbook at `...\Temp\opencode\rejivan-v3\RESUME.md` (v3 paused at 01:20 with autosaver suspended; index.html was back at known-good v2.5).
+
+### What was done
+- Fixed `v3_splice.py`: it now restores from a fresh known-good backup (`rejivan_v2.5_clean_backup.html`, made this session) so the splice is deterministic and re-runnable. Ran it → index.html = 69,700 chars; lang.json = 160 `en` keys.
+- **Found + fixed a SECOND silent-splice loss** (not in the runbook): the old `overall()` helper (patient status = danger/caution/normal from the report) sat AFTER the replacement anchor `statusBadge` and got swallowed by the splice. Every v3 vitals view calls it → `ReferenceError` → `#views` stayed empty even though `pageTitle` rendered. Restored `overall()` into v3_vitals.js (re-splice-safe).
+- **Verification that actually worked**: the runbook's `?demo` + `--virtual-time-budget` proved flaky (sometimes app entered, sometimes stuck on login; and the DOM dump contains the whole `<script>` so marker counts were misleading). Built a small **CDP driver** (`ctemp rejivan-v3\cdp_check.mjs`, Node 24 native WebSocket): launches Edge headless with `--remote-debugging-port`, fills the login form + `doLogin()`, then reads real rendered DOM + console/exceptions. Result: pageTitle "Patient overview", whoami "Sharma Family · Family", **5 vitals table rows** (clinical table), 1 patient row, 4 summary tiles, "Recent alerts" + "Medication schedule" rails, "Last updated", LIVE·SIM pill, sim line, 6 sidebar nav items, light clinical body bg (244,246,250), **ZERO console errors / exceptions**. `node --check` clean.
+- Cleanup: no `__autologin.html` existed; temporary `?demo` login block was already removed by the re-splice's baseline restore (verified with grep). Autosaver resumed (removed `.git\no-autosave`, watcher confirmed running). Local server restarted at http://localhost:8080 for review.
+
+### Repo state
+- Only `prototype/public/index.html` changed vs the last commit (+864/−610) — the full v3 UI. lang.json unchanged on disk (keys were idempotent). The v3 part files + cdp_check.mjs stay in Temp (not committed/repo hygiene OK).
+
+### Decisions
+- Kept the CDP driver as the reliable verification path for future UI work (the runbook's headless-dump approach is abandoned as too flaky).
+- Android untouched this round (still v2.4, dark theme is fine on Android).
