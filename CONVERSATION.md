@@ -638,3 +638,13 @@ User request: "Can you add a few demo video footages in the live camera feed —
 
 ### Next
 - Auto-commit+auto-push+auto-deploy will publish; verify rejivan.vercel.app/videos/cam_*.mp4 → 200 after deploy. If user wants, later: real CC stock clips, or a 2nd camera zone visible to the demo family, or Android mirror.
+
+### UPDATE (same day) — "it shows a block moving instead, use a video that makes it real"
+- User feedback: the generated clips looked like a moving block. Decision: replace with REAL, openly-licensed STOCK footage from Wikimedia Commons. True local AI-video generation is not available here (no GPU/service/API), so real stock footage was the dependable way to get believable video.
+- Picks (all small 360p transcodes → trimmed 8 s, muted, 640×360 h264, SAME filenames so no app change):
+  - cam_livingroom.mp4 ← "Skatteetaten - Tax Return (Living Room).webm", TRY Motion, **CC BY 3.0** (attribution required) — mostly-static room shot, reads like a fixed room camera.
+  - cam_bedroom.mp4 ← USVI "Bright minimalist bedroom..." walkthrough, **Public domain** (USVI govt) — moving room pan.
+  - cam_ward.mp4 ← "Centro de salud urbano de Mazatlán" interior, **CC0** — clinic corridor walkthrough.
+- Added `prototype/public/videos/ATTRIBUTION.txt` (source/author/licence/URL per clip) — satisfies CC BY attribution and the competition's honesty rule.
+- Updated the 5-language `live_demo_note` to: "Demo footage: openly licensed stock video (public domain / CC0 / CC BY — see videos/ATTRIBUTION.txt). The app itself never records or stores video." + server /live note + README.
+- Verified via CDP driver across ALL demo accounts: asharma→CAM1 (cam_livingroom, 640×360, playing), rprakash@demo.in→CAM2 (cam_bedroom), wardnurse@demo.in→BED1+BED2 (cam_ward) — every clip plays, ZERO console errors/exceptions. All clips decode clean (0 ffmpeg decode errors; bedroom/ward luminance varies → real motion). Working tree green for commit.
