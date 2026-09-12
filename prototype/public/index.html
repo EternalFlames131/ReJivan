@@ -1205,50 +1205,30 @@ function drawCam(){
   const ctx = cv.getContext('2d');
   const W=cv.width, H=cv.height;
   const f = live.frame || { motion:0.4, person:true, lighting:'day' };
+  const v = document.getElementById('camVideo');
+  const haveVideo = !!(v && v.videoWidth > 0);
+  ctx.clearRect(0,0,W,H);
 
-  // room gradient
-  const g = ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0, f.lighting==='night' ? '#0c1220' : '#223344');
-  g.addColorStop(1, f.lighting==='night' ? '#060a12' : '#101a26');
-  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-
-  // window (light)
-  ctx.fillStyle = f.lighting==='night' ? '#1a2440' : '#a8c8ff';
-  ctx.fillRect(40,50,120,110);
-  ctx.strokeStyle='#33465c'; ctx.lineWidth=3;
-  ctx.beginPath(); ctx.moveTo(100,50); ctx.lineTo(100,160); ctx.moveTo(40,105); ctx.lineTo(160,105); ctx.stroke();
-
-  // door
-  ctx.fillStyle='#2b3b50'; ctx.fillRect(520,160,70,140);
-  ctx.strokeStyle='#33465c'; ctx.strokeRect(520,160,70,140);
-  ctx.beginPath(); ctx.arc(578,230,4,0,7); ctx.fillStyle='#93a3b8'; ctx.fill();
-
-  // floor line
-  ctx.strokeStyle='#33465c'; ctx.lineWidth=2;
-  ctx.beginPath(); ctx.moveTo(0,300); ctx.lineTo(W,300); ctx.stroke();
-
-  // bed
-  ctx.fillStyle='#24455c'; ctx.fillRect(140,220,230,70);
-  ctx.fillStyle='#2c4f6b'; ctx.fillRect(140,215,230,18);
-  ctx.fillStyle='#d8e2ee'; ctx.fillRect(150,222,70,14); // pillow
-
-  // person marker (sways with motion)
-  if (f.person){
-    const sway = Math.sin(Date.now()/220)*6 + f.motion*10;
-    const x = 300+sway, y = 255-(20+f.motion*10);
-    ctx.fillStyle='#e8eef7'; ctx.beginPath(); ctx.arc(x, y-10, 10, 0, 7); ctx.fill();
-    ctx.strokeStyle='#e8eef7'; ctx.lineWidth=7; ctx.lineCap='round';
-    ctx.beginPath(); ctx.moveTo(x,y+2); ctx.lineTo(x,y+34); ctx.moveTo(x,y+10); ctx.lineTo(x-14,y+30); ctx.moveTo(x,y+10); ctx.lineTo(x+14,y+30); ctx.stroke();
+  // fallback backdrop (only when no demo clip is available)
+  if (!haveVideo){
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0, f.lighting==='night' ? '#0c1220' : '#223344');
+    g.addColorStop(1, f.lighting==='night' ? '#060a12' : '#101a26');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   }
 
-  // dimming at night
-  if (f.lighting==='night'){ ctx.fillStyle='rgba(4,8,16,0.45)'; ctx.fillRect(0,0,W,H); }
-
-  // HUD text bottom
-  ctx.font='11px Segoe UI'; ctx.fillStyle='#7fd9b8';
-  ctx.fillText((f.person ? '● person detected' : '○ no person') + '   motion ' + Math.round(f.motion*100) + '%', 12, H-14);
+  // readability band + HUD
+  const bandH = 34;
+  const bg = ctx.createLinearGradient(0,H-bandH,0,H);
+  bg.addColorStop(0,'rgba(6,10,18,0)'); bg.addColorStop(1,'rgba(6,10,18,0.72)');
+  ctx.fillStyle=bg; ctx.fillRect(0,H-bandH,W,bandH);
+  ctx.font='12px Segoe UI'; ctx.fillStyle='#7fd9b8';
+  ctx.fillText((f.person ? '● person detected' : '○ no person') + '   motion ' + Math.round(f.motion*100) + '%', 12, H-12);
   ctx.fillStyle='#93a3b8';
-  ctx.fillText('SIMULATED · ', W-200, H-14);
+  ctx.fillText('SIMULATED FEED', W-112, H-12);
+
+  // dimming at night
+  if (f.lighting==='night'){ ctx.fillStyle='rgba(4,8,16,0.28)'; ctx.fillRect(0,0,W,H); }
 }
 function clearLive(){ disconnectLive(); }
 
