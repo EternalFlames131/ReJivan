@@ -613,3 +613,28 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 - Deploy architecture unchanged and now single-path: post-commit hook runs `vercel deploy --prod` from `prototype\` and re-assigns the rejivan.vercel.app alias on every commit. GitHub repo untouched (still EternalFlames131/ReJivan, public).
 - The two errored experiment deploys were superseded by the READY 12:51 deploy — current live state is correct (verified).
 - The pending `vercel login github` device flow is no longer required for deployment at all.
+
+---
+
+## 2026-09-12 (Day 5 — live camera feed now shows demo video footage)
+
+User request: "Can you add a few demo video footages in the live camera feed — stock or AI-generated, just do it."
+
+### Decision + rationale
+- The live camera modal previously showed only a canvas-drawn simulated room (no footage). To satisfy the request WITHOUT breaking the product's privacy-first story ("never records or stores video"), we show **muted, looping, clearly-labelled PLACEHOLDER clips** generated locally with ffmpeg — abstract/stylized "room monitoring" scenes, not real footage. Honesty labels stay front-and-centre (LIVE·SIM pill + simline banner + new `live_demo_note` in all 5 languages).
+- Chose locally-generated clips over downloaded stock: network is flaky, repo is public (licensing risk), and generated clips are tiny (7-11 KB) + fully self-contained + deploy with the app. Noted as an option to later swap in real CC stock footage if desired.
+- User-provided "AI generated videos" allowed; these are procedural/ffmpeg-generated, deterministic and re-runnable from `...\Temp\opencode\camclips\gen_clips.ps1`.
+
+### What changed
+- New `prototype/public/videos/`: cam_livingroom.mp4 (CAM1), cam_bedroom.mp4 (CAM2), cam_ward.mp4 (BED1 & BED2). 8 s, 640×360@15fps, H.264/yuv420p/faststart, muted.
+- index.html: `.cam-stage` now holds `<video id="camVideo" muted loop playsinline>` behind the canvas; `LIVE_CLIPS` map zoneId→clip; openLive picks the clip, connectLive plays it (src set once, then play; pause on disconnect/close); drawCam = HUD overlay ONLY (person/motion/lighting from the live API + "SIMULATED FEED" + bottom readability band + night dim + dark fallback backdrop only when no video frame). New `live_demo_note` div above `live_note`.
+- lang.json: `live_demo_note` added to en/hi/bn/ta/te. server.js /live note + prototype README updated to "demo placeholder footage (privacy-safe)".
+- Android app NOT touched this round (the live feed there is the cameras list + metadata view; mirroring demo footage into Compose can be a follow-up if the user wants).
+
+### Verification (this session)
+- Custom CDP driver (`...\rejivan-v3\cam_live_check.mjs`, Edge headless, login asharma@demo.in): CAM1 modal → videoWidth 640, readyState 4, src http://localhost:8080/videos/cam_livingroom.mp4, muted+loop, playing, liveClock ticking, title "Anita Sharma · Home — Living Room", pauses after close → **ZERO console errors / exceptions**.
+- All three /videos/*.mp4 → HTTP 200 via express.static (server serves `public/`, `dist/` is legacy).
+- Note: demo family owns only P1 → only CAM1 appears in Camera Zones (expected, per family-filtered /api/camera-zones). Other clips verified by HTTP 200 + clipFor map.
+
+### Next
+- Auto-commit+auto-push+auto-deploy will publish; verify rejivan.vercel.app/videos/cam_*.mp4 → 200 after deploy. If user wants, later: real CC stock clips, or a 2nd camera zone visible to the demo family, or Android mirror.
