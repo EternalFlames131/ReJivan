@@ -316,7 +316,8 @@ td.v-meta{font-size:11.5px;color:var(--ink-3)}
 
 /* ---- Cam ---- */
 .cam-stage{position:relative;background:#101a26;border:1px solid var(--line-2);border-radius:7px;overflow:hidden}
-.cam-stage canvas{display:block;width:100%}
+.cam-stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cam-stage canvas{display:block;width:100%;position:relative}
 .cam-hud{position:absolute;top:10px;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 12px}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:10.5px;
   font-weight:700;letter-spacing:.05em;background:rgba(10,14,22,.72);color:#e8f5ef;border:1px solid rgba(255,255,255,.12)}
@@ -542,6 +543,7 @@ td.v-meta{font-size:11.5px;color:var(--ink-3)}
       </button>
     </div>
     <div class="cam-stage">
+      <video id="camVideo" muted loop playsinline preload="metadata"></video>
       <canvas id="camCanvas" width="640" height="360"></canvas>
       <div class="cam-hud"><span class="pill live" id="liveState" data-i18n="live_state"></span><span class="clock" id="liveClock"></span></div>
     </div>
@@ -549,7 +551,8 @@ td.v-meta{font-size:11.5px;color:var(--ink-3)}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
       <div><b data-i18n="live_banner"></b></div>
     </div>
-    <div class="muted small" style="margin:8px 2px 0" data-i18n="live_note"></div>
+    <div class="muted small" style="margin:8px 2px 0" data-i18n="live_demo_note"></div>
+    <div class="muted small" style="margin:2px 2px 0" data-i18n="live_note"></div>
     <div style="display:flex;justify-content:flex-end;margin-top:14px">
       <button class="btn ghost" id="liveToggle" onclick="toggleLive()"></button>
     </div>
@@ -1155,11 +1158,14 @@ document.getElementById('langSel').addEventListener('change', e=>{
 });
 
 // ---- Live camera (SIMULATED, privacy-first) --------------------------------
+const LIVE_CLIPS = { CAM1:'videos/cam_livingroom.mp4', CAM2:'videos/cam_bedroom.mp4', BED1:'videos/cam_ward.mp4', BED2:'videos/cam_ward.mp4' };
+function clipFor(zoneId){ return LIVE_CLIPS[zoneId] || 'videos/cam_ward.mp4'; }
 function openLive(zoneId){
   const zone = state.zones.find(z=>z.id===zoneId);
   if(!zone) return;
   live.zoneId = zoneId;
   live.name = pname(zone.patientId, '');
+  live.clip = clipFor(zoneId);
   document.getElementById('liveTitle').textContent = live.name + ' · ' + zone.name;
   document.getElementById('liveModal').classList.add('show');
   walk(document.getElementById('liveModal'));
@@ -1171,6 +1177,11 @@ function connectLive(){
   live.connected = true;
   document.getElementById('liveToggle').textContent = t('disconnect');
   document.getElementById('liveToggle').setAttribute('data-i18n','disconnect');
+  const v = document.getElementById('camVideo');
+  if (v && live.clip){
+    if (v.dataset.clip !== live.clip){ v.dataset.clip = live.clip; v.src = live.clip; }
+    v.play().catch(()=>{});
+  }
   live.timer = setInterval(fetchFrame, 1200);
   fetchFrame();
 }
@@ -1179,6 +1190,8 @@ function disconnectLive(){
   document.getElementById('liveToggle').textContent = t('connect');
   document.getElementById('liveToggle').setAttribute('data-i18n','connect');
   clearInterval(live.timer); live.timer = null;
+  const v = document.getElementById('camVideo');
+  if (v) v.pause();
 }
 async function fetchFrame(){
   if(!live.zoneId || !live.connected) return;
