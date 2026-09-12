@@ -1,0 +1,29 @@
+Demo video footage attribution (Wikimedia Commons)
+==================================================
+
+The live-camera demo clips below are REAL footage sourced from Wikimedia
+Commons. They are shown ONLY as openly-licensed placeholder/demo footage; the
+ReJivan product itself never records or stores any video (privacy-first,
+on-device Prajña metadata only).
+
+cam_livingroom.mp4 (source clip, 8 s excerpt):
+  File: "Skatteetaten - Tax Return (Living Room).webm"
+  Author: TRY Motion
+  License: Creative Commons Attribution 3.0 (CC BY 3.0)
+  https://commons.wikimedia.org/wiki/File:Skatteetaten_-_Tax_Return_(Living_Room).webm
+  Original: https://upload.wikimedia.org/wikipedia/commons/0/04/Skatteetaten_-_Tax_Return_%28Living_Room%29.webm
+
+cam_bedroom.mp4 (source clip, 8 s excerpt):
+  File: "USVI MVI 5183 - Bright minimalist bedroom with white walls a four-poster
+        bed and a colorful zigzag rug A white dresser and a wicker chair add cozy touches.webm"
+  Author: Government of the United States Virgin Islands
+  License: Public domain
+  https://commons.wikimedia.org/wiki/File:USVI_MVI_5183_-_Bright_minimalist_bedroom_with_white_walls_a_four-poster_bed_and_a_colorful_zigzag_rug_A_white_dresser_and_a_wicker_chair_add_cozy_touches.webm
+
+cam_ward.mp4 (source clip, 8 s excerpt):
+  File: "Video en el interior del Centro de salud urbano de Mazatlán, 13 de agosto de 2018.webm"
+  Author: DogeGamer2015MZT2
+  License: CC0 1.0 (public domain dedication)
+  https://commons.wikimedia.org/wiki/File:Video_en_el_interior_del_Centro_de_salud_urbano_de_Mazatl%C3%A1n,_13_de_agosto_de_2018.webm
+
+All clips are trimmed to 8 s, muted, and re-encoded to H.264 MP4 (640x360) for this demo.

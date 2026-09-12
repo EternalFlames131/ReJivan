@@ -85,9 +85,10 @@ Design notes
 - **Emergency auto-call chain:** danger alert → family (0–4.2 s) → backup
   (5.5–9.8 s) → emergency services 108/112 (11–13.2 s). Real trigger/priority/
   retry logic, simulated placement.
-- **Privacy-first:** cameras never record/store video — the "live" view shows a
-  muted demo placeholder clip per room (no real footage) with on-device scene
-  metadata (person, motion, lighting) overlaid on top.
+- **Privacy-first:** cameras never record/store video — the "live" view plays a
+  muted OPENLY-LICENSED STOCK clip (public domain / CC0 / CC BY, attribution in
+  `public/videos/ATTRIBUTION.txt`) as demo footage with on-device scene metadata
+  (person, motion, lighting) overlaid on top.
 
 ## API
 

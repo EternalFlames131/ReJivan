@@ -455,7 +455,7 @@ app.get("/api/camera-zones/:id/live", requireAuth, (req, res) => {
     simulated: true,
     zone: { id: zone.id, name: zone.name, patientName: patientName(zone.patientId) },
     frame: liveFrame(zone.id),
-    note: "Demo placeholder footage (privacy-safe). On-device Prajñā captures metadata only — no real video is recorded or stored.",
+    note: "Demo footage: openly licensed stock clips (public domain / CC0 / CC BY — videos/ATTRIBUTION.txt). On-device Prajñā captures metadata only — the app never records or stores video.",
   });
 });
 
