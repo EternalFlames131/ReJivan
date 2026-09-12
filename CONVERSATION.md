@@ -592,3 +592,24 @@ Why: Vercel functions are short-lived — no 24/7 process, no shared memory. The
 ### Decisions
 - Kept the CDP driver as the reliable verification path for future UI work (the runbook's headless-dump approach is abandoned as too flaky).
 - Android untouched this round (still v2.4, dark theme is fine on Android).
+
+## 2026-09-12 (Day 5 — "Vercel deployment failed" email → fixed for good)
+
+### What the user reported
+- Vercel emailed "deployment failed" again → check and fix immediately.
+
+### Diagnosis (via Vercel API, all verified)
+- Every push spawned TWO deploys for the `prototype` project: our post-commit **CLI** deploy (source `cli`, always READY = the real website) + Vercel's **GitHub-integration** auto-deploy (source `git`, ALWAYS ERROR `type_error: Cannot read properties of undefined (reading 'fsPath')`, errorStep buildStep). The git one is what emails Samrat — same bug as 2026-09-11.
+- Root cause (finally understood): the project had EMPTY rootDirectory and no vercel.json at the REPO ROOT, so the git auto-build could never locate build config → permanent fsPath error. Our CLI deploys upload the `prototype\` folder directly, so they were never affected.
+- The earlier `createDeployments: "disabled"` was the WRONG lever — per Vercel SDK docs that flag only stops GitHub's deployment-status markers, not auto-builds.
+
+### The fix (applied + verified)
+1. Tried `git.deploymentEnabled:false` in `prototype/vercel.json` AND set project `rootDirectory=prototype/` → git deploys stopped, BUT CLI deploys broke (`NOW_SANDBOX_WORKER_ROOTDIR_NOT_EXIST`: Vercel looked for `prototype/prototype/` because `vercel deploy` uploads from `prototype/` already). Two CLI deploys errored during that window (12:23 / 12:25) — caught and corrected within minutes.
+2. **Final state:** reverted project `rootDirectory` to empty AND unlinked the GitHub repo from the Vercel project (`DELETE /v1/projects/prj_26QbwEMnqgU7Bur4MlF03g24ZwMF/link` → 200; project now shows `link: null`). No git connection = no git webhook = no git deploys ever = no failure emails. The custom domain rejivan.vercel.app stays on the project.
+3. Clean CLI redeploy from `prototype\` → **READY in 39 s**, auto-aliased to rejivan.vercel.app. Verified live: `/api/health` OK (`{"ok":true,"service":"ReJivan"}`) and homepage carries the v3 markers (views/dashgrid/rail-panel/clearview). Deployment list confirms the newest deploy is `cli READY` with no `git` deploys for our project afterwards.
+4. `prototype/vercel.json` retains `"git":{"deploymentEnabled":false}` as a belt-and-suspenders guard if the repo is ever re-linked.
+
+### Notes / decisions
+- Deploy architecture unchanged and now single-path: post-commit hook runs `vercel deploy --prod` from `prototype\` and re-assigns the rejivan.vercel.app alias on every commit. GitHub repo untouched (still EternalFlames131/ReJivan, public).
+- The two errored experiment deploys were superseded by the READY 12:51 deploy — current live state is correct (verified).
+- The pending `vercel login github` device flow is no longer required for deployment at all.
